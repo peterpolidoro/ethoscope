@@ -5,3 +5,4 @@ Building Queries,A comprehensive way to record your experiments,queries.html,med
 Data Samples, Download and play with samples to get familiar with Rethomics,sample_data.html,medium,queries.png,#9dde95ff
 Ethoscope Data,Learn how to import ethoscope data,ethoscope_data.html,medium,queries.png,#a2a9ebff
 Overview Plots,Plot multiple single-animal traces in one graph,overview_plot.html,medium,queries.png,#a2a9ebff
+Sleep scoring,Analyse sleep data,sleep_quantification.html,medium,queries.png,#a2a9ebff
