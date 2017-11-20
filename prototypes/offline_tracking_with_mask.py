@@ -1,13 +1,16 @@
 __author__ = 'diana'
 
 import cv2
-from ethoscope.utils.debug import EthoscopeException
-
 
 try:
     CV_VERSION = int(cv2.__version__.split(".")[0])
 except:
     CV_VERSION = 2
+
+try:
+    from cv2 import CV_LOAD_IMAGE_GRAYSCALE as IMREAD_GRAYSCALE
+except ImportError:
+    from cv2 import IMREAD_GRAYSCALE
 
 from ethoscope.core.monitor import Monitor
 import cv2
@@ -28,7 +31,7 @@ class ArenaMaskROIBuilder(BaseROIBuilder):
         Each rectangular region found at level 0 in the hierarchy of contours defines a ROI (All childs are excluded).
         """
 
-        self._mask = cv2.imread(mask_path, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+        self._mask = cv2.imread(mask_path, IMREAD_GRAYSCALE)
 
         super(ArenaMaskROIBuilder, self).__init__()
 
@@ -54,7 +57,10 @@ class ArenaMaskROIBuilder(BaseROIBuilder):
         params.filterByInertia = True
         params.minInertiaRatio = 0.7
 
-        detector = cv2.SimpleBlobDetector(params)
+        if(CV_VERSION == 3):
+            detector = cv2.SimpleBlobDetector_create(params)
+        else:
+            detector = cv2.SimpleBlobDetector(params)
 
         # we want to obtain an image with white background and dark targets on it
         #if we have a color image than we threshold it and transform in white everything that is not black
@@ -152,7 +158,7 @@ class ArenaMaskROIBuilder(BaseROIBuilder):
 
 INPUT_VIDEO = "/data/Diana/data_node/ethoscope_videos/026c6ba04e534be486069c3db7b10827/ETHOSCOPE_026/2017-10-11_10-08-08/whole_2017-10-11_10-08-08_026c6ba04e534be486069c3db7b10827_trial_1920x1080@25_00000.mp4"
 #INPUT_VIDEO = "/home/diana/Desktop/hinata/11_whole_2017-10-25_12-47-35_011d6ba04e534be486069c3db7b10827__1280x960@25_00000.mp4"
-OUTPUT_VIDEO = "/home/diana/Desktop/hinata/out_11_whole_2017-10-25_12-47-35_011d6ba04e534be486069c3db7b10827__1280x960@25_00000.mp4"
+OUTPUT_VIDEO = "/home/diana/Desktop/hinata/out_11_whole_2017-10-25_12-47-35_011d6ba04e534be486069c3db7b10827__1280x960@25_00000.avi"
 OUTPUT_DB = "/home/diana/Desktop/hinata/11_whole_2017-10-25_12-47-35_011d6ba04e534be486069c3db7b10827__1280x960@25_00000.db"
 
 #MASK = "/home/diana/github/ethoscope/prototypes/rois_from_images/masks/arena_hole_beneath.png"
@@ -161,8 +167,8 @@ OUTPUT_DB = "/home/diana/Desktop/hinata/11_whole_2017-10-25_12-47-35_011d6ba04e5
 
 #MASK = "/home/diana/Desktop/hinata/hinata_final_mask.png"
 #MASK = "/data/Diana/data_node/InkscapeFiles/test1.png"
-#MASK = "/data/Diana/data_node/InkscapeFiles/arena_hole_beneath.png"
-MASK = "/data/Diana/data_node/InkscapeFiles/general4.png"
+MASK = "/data/Diana/data_node/InkscapeFiles/arena_hole_beneath.png"
+#MASK = "/data/Diana/data_node/InkscapeFiles/general4.png"
 
 # We use a video input file as if it was a "camera"
 cam = MovieVirtualCamera(INPUT_VIDEO, drop_each=1)
