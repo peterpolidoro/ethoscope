@@ -1,0 +1,637 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.web_utils.control_thread &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>ethoscope.web_utils.control_thread</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ethoscope.web_utils.control_thread</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="kn">import</span> <span class="nn">trace</span>
+<span class="kn">from</span> <span class="nn">ethoscope.hardware.input.cameras</span> <span class="kn">import</span> <span class="n">OurPiCameraAsync</span><span class="p">,</span> <span class="n">MovieVirtualCamera</span><span class="p">,</span> <span class="n">DummyPiCameraAsync</span>
+<span class="kn">from</span> <span class="nn">ethoscope.roi_builders.target_roi_builder</span> <span class="kn">import</span>  <span class="n">OlfactionAssayROIBuilder</span><span class="p">,</span> <span class="n">SleepMonitorWithTargetROIBuilder</span><span class="p">,</span> <span class="n">TargetGridROIBuilder</span>
+<span class="kn">from</span> <span class="nn">ethoscope.roi_builders.roi_builders</span> <span class="kn">import</span>  <span class="n">DefaultROIBuilder</span>
+<span class="kn">from</span> <span class="nn">ethoscope.core.monitor</span> <span class="kn">import</span> <span class="n">Monitor</span>
+<span class="kn">from</span> <span class="nn">ethoscope.drawers.drawers</span> <span class="kn">import</span> <span class="n">NullDrawer</span><span class="p">,</span> <span class="n">DefaultDrawer</span>
+<span class="kn">from</span> <span class="nn">ethoscope.trackers.adaptive_bg_tracker</span> <span class="kn">import</span> <span class="n">AdaptiveBGModel</span>
+<span class="kn">from</span> <span class="nn">ethoscope.hardware.interfaces.interfaces</span> <span class="kn">import</span> <span class="n">HardwareConnection</span>
+<span class="kn">from</span> <span class="nn">ethoscope.stimulators.stimulators</span> <span class="kn">import</span> <span class="n">DefaultStimulator</span>
+<span class="kn">from</span> <span class="nn">ethoscope.stimulators.sleep_depriver_stimulators</span> <span class="kn">import</span> <span class="n">SleepDepStimulator</span><span class="p">,</span> <span class="n">ExperimentalSleepDepStimulator</span><span class="c1">#, SystematicSleepDepInteractor</span>
+<span class="kn">from</span> <span class="nn">ethoscope.stimulators.odour_stimulators</span> <span class="kn">import</span> <span class="n">DynamicOdourSleepDepriver</span> <span class="c1">#, DynamicOdourDeliverer</span>
+<span class="kn">from</span> <span class="nn">ethoscope.utils.debug</span> <span class="kn">import</span> <span class="n">EthoscopeException</span>
+<span class="kn">from</span> <span class="nn">ethoscope.utils.io</span> <span class="kn">import</span> <span class="n">ResultWriter</span><span class="p">,</span> <span class="n">SQLiteResultWriter</span>
+<span class="kn">from</span> <span class="nn">ethoscope.utils.description</span> <span class="kn">import</span> <span class="n">DescribedObject</span>
+
+
+<div class="viewcode-block" id="ExperimentalInformations"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.control_thread.ExperimentalInformations">[docs]</a><span class="k">class</span> <span class="nc">ExperimentalInformations</span><span class="p">(</span><span class="n">DescribedObject</span><span class="p">):</span>
+        <span class="n">_description</span>  <span class="o">=</span> <span class="p">{</span>   <span class="s2">&quot;overview&quot;</span><span class="p">:</span> <span class="s2">&quot;Optional information about your experiment&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;arguments&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                    <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Who are you?&quot;</span><span class="p">,</span><span class="s2">&quot;default&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">},</span>
+                                    <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;location&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Where is your device&quot;</span><span class="p">,</span><span class="s2">&quot;default&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">},</span>
+                                    <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Would you like to add any particular information in the video file name?&quot;</span><span class="p">,</span><span class="s2">&quot;default&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">}</span>
+
+                                   <span class="p">]}</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info_dic</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="n">name</span><span class="p">,</span>
+                              <span class="s2">&quot;location&quot;</span><span class="p">:</span><span class="n">location</span><span class="p">,</span>
+                              <span class="s2">&quot;code&quot;</span><span class="p">:</span><span class="n">code</span><span class="p">}</span>
+
+        <span class="k">def</span> <span class="nf">_check_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">r&quot;[^a-zA-Z0-9-]&quot;</span><span class="p">)</span>
+            <span class="n">clean_code</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="n">code</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">clean_code</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;the code in the video name contains unallowed characters&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Code contains special characters. Please use only letters, digits or -&quot;</span><span class="p">)</span>
+
+
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">info_dic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info_dic</span></div>
+
+
+<div class="viewcode-block" id="ControlThread"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.control_thread.ControlThread">[docs]</a><span class="k">class</span> <span class="nc">ControlThread</span><span class="p">(</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="n">_evanescent</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">_option_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;roi_builder&quot;</span><span class="p">:{</span>
+                <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">DefaultROIBuilder</span><span class="p">,</span> <span class="n">SleepMonitorWithTargetROIBuilder</span><span class="p">,</span> <span class="n">TargetGridROIBuilder</span><span class="p">,</span> <span class="n">OlfactionAssayROIBuilder</span><span class="p">],</span>
+            <span class="p">},</span>
+        <span class="s2">&quot;tracker&quot;</span><span class="p">:{</span>
+                <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">AdaptiveBGModel</span><span class="p">],</span>
+            <span class="p">},</span>
+        <span class="s2">&quot;interactor&quot;</span><span class="p">:{</span>
+                        <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">DefaultStimulator</span><span class="p">,</span> <span class="n">SleepDepStimulator</span><span class="p">,</span>
+                                            <span class="c1">#SystematicSleepDepInteractor,</span>
+                                            <span class="n">ExperimentalSleepDepStimulator</span><span class="p">,</span>
+                                            <span class="c1">#DynamicOdourDeliverer,</span>
+                                            <span class="n">DynamicOdourSleepDepriver</span><span class="p">],</span>
+                    <span class="p">},</span>
+        <span class="s2">&quot;drawer&quot;</span><span class="p">:{</span>
+                        <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">DefaultDrawer</span><span class="p">,</span> <span class="n">NullDrawer</span><span class="p">],</span>
+                    <span class="p">},</span>
+        <span class="s2">&quot;camera&quot;</span><span class="p">:{</span>
+                        <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">OurPiCameraAsync</span><span class="p">,</span> <span class="n">MovieVirtualCamera</span><span class="p">,</span> <span class="n">DummyPiCameraAsync</span><span class="p">],</span>
+                    <span class="p">},</span>
+        <span class="s2">&quot;result_writer&quot;</span><span class="p">:{</span>
+                        <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">ResultWriter</span><span class="p">,</span> <span class="n">SQLiteResultWriter</span><span class="p">],</span>
+                <span class="p">},</span>
+        <span class="s2">&quot;experimental_info&quot;</span><span class="p">:{</span>
+                        <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">ExperimentalInformations</span><span class="p">],</span>
+                <span class="p">}</span>
+     <span class="p">}</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_option_dict</span><span class="p">:</span>
+        <span class="n">_option_dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span><span class="n">_option_dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;possible_classes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_option_dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span> <span class="o">=</span><span class="p">{}</span>
+
+
+    <span class="n">_tmp_last_img_file</span> <span class="o">=</span> <span class="s2">&quot;last_img.jpg&quot;</span>
+    <span class="n">_dbg_img_file</span> <span class="o">=</span> <span class="s2">&quot;dbg_img.png&quot;</span>
+    <span class="n">_log_file</span> <span class="o">=</span> <span class="s2">&quot;ethoscope.log&quot;</span>
+    <span class="n">_db_credentials</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ethoscope_db&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;ethoscope&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;ethoscope&quot;</span><span class="p">}</span>
+
+    <span class="n">_default_monitor_info</span> <span class="o">=</span>  <span class="p">{</span>
+                            <span class="c1">#fixme, not needed</span>
+                            <span class="s2">&quot;last_positions&quot;</span><span class="p">:</span><span class="bp">None</span><span class="p">,</span>
+
+                            <span class="s2">&quot;last_time_stamp&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                            <span class="s2">&quot;fps&quot;</span><span class="p">:</span><span class="mi">0</span>
+                            <span class="p">}</span>
+    <span class="n">_persistent_state_file</span> <span class="o">=</span> <span class="s2">&quot;/var/cache/ethoscope/persistent_state.pkl&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">machine_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">ethoscope_dir</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monit_args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monit_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c1"># for FPS computation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># We wipe off previous data</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ethoscope_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ethoscope_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dbg_img_file</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ethoscope_dir</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;ethoscope_&quot;</span><span class="p">)</span>
+        <span class="c1">#todo add &#39;data&#39; -&gt; how monitor was started to metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span> <span class="o">=</span> <span class="p">{</span>  <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;stopped&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+                        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+                        <span class="s2">&quot;log_file&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ethoscope_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">),</span>
+                        <span class="s2">&quot;dbg_img&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ethoscope_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dbg_img_file</span><span class="p">),</span>
+                        <span class="s2">&quot;last_drawn_img&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_img_file</span><span class="p">),</span>
+                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">machine_id</span><span class="p">,</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">,</span>
+                        <span class="s2">&quot;db_name&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_db_credentials</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;monitor_info&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_monitor_info</span><span class="p">,</span>
+                        <span class="c1">#&quot;user_options&quot;: self._get_user_options(),</span>
+                        <span class="s2">&quot;experimental_info&quot;</span><span class="p">:</span> <span class="p">{}</span>
+                        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_user_options</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+        <span class="n">DrawerClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;drawer&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+        <span class="n">drawer_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;drawer&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_drawer</span> <span class="o">=</span> <span class="n">DrawerClass</span><span class="p">(</span><span class="o">**</span><span class="n">drawer_kwargs</span><span class="p">)</span>
+
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ControlThread</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_info</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">was_interrupted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_persistent_state_file</span><span class="p">)</span>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ControlThread.user_options"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.control_thread.ControlThread.user_options">[docs]</a>    <span class="k">def</span> <span class="nf">user_options</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_option_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;possible_classes&quot;</span><span class="p">]:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s2">&quot;_description&quot;</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">d</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">__name__</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">out_currated</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">out_currated</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">out_currated</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_parse_one_user_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">field</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No field </span><span class="si">%s</span><span class="s2">, using default&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="p">{}</span>
+
+        <span class="n">Class</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">subdata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">subdata</span><span class="p">[</span><span class="s2">&quot;arguments&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">Class</span><span class="p">,</span> <span class="n">kwargs</span>
+
+
+    <span class="k">def</span> <span class="nf">_parse_user_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1">#FIXME DEBUG</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Starting control thread with data:&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="n">Class</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_one_user_option</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="c1"># when no field is present in the JSON config, we get the default class</span>
+
+            <span class="k">if</span> <span class="n">Class</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;possible_classes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">continue</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Class</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+
+
+    <span class="k">def</span> <span class="nf">_update_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span><span class="o">.</span><span class="n">last_time_stamp</span>
+
+        <span class="n">frame_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span><span class="o">.</span><span class="n">last_frame_idx</span>
+        <span class="n">wall_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">wall_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">frame_idx</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_frame_idx</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">dt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="o">/</span><span class="n">dt</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">=</span><span class="s2">&quot;NaN&quot;</span>
+
+
+
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span><span class="c1"># and p is not None:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;monitor_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="c1"># &quot;last_positions&quot;:pos,</span>
+                            <span class="s2">&quot;last_time_stamp&quot;</span><span class="p">:</span><span class="n">t</span><span class="p">,</span>
+                            <span class="s2">&quot;fps&quot;</span><span class="p">:</span> <span class="n">f</span>
+                            <span class="p">}</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drawer</span><span class="o">.</span><span class="n">last_drawn_frame</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;last_drawn_img&quot;</span><span class="p">],</span> <span class="n">frame</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">IMWRITE_JPEG_QUALITY</span><span class="p">),</span> <span class="mi">50</span><span class="p">])</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span> <span class="o">=</span> <span class="n">wall_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_frame_idx</span> <span class="o">=</span> <span class="n">frame_idx</span>
+
+
+    <span class="k">def</span> <span class="nf">_start_tracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera</span><span class="p">,</span> <span class="n">result_writer</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span>   <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span>
+                        <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span><span class="p">):</span>
+
+
+        <span class="n">stimulators</span> <span class="o">=</span> <span class="p">[</span><span class="n">StimulatorClass</span><span class="p">(</span><span class="n">hardware_connection</span><span class="p">,</span> <span class="o">**</span><span class="n">stimulator_kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">rois</span><span class="p">]</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monit_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tracker_kwargs</span><span class="p">)</span>
+
+        <span class="c1"># todo: pickle hardware connection, camera, rois, tracker class, stimulator class,.</span>
+        <span class="c1"># then rerun stimulators and Monitor(......)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span> <span class="o">=</span> <span class="n">Monitor</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span>
+                              <span class="n">stimulators</span><span class="o">=</span><span class="n">stimulators</span><span class="p">,</span>
+                              <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_monit_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;running&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting monitor status as running: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">result_writer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drawer</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_tracking_from_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_persistent_state_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_save_pickled_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera</span><span class="p">,</span> <span class="n">result_writer</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span>   <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span>
+                        <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span><span class="p">):</span>
+
+        <span class="n">tpl</span> <span class="o">=</span> <span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">result_writer</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span>   <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span>
+                        <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_persistent_state_file</span><span class="p">)):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No cache dir detected. making one&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_persistent_state_file</span><span class="p">))</span>
+
+
+        <span class="c1"># with open(&quot;/tmp/test.pkl&quot;, &quot;w&quot;) as f:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_persistent_state_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tpl</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_tracking_from_scratch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">CameraClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;camera&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+        <span class="n">camera_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;camera&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+
+        <span class="n">ROIBuilderClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;roi_builder&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+        <span class="n">roi_builder_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;roi_builder&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+
+        <span class="n">StimulatorClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;interactor&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+        <span class="n">stimulator_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;interactor&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+        <span class="n">HardWareInterfaceClass</span> <span class="o">=</span> <span class="n">StimulatorClass</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s2">&quot;_HardwareInterfaceClass&quot;</span><span class="p">]</span>
+
+        <span class="n">TrackerClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;tracker&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+        <span class="n">tracker_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;tracker&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+
+        <span class="n">ResultWriterClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;result_writer&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+        <span class="n">result_writer_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;result_writer&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+
+        <span class="n">cam</span> <span class="o">=</span> <span class="n">CameraClass</span><span class="p">(</span><span class="o">**</span><span class="n">camera_kwargs</span><span class="p">)</span>
+
+        <span class="n">roi_builder</span> <span class="o">=</span> <span class="n">ROIBuilderClass</span><span class="p">(</span><span class="o">**</span><span class="n">roi_builder_kwargs</span><span class="p">)</span>
+        <span class="n">rois</span> <span class="o">=</span> <span class="n">roi_builder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">cam</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initialising monitor&quot;</span><span class="p">)</span>
+        <span class="n">cam</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+        <span class="c1"># the camera start time is the reference 0</span>
+
+
+        <span class="n">ExpInfoClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+        <span class="n">exp_info_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ExpInfoClass</span><span class="p">(</span><span class="o">**</span><span class="n">exp_info_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">info_dic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="n">hardware_connection</span> <span class="o">=</span> <span class="n">HardwareConnection</span><span class="p">(</span><span class="n">HardWareInterfaceClass</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;machine_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;machine_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;date_time&quot;</span><span class="p">:</span> <span class="n">cam</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>  <span class="c1"># the camera start time is the reference 0</span>
+            <span class="s2">&quot;frame_width&quot;</span><span class="p">:</span> <span class="n">cam</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="s2">&quot;frame_height&quot;</span><span class="p">:</span> <span class="n">cam</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;experimental_info&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;selected_options&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="c1"># hardware_interface is a running thread</span>
+        <span class="n">rw</span> <span class="o">=</span> <span class="n">ResultWriter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db_credentials</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="n">take_frame_shots</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="k">return</span>  <span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">rw</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span> <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span>
+                        <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ControlThread.run"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.control_thread.ControlThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cam</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">hardware_connection</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;initialising&quot;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Monitor thread&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cam</span><span class="p">,</span> <span class="n">rw</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span> <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span> <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_tracking_from_pickled</span><span class="p">()</span>
+
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="n">cam</span><span class="p">,</span> <span class="n">rw</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span> <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span> <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_tracking_from_scratch</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not load previous state for unexpected reason:&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">e</span>
+                <span class="c1">#cam, rw, rois, TrackerClass, tracker_kwargs, hardware_connection, StimulatorClass, stimulator_kwargs = self._set_tracking_from_scratch()</span>
+
+            <span class="k">with</span> <span class="n">rw</span> <span class="k">as</span> <span class="n">result_writer</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_pickled_state</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span><span class="n">rw</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span> <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span> <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_start_tracking</span><span class="p">(</span><span class="n">cam</span><span class="p">,</span> <span class="n">result_writer</span><span class="p">,</span> <span class="n">rois</span><span class="p">,</span> <span class="n">TrackerClass</span><span class="p">,</span> <span class="n">tracker_kwargs</span><span class="p">,</span>
+                                     <span class="n">hardware_connection</span><span class="p">,</span> <span class="n">StimulatorClass</span><span class="p">,</span> <span class="n">stimulator_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="n">EthoscopeException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">img</span> <span class="ow">is</span> <span class="ow">not</span>  <span class="bp">None</span><span class="p">:</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;dbg_img&quot;</span><span class="p">],</span> <span class="n">e</span><span class="o">.</span><span class="n">img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+
+        <span class="k">finally</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_persistent_state_file</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Failed to remove persistent file&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">cam</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
+
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not close camera properly&quot;</span><span class="p">)</span>
+                <span class="k">pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">hardware_connection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">hardware_connection</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not close hardware connection properly&quot;</span><span class="p">)</span>
+                <span class="k">pass</span>
+
+            <span class="c1">#for testing purposes</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evanescent</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drawer</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ControlThread.stop"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.control_thread.ControlThread.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stopping&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping monitor&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_monit</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stopped&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;monitor_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_monitor_info</span>
+
+        <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Monitor closed with an error:&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Monitor closed all right&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_dir</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_persistent_state_file</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ControlThread.set_evanescent"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.control_thread.ControlThread.set_evanescent">[docs]</a>    <span class="k">def</span> <span class="nf">set_evanescent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_evanescent</span> <span class="o">=</span> <span class="n">value</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.drawers package &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="index.html"/>
+        <link rel="prev" title="ethoscope.interactors package" href="ethoscope.stimulators.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ethoscope.drawers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.drawers.drawers">ethoscope.drawers.drawers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.drawers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>ethoscope.drawers package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ethoscope.drawers.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ethoscope-drawers-package">
+<h1>ethoscope.drawers package<a class="headerlink" href="#ethoscope-drawers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ethoscope.drawers.drawers">
+<span id="ethoscope-drawers-drawers-module"></span><h2>ethoscope.drawers.drawers module<a class="headerlink" href="#module-ethoscope.drawers.drawers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.drawers.drawers.BaseDrawer">
+<em class="property">class </em><code class="descclassname">ethoscope.drawers.drawers.</code><code class="descname">BaseDrawer</code><span class="sig-paren">(</span><em>video_out=None</em>, <em>draw_frames=True</em>, <em>video_out_fourcc='DIVX'</em>, <em>video_out_fps=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/drawers/drawers.html#BaseDrawer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.drawers.drawers.BaseDrawer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A template class to annotate and save the processed frames. It can also save the annotated frames in a video
+file and/or display them in a new window. The <code class="xref py py-meth docutils literal"><span class="pre">_annotate_frame()</span></code>
+abstract method defines how frames are annotated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>video_out</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The path to the output file (.avi)</li>
+<li><strong>draw_frames</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Whether frames should be displayed on the screen (a new window will be created).</li>
+<li><strong>video_out_fourcc</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; When setting <code class="docutils literal"><span class="pre">video_out</span></code>, this defines the codec used to save the output video (see <a class="reference external" href="http://www.fourcc.org/codecs.php">fourcc</a>)</li>
+<li><strong>video_out_fps</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; When setting <code class="docutils literal"><span class="pre">video_out</span></code>, this defines the output fps. typically, the same as the input fps.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.drawers.drawers.BaseDrawer.draw">
+<code class="descname">draw</code><span class="sig-paren">(</span><em>img</em>, <em>positions</em>, <em>tracking_units</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/drawers/drawers.html#BaseDrawer.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.drawers.drawers.BaseDrawer.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw results on a frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>img</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; the frame that was just processed</li>
+<li><strong>positions</strong> (list(<a class="reference internal" href="ethoscope.core.html#ethoscope.core.data_point.DataPoint" title="ethoscope.core.data_point.DataPoint"><code class="xref py py-class docutils literal"><span class="pre">DataPoint</span></code></a>)) &#8211; a list of positions resulting from analysis of the frame by a tracker</li>
+<li><strong>tracking_units</strong> (list(<a class="reference internal" href="ethoscope.core.html#ethoscope.core.tracking_unit.TrackingUnit" title="ethoscope.core.tracking_unit.TrackingUnit"><code class="xref py py-class docutils literal"><span class="pre">TrackingUnit</span></code></a>)) &#8211; the tracking units corresponding to the positions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.drawers.drawers.BaseDrawer.last_drawn_frame">
+<code class="descname">last_drawn_frame</code><a class="headerlink" href="#ethoscope.drawers.drawers.BaseDrawer.last_drawn_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.drawers.drawers.DefaultDrawer">
+<em class="property">class </em><code class="descclassname">ethoscope.drawers.drawers.</code><code class="descname">DefaultDrawer</code><span class="sig-paren">(</span><em>video_out=None</em>, <em>draw_frames=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/drawers/drawers.html#DefaultDrawer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.drawers.drawers.DefaultDrawer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.drawers.drawers.BaseDrawer" title="ethoscope.drawers.drawers.BaseDrawer"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.drawers.drawers.BaseDrawer</span></code></a></p>
+<p>The default drawer. It draws ellipses on the detected objects and polygons around ROIs. When an &#8220;interaction&#8221;
+see <code class="xref py py-class docutils literal"><span class="pre">BaseInteractor</span></code> happens within a ROI,
+the ellipse is red, blue otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>video_out</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The path to the output file (.avi)</li>
+<li><strong>draw_frames</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Whether frames should be displayed on the screen (a new window will be created).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.drawers.drawers.NullDrawer">
+<em class="property">class </em><code class="descclassname">ethoscope.drawers.drawers.</code><code class="descname">NullDrawer</code><a class="reference internal" href="_modules/ethoscope/drawers/drawers.html#NullDrawer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.drawers.drawers.NullDrawer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.drawers.drawers.BaseDrawer" title="ethoscope.drawers.drawers.BaseDrawer"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.drawers.drawers.BaseDrawer</span></code></a></p>
+<p>A drawer that does nothing (no video writing, no annotation, no display on the screen).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.drawers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ethoscope.drawers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="ethoscope.stimulators.html" class="btn btn-neutral" title="ethoscope.interactors package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

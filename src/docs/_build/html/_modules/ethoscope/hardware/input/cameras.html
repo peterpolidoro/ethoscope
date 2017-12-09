@@ -1,0 +1,721 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.hardware.input.cameras &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="../../../../index.html"/>
+        <link rel="up" title="Module code" href="../../../index.html"/> 
+
+  
+  <script src="../../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../../index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      
+    <li>ethoscope.hardware.input.cameras</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ethoscope.hardware.input.cameras</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;quentin&#39;</span>
+
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">cv2.cv</span> <span class="kn">import</span> <span class="n">CV_CAP_PROP_FRAME_WIDTH</span> <span class="k">as</span> <span class="n">CAP_PROP_FRAME_WIDTH</span>
+    <span class="kn">from</span> <span class="nn">cv2.cv</span> <span class="kn">import</span> <span class="n">CV_CAP_PROP_FRAME_HEIGHT</span> <span class="k">as</span> <span class="n">CAP_PROP_FRAME_HEIGHT</span>
+    <span class="kn">from</span> <span class="nn">cv2.cv</span> <span class="kn">import</span> <span class="n">CV_CAP_PROP_FRAME_COUNT</span> <span class="k">as</span> <span class="n">CAP_PROP_FRAME_COUNT</span>
+    <span class="kn">from</span> <span class="nn">cv2.cv</span> <span class="kn">import</span> <span class="n">CV_CAP_PROP_POS_MSEC</span> <span class="k">as</span> <span class="n">CAP_PROP_POS_MSEC</span>
+    <span class="kn">from</span> <span class="nn">cv2.cv</span> <span class="kn">import</span> <span class="n">CV_CAP_PROP_FPS</span> <span class="k">as</span> <span class="n">CAP_PROP_FPS</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">cv2</span> <span class="kn">import</span> <span class="n">CAP_PROP_FRAME_WIDTH</span><span class="p">,</span> <span class="n">CAP_PROP_FRAME_HEIGHT</span><span class="p">,</span> <span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">,</span> <span class="n">CAP_PROP_POS_MSEC</span><span class="p">,</span> <span class="n">CAP_PROP_FPS</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">ethoscope.utils.debug</span> <span class="kn">import</span> <span class="n">EthoscopeException</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<div class="viewcode-block" id="BaseCamera"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.BaseCamera">[docs]</a><span class="k">class</span> <span class="nc">BaseCamera</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_resolution</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">drop_each</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_duration</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The template class to generate and use video streams.</span>
+
+<span class="sd">        :param drop_each: keep only ``1/drop_each``&#39;th frame</span>
+<span class="sd">        :param max_duration: stop the video stream if ``t &gt; max_duration`` (in seconds).</span>
+<span class="sd">        :param args: additional arguments</span>
+<span class="sd">        :param kwargs: additional keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_drop_each</span> <span class="o">=</span> <span class="n">drop_each</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_duration</span> <span class="o">=</span> <span class="n">max_duration</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Closing camera&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterate thought consecutive frames of this camera.</span>
+
+<span class="sd">        :return: the time (in ms) and a frame (numpy array).</span>
+<span class="sd">        :rtype: (int, :class:`~numpy.ndarray`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">at_least_one_frame</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_last_frame</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_opened</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">at_least_one_frame</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;Camera could not read the first frame&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="n">t</span><span class="p">,</span><span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_time_image</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">t_ms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1000</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">at_least_one_frame</span> <span class="o">=</span> <span class="bp">True</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drop_each</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">t_ms</span><span class="p">,</span><span class="n">out</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_duration</span><span class="p">:</span>
+                <span class="k">break</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: The resolution of the camera W x H.</span>
+<span class="sd">        :rtype: (int, int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: the width of the returned frames</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: the height of the returned frames</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_next_time_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_stamp</span><span class="p">()</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_image</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">time</span><span class="p">,</span> <span class="n">im</span>
+
+<div class="viewcode-block" id="BaseCamera.is_last_frame"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.BaseCamera.is_last_frame">[docs]</a>    <span class="k">def</span> <span class="nf">is_last_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="nf">_next_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="BaseCamera.is_opened"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.BaseCamera.is_opened">[docs]</a>    <span class="k">def</span> <span class="nf">is_opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BaseCamera.restart"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.BaseCamera.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restarts a camera (also resets time).</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<div class="viewcode-block" id="MovieVirtualCamera"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.MovieVirtualCamera">[docs]</a><span class="k">class</span> <span class="nc">MovieVirtualCamera</span><span class="p">(</span><span class="n">BaseCamera</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">use_wall_clock</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class to acquire frames from a video file.</span>
+
+<span class="sd">        :param path: the path of the video file</span>
+<span class="sd">        :type path: str</span>
+<span class="sd">        :param use_wall_clock: whether to use the real time from the machine (True) or from the video file (False).\</span>
+<span class="sd">            The former can be useful for prototyping.</span>
+<span class="sd">        :type use_wall_clock: bool</span>
+<span class="sd">        :param args: additional arguments.</span>
+<span class="sd">        :param kwargs: additional keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#print &quot;path&quot;, path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_wall_clock</span> <span class="o">=</span> <span class="n">use_wall_clock</span>
+
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;path to video must be a string&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; does not exist. No such file&quot;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">capture</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CAP_PROP_FRAME_WIDTH</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CAP_PROP_FRAME_HEIGHT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_n_frames</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CAP_PROP_FRAME_COUNT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_n_frames</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_has_end_of_file</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_has_end_of_file</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">w</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">MovieVirtualCamera</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># emulates v4l2 (real time camera) from video file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_wall_clock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+
+<div class="viewcode-block" id="MovieVirtualCamera.is_opened"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.MovieVirtualCamera.is_opened">[docs]</a>    <span class="k">def</span> <span class="nf">is_opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">True</span></div>
+
+<div class="viewcode-block" id="MovieVirtualCamera.restart"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.MovieVirtualCamera.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">use_wall_clock</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_use_wall_clock</span><span class="p">,</span> <span class="n">drop_each</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_drop_each</span><span class="p">,</span> <span class="n">max_duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_duration</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_next_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">frame</span>
+
+    <span class="k">def</span> <span class="nf">_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_wall_clock</span><span class="p">:</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+        <span class="n">time_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CAP_PROP_POS_MSEC</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1e3</span>
+        <span class="k">return</span> <span class="n">time_s</span>
+
+<div class="viewcode-block" id="MovieVirtualCamera.is_last_frame"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.MovieVirtualCamera.is_last_frame">[docs]</a>    <span class="k">def</span> <span class="nf">is_last_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_end_of_file</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_n_frames</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span></div>
+
+    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="V4L2Camera"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.V4L2Camera">[docs]</a><span class="k">class</span> <span class="nc">V4L2Camera</span><span class="p">(</span><span class="n">BaseCamera</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">device</span><span class="p">,</span> <span class="n">target_fps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">target_resolution</span><span class="o">=</span><span class="p">(</span><span class="mi">960</span><span class="p">,</span><span class="mi">720</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        class to acquire stream from a video for linux compatible device (v4l2).</span>
+
+<span class="sd">        :param device: The index of the device, or its path.</span>
+<span class="sd">        :type device: int or str</span>
+<span class="sd">        :param target_fps: the desired number of frames par second (FPS)</span>
+<span class="sd">        :type target_fps: int</span>
+<span class="sd">        :param target_fps: the desired resolution (W x H)</span>
+<span class="sd">        :param target_resolution: (int,int)</span>
+<span class="sd">        :param args: additional arguments</span>
+<span class="sd">        :param kwargs: additional keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">capture</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warm_up</span><span class="p">()</span>
+
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">target_resolution</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">h</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">CAP_PROP_FRAME_WIDTH</span><span class="p">,</span> <span class="mi">99999</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">CAP_PROP_FRAME_HEIGHT</span><span class="p">,</span> <span class="mi">99999</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">CAP_PROP_FRAME_WIDTH</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">CAP_PROP_FRAME_HEIGHT</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target_fps</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;FPS must be an integer number&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">target_fps</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;FPS must be at least 2&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">CAP_PROP_FPS</span><span class="p">,</span> <span class="n">target_fps</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target_fps</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">target_fps</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="c1"># preallocate image buffer =&gt; faster</span>
+        <span class="k">if</span> <span class="n">im</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;Error whist retrieving video frame. Got None instead. Camera not plugged?&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">im</span>
+
+        <span class="k">assert</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="o">=</span> <span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="o">!=</span> <span class="n">target_resolution</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">w</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Target resolution &quot;</span><span class="si">%s</span><span class="s1">&quot; could NOT be achieved. Effective resolution is &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target_resolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Maximal effective resolution is &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span><span class="p">))</span>
+
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">V4L2Camera</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_warm_up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is warming up&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<div class="viewcode-block" id="V4L2Camera.restart"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.V4L2Camera.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="V4L2Camera.is_opened"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.V4L2Camera.is_opened">[docs]</a>    <span class="k">def</span> <span class="nf">is_opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">isOpened</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="V4L2Camera.is_last_frame"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.V4L2Camera.is_last_frame">[docs]</a>    <span class="k">def</span> <span class="nf">is_last_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span></div>
+
+    <span class="k">def</span> <span class="nf">_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># relative time stamp</span>
+        <span class="k">return</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+
+    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_next_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">&gt;</span><span class="mi">0</span> <span class="p">:</span>
+            <span class="n">expected_time</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_fps</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">to_sleep</span> <span class="o">=</span> <span class="n">expected_time</span> <span class="o">-</span> <span class="n">now</span>
+            <span class="c1"># Warnings if the fps is so high that we cannot grab fast enough</span>
+            <span class="k">if</span> <span class="n">to_sleep</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">%</span> <span class="mi">5000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The target FPS (</span><span class="si">%f</span><span class="s2">) could not be reached. Effective FPS is about </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target_fps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span><span class="o">/</span><span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">grab</span><span class="p">()</span>
+
+            <span class="c1"># we simply drop frames until we go above expected time</span>
+            <span class="k">while</span> <span class="n">now</span> <span class="o">&lt;</span> <span class="n">expected_time</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">grab</span><span class="p">()</span>
+                <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">grab</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">capture</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span></div>
+
+<div class="viewcode-block" id="PiFrameGrabber"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.PiFrameGrabber">[docs]</a><span class="k">class</span> <span class="nc">PiFrameGrabber</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_fps</span><span class="p">,</span> <span class="n">target_resolution</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span><span class="n">stop_queue</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class to grab frames from pi camera. Designed to be used within :class:`~ethoscope.hardware.camreras.camreras.OurPiCameraAsync`</span>
+<span class="sd">        This allows to get frames asynchronously as acquisition is a bottleneck.</span>
+
+<span class="sd">        :param target_fps: desired fps</span>
+<span class="sd">        :type target_fps: int</span>
+<span class="sd">        :param target_resolution: the desired resolution (w, h)</span>
+<span class="sd">        :type target_resolution: (int, int)</span>
+<span class="sd">        :param queue: a queue that stores frame and makes them available to the parent process</span>
+<span class="sd">        :type queue: :class:`~multiprocessing.JoinableQueue`</span>
+<span class="sd">        :param stop_queue: a queue that can stop the async acquisition</span>
+<span class="sd">        :type stop_queue: :class:`~multiprocessing.JoinableQueue`</span>
+<span class="sd">        :param args: additional arguments</span>
+<span class="sd">        :param kwargs: additional keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="n">queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span> <span class="o">=</span> <span class="n">stop_queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target_fps</span> <span class="o">=</span> <span class="n">target_fps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target_resolution</span> <span class="o">=</span> <span class="n">target_resolution</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PiFrameGrabber</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="PiFrameGrabber.run"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.PiFrameGrabber.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise pi camera, get frames, convert them fo greyscale, and make them available in a queue.</span>
+<span class="sd">        Run stops if the _stop_queue is not empty.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># lazy import should only use those on devices</span>
+        <span class="c1"># from picamera.array import PiRGBArray</span>
+        <span class="c1"># from picamera import PiCamera</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># lazy import should only use those on devices</span>
+            <span class="kn">from</span> <span class="nn">picamera.array</span> <span class="kn">import</span> <span class="n">PiRGBArray</span>
+            <span class="kn">from</span> <span class="nn">picamera</span> <span class="kn">import</span> <span class="n">PiCamera</span>
+
+            <span class="k">with</span>  <span class="n">PiCamera</span><span class="p">()</span> <span class="k">as</span> <span class="n">capture</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">capture</span><span class="p">)</span>
+                <span class="n">capture</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_resolution</span>
+
+                <span class="n">capture</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_fps</span>
+                <span class="n">raw_capture</span> <span class="o">=</span> <span class="n">PiRGBArray</span><span class="p">(</span><span class="n">capture</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_target_resolution</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">capture</span><span class="o">.</span><span class="n">capture_continuous</span><span class="p">(</span><span class="n">raw_capture</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;bgr&quot;</span><span class="p">,</span> <span class="n">use_video_port</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The stop queue is not empty. Stop acquiring frames&quot;</span><span class="p">)</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Stop Task Done&quot;</span><span class="p">)</span>
+                        <span class="k">break</span>
+                    <span class="n">raw_capture</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="c1"># out = np.copy(frame.array)</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">array</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+                    <span class="c1">#fixme here we could actually pass a JPG compressed file object (http://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.misc.imsave.html)</span>
+                    <span class="c1"># This way, we would manage to get faster FPS</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Closing frame grabber process&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Camera Frame grabber stopped acquisition cleanly&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="OurPiCameraAsync"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.OurPiCameraAsync">[docs]</a><span class="k">class</span> <span class="nc">OurPiCameraAsync</span><span class="p">(</span><span class="n">BaseCamera</span><span class="p">):</span>
+    <span class="n">_frame_grabber_class</span> <span class="o">=</span> <span class="n">PiFrameGrabber</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_fps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">target_resolution</span><span class="o">=</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">960</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class to acquire frames from the raspberry pi camera asynchronously.</span>
+<span class="sd">        At the moment, frames are only greyscale images.</span>
+
+<span class="sd">        :param target_fps: the desired number of frames par second (FPS)</span>
+<span class="sd">        :type target_fps: int</span>
+<span class="sd">        :param target_fps: the desired resolution (W x H)</span>
+<span class="sd">        :param target_resolution: (int,int)</span>
+<span class="sd">        :param args: additional arguments</span>
+<span class="sd">        :param kwargs: additional keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Initialising camera&quot;</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">target_resolution</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target_fps</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;FPS must be an integer number&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">JoinableQueue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_grabber_class</span><span class="p">(</span><span class="n">target_fps</span><span class="p">,</span><span class="n">target_resolution</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not get any frame from the camera&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Stopping stop queue&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Stopping queue&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Joining process&quot;</span><span class="p">)</span>
+            <span class="c1"># we kill the frame grabber if it does not reply within 10s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Process joined&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">im</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGR</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;The camera image is corrupted (less that 2 dimensions)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="o">=</span> <span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="o">!=</span> <span class="n">target_resolution</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">w</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">h</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Target resolution &quot;</span><span class="si">%s</span><span class="s1">&quot; could NOT be achieved. Effective resolution is &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">target_resolution</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Maximal effective resolution is &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OurPiCameraAsync</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Camera initialised&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OurPiCameraAsync.restart"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.OurPiCameraAsync.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span>
+                <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">,</span>
+                <span class="s2">&quot;frame_idx&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span><span class="p">,</span>
+                <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;kwargs&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;frame_idx&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="OurPiCameraAsync.is_opened"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.OurPiCameraAsync.is_opened">[docs]</a>    <span class="k">def</span> <span class="nf">is_opened</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">True</span></div>
+        <span class="c1"># return self.capture.isOpened()</span>
+
+<div class="viewcode-block" id="OurPiCameraAsync.is_last_frame"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.OurPiCameraAsync.is_last_frame">[docs]</a>    <span class="k">def</span> <span class="nf">is_last_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">False</span></div>
+
+    <span class="k">def</span> <span class="nf">_time_stamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># relative time stamp</span>
+        <span class="k">return</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+
+    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Requesting grabbing process to stop!&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining stop queue&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping stop queue&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping queue&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Joining process&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;All joined ok&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_next_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGR</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">EthoscopeException</span><span class="p">(</span><span class="s2">&quot;Could not get frame from camera</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DummyFrameGrabber"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.DummyFrameGrabber">[docs]</a><span class="k">class</span> <span class="nc">DummyFrameGrabber</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_fps</span><span class="p">,</span> <span class="n">target_resolution</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">stop_queue</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class to mimic the behaviour of :class:`~ethoscope.hardware.input.cameras.PiFrameGrabber`.</span>
+<span class="sd">        This is intended for testing purposes.</span>
+<span class="sd">        This way, we can emulate the async functionality of the hardware camera by a video file.</span>
+
+<span class="sd">        :param target_fps: the desired number of frames par second (FPS)</span>
+<span class="sd">        :type target_fps: int</span>
+<span class="sd">        :param target_fps: the desired resolution (W x H)</span>
+<span class="sd">        :param target_resolution: (int,int)</span>
+<span class="sd">        :param args: additional arguments</span>
+<span class="sd">        :param kwargs: additional keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="n">queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span> <span class="o">=</span> <span class="n">stop_queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target_fps</span> <span class="o">=</span> <span class="n">target_fps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target_resolution</span> <span class="o">=</span> <span class="n">target_resolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_video_file</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DummyFrameGrabber</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+<div class="viewcode-block" id="DummyFrameGrabber.run"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.DummyFrameGrabber.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_video_file</span><span class="p">)</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The stop queue is not empty. Stop acquiring frames&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Stop Task Done&quot;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">out</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="c1">#todo sleep here</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Closing frame grabber process&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Camera Frame grabber stopped acquisition cleanly&quot;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="DummyPiCameraAsync"><a class="viewcode-back" href="../../../../ethoscope.hardware.input.html#ethoscope.hardware.input.cameras.DummyPiCameraAsync">[docs]</a><span class="k">class</span> <span class="nc">DummyPiCameraAsync</span><span class="p">(</span><span class="n">OurPiCameraAsync</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to mimic the behaviour of :class:`~ethoscope.hardware.input.cameras.OurPiCameraAsync`.</span>
+<span class="sd">    This is intended for testing purposes. This way, we can emulate the async functionality of the hardware camera by a video file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_frame_grabber_class</span> <span class="o">=</span> <span class="n">DummyFrameGrabber</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

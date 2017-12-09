@@ -1,0 +1,478 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.web_utils.record &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>ethoscope.web_utils.record</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ethoscope.web_utils.record</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="c1"># from threading import Thread</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">ethoscope.web_utils.control_thread</span> <span class="kn">import</span> <span class="n">ControlThread</span><span class="p">,</span> <span class="n">ExperimentalInformations</span>
+<span class="kn">from</span> <span class="nn">ethoscope.utils.description</span> <span class="kn">import</span> <span class="n">DescribedObject</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<div class="viewcode-block" id="PiCameraProcess"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.PiCameraProcess">[docs]</a><span class="k">class</span> <span class="nc">PiCameraProcess</span><span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">):</span>
+    <span class="n">_VIDEO_CHUNCK_DURATION</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">10</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_queue</span><span class="p">,</span><span class="n">video_prefix</span><span class="p">,</span> <span class="n">video_root_dir</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span> <span class="o">=</span> <span class="n">stop_queue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span> <span class="o">=</span> <span class="n">img_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fps</span> <span class="o">=</span> <span class="n">fps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bitrate</span> <span class="o">=</span> <span class="n">bitrate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_video_prefix</span> <span class="o">=</span> <span class="n">video_prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_video_root_dir</span> <span class="o">=</span> <span class="n">video_root_dir</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PiCameraProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_make_video_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span>
+        <span class="n">video_info</span><span class="o">=</span> <span class="s2">&quot;</span><span class="si">%i</span><span class="s2">x</span><span class="si">%i</span><span class="s2">@</span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fps</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_</span><span class="si">%s</span><span class="s1">_</span><span class="si">%05d</span><span class="s1">.h264&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_video_prefix</span><span class="p">,</span> <span class="n">video_info</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_write_video_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">index_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_video_root_dir</span><span class="p">,</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+        <span class="n">all_video_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_video_root_dir</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;*.h264&#39;</span><span class="p">))]</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">index_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">index</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">all_video_files</span><span class="p">:</span>
+                <span class="n">index</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PiCameraProcess.run"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.PiCameraProcess.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">picamera</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">picamera</span><span class="o">.</span><span class="n">PiCamera</span><span class="p">()</span> <span class="k">as</span> <span class="n">camera</span><span class="p">:</span>
+                <span class="n">camera</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolution</span>
+                <span class="n">camera</span><span class="o">.</span><span class="n">framerate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fps</span>
+                <span class="n">camera</span><span class="o">.</span><span class="n">start_recording</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_video_name</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">bitrate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bitrate</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_video_index</span><span class="p">()</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                    <span class="n">camera</span><span class="o">.</span><span class="n">wait_recording</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="n">camera</span><span class="o">.</span><span class="n">capture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_path</span><span class="p">,</span> <span class="n">use_video_port</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_VIDEO_CHUNCK_DURATION</span><span class="p">:</span>
+                        <span class="n">camera</span><span class="o">.</span><span class="n">split_recording</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_video_name</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_write_video_index</span><span class="p">()</span>
+                        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+                        <span class="k">break</span>
+
+                <span class="n">camera</span><span class="o">.</span><span class="n">wait_recording</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">camera</span><span class="o">.</span><span class="n">stop_recording</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error or starting video record:&quot;</span> <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="GeneralVideoRecorder"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.GeneralVideoRecorder">[docs]</a><span class="k">class</span> <span class="nc">GeneralVideoRecorder</span><span class="p">(</span><span class="n">DescribedObject</span><span class="p">):</span>
+    <span class="n">_description</span>  <span class="o">=</span> <span class="p">{</span>  <span class="s2">&quot;overview&quot;</span><span class="p">:</span> <span class="s2">&quot;A video simple recorder&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;arguments&quot;</span><span class="p">:</span> <span class="p">[</span>
+                                <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The width of the frame&quot;</span><span class="p">,</span><span class="s2">&quot;default&quot;</span><span class="p">:</span><span class="mi">1280</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span><span class="mi">480</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span><span class="mi">1980</span><span class="p">,</span><span class="s2">&quot;step&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The height of the frame&quot;</span><span class="p">,</span><span class="s2">&quot;default&quot;</span><span class="p">:</span><span class="mi">960</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span><span class="mi">360</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span><span class="mi">1080</span><span class="p">,</span><span class="s2">&quot;step&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;fps&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The target number of frames per seconds&quot;</span><span class="p">,</span><span class="s2">&quot;default&quot;</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span><span class="s2">&quot;step&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;bitrate&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The target bitrate&quot;</span><span class="p">,</span><span class="s2">&quot;default&quot;</span><span class="p">:</span><span class="mi">200000</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span><span class="mi">10000000</span><span class="p">,</span><span class="s2">&quot;step&quot;</span><span class="p">:</span><span class="mi">1000</span><span class="p">}</span>
+                               <span class="p">]}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_prefix</span><span class="p">,</span> <span class="n">video_dir</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">1280</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">960</span><span class="p">,</span><span class="n">fps</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span><span class="n">bitrate</span><span class="o">=</span><span class="mi">200000</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">JoinableQueue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span> <span class="o">=</span> <span class="n">PiCameraProcess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="p">,</span> <span class="n">video_prefix</span><span class="p">,</span> <span class="n">video_dir</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span><span class="n">fps</span><span class="p">,</span> <span class="n">bitrate</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GeneralVideoRecorder.run"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.GeneralVideoRecorder.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_recording</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">25</span><span class="p">)</span></div>
+<div class="viewcode-block" id="GeneralVideoRecorder.stop"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.GeneralVideoRecorder.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_recording</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span></div></div>
+
+
+
+
+<div class="viewcode-block" id="HDVideoRecorder"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.HDVideoRecorder">[docs]</a><span class="k">class</span> <span class="nc">HDVideoRecorder</span><span class="p">(</span><span class="n">GeneralVideoRecorder</span><span class="p">):</span>
+    <span class="n">_description</span>  <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;overview&quot;</span><span class="p">:</span> <span class="s2">&quot;A preset 1920 x 1080, 25fps, bitrate = 5e5 video recorder. &quot;</span>
+                                  <span class="s2">&quot;At this resolution, the field of view is only partial, &quot;</span>
+                                  <span class="s2">&quot;so we effectively zoom in the middle of arenas&quot;</span><span class="p">,</span><span class="s2">&quot;arguments&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_prefix</span><span class="p">,</span> <span class="n">video_dir</span><span class="p">,</span> <span class="n">img_path</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HDVideoRecorder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">video_prefix</span><span class="p">,</span> <span class="n">video_dir</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span>
+                                        <span class="n">width</span><span class="o">=</span><span class="mi">1920</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">1080</span><span class="p">,</span><span class="n">fps</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span><span class="n">bitrate</span><span class="o">=</span><span class="mi">1000000</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="StandardVideoRecorder"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.StandardVideoRecorder">[docs]</a><span class="k">class</span> <span class="nc">StandardVideoRecorder</span><span class="p">(</span><span class="n">GeneralVideoRecorder</span><span class="p">):</span>
+    <span class="n">_description</span>  <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;overview&quot;</span><span class="p">:</span> <span class="s2">&quot;A preset 1280 x 960, 25fps, bitrate = 2e5 video recorder.&quot;</span><span class="p">,</span> <span class="s2">&quot;arguments&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_prefix</span><span class="p">,</span> <span class="n">video_dir</span><span class="p">,</span> <span class="n">img_path</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StandardVideoRecorder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">video_prefix</span><span class="p">,</span> <span class="n">video_dir</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span>
+                                        <span class="n">width</span><span class="o">=</span><span class="mi">1280</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">960</span><span class="p">,</span><span class="n">fps</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span><span class="n">bitrate</span><span class="o">=</span><span class="mi">500000</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ControlThreadVideoRecording"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.ControlThreadVideoRecording">[docs]</a><span class="k">class</span> <span class="nc">ControlThreadVideoRecording</span><span class="p">(</span><span class="n">ControlThread</span><span class="p">):</span>
+
+    <span class="n">_evanescent</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">_option_dict</span> <span class="o">=</span> <span class="p">{</span>
+
+        <span class="s2">&quot;recorder&quot;</span><span class="p">:{</span>
+                <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">StandardVideoRecorder</span><span class="p">,</span> <span class="n">HDVideoRecorder</span><span class="p">,</span> <span class="n">GeneralVideoRecorder</span><span class="p">],</span>
+            <span class="p">},</span>
+        <span class="s2">&quot;experimental_info&quot;</span><span class="p">:{</span>
+                        <span class="s2">&quot;possible_classes&quot;</span><span class="p">:[</span><span class="n">ExperimentalInformations</span><span class="p">],</span>
+                <span class="p">}</span>
+     <span class="p">}</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_option_dict</span><span class="p">:</span>
+        <span class="n">_option_dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span><span class="n">_option_dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;possible_classes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_option_dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span> <span class="o">=</span><span class="p">{}</span>
+
+
+    <span class="n">_tmp_last_img_file</span> <span class="o">=</span> <span class="s2">&quot;last_img.jpg&quot;</span>
+    <span class="n">_dbg_img_file</span> <span class="o">=</span> <span class="s2">&quot;dbg_img.png&quot;</span>
+    <span class="n">_log_file</span> <span class="o">=</span> <span class="s2">&quot;ethoscope.log&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">machine_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">ethoscope_dir</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="c1"># for FPS computation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recorder</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_machine_id</span> <span class="o">=</span> <span class="n">machine_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_device_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_video_root_dir</span> <span class="o">=</span> <span class="n">ethoscope_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;ethoscope_&quot;</span><span class="p">)</span>
+
+
+        <span class="c1">#todo add &#39;data&#39; -&gt; how monitor was started to metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;stopped&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+                        <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+                        <span class="s2">&quot;log_file&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ethoscope_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">),</span>
+                        <span class="s2">&quot;dbg_img&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ethoscope_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dbg_img_file</span><span class="p">),</span>
+                        <span class="s2">&quot;last_drawn_img&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_last_img_file</span><span class="p">),</span>
+                        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">machine_id</span><span class="p">,</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">version</span><span class="p">,</span>
+                        <span class="s2">&quot;experimental_info&quot;</span><span class="p">:</span> <span class="p">{}</span>
+                        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_user_options</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ControlThread</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_update_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recorder</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">_parse_one_user_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">field</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No field </span><span class="si">%s</span><span class="s2">, using default&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="p">{}</span>
+
+        <span class="n">Class</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">subdata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">subdata</span><span class="p">[</span><span class="s2">&quot;arguments&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">Class</span><span class="p">,</span> <span class="n">kwargs</span>
+
+
+<div class="viewcode-block" id="ControlThreadVideoRecording.run"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.ControlThreadVideoRecording.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;initialising&quot;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Monitor thread&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_t_stamp</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_info_frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="n">ExpInfoClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+            <span class="n">exp_info_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ExpInfoClass</span><span class="p">(</span><span class="o">**</span><span class="n">exp_info_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">info_dic</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+            <span class="n">date_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+            <span class="n">formated_time</span> <span class="o">=</span> <span class="n">date_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%H-%M-%S&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">][</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No code field in experimental info&quot;</span><span class="p">)</span>
+
+
+
+
+            <span class="n">file_prefix</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">formated_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_machine_id</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+
+            <span class="kn">import</span> <span class="nn">os</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_video_full_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_video_root_dir</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_machine_id</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">_device_name</span><span class="p">,</span>
+                                          <span class="n">formated_time</span><span class="p">,</span>
+                                          <span class="n">file_prefix</span>
+                                          <span class="p">)</span>
+
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_video_full_prefix</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start recording&quot;</span><span class="p">)</span>
+
+            <span class="n">RecorderClass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;recorder&quot;</span><span class="p">][</span><span class="s2">&quot;class&quot;</span><span class="p">]</span>
+            <span class="n">recorder_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_option_dict</span><span class="p">[</span><span class="s2">&quot;recorder&quot;</span><span class="p">][</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recorder</span> <span class="o">=</span> <span class="n">RecorderClass</span><span class="p">(</span><span class="n">video_prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_video_full_prefix</span><span class="p">,</span>
+                                           <span class="n">video_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_video_root_dir</span><span class="p">,</span>
+                                           <span class="n">img_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;last_drawn_img&quot;</span><span class="p">],</span><span class="o">**</span><span class="n">recorder_kwargs</span><span class="p">)</span>
+
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;recording&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recorder</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;recording RUN finished&quot;</span><span class="p">)</span>
+
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="c1">#for testing purposes</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evanescent</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">os</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ControlThreadVideoRecording.stop"><a class="viewcode-back" href="../../../ethoscope.web_utils.html#ethoscope.web_utils.record.ControlThreadVideoRecording.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Recorder closed with an error:&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Recorder closed all right&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stopping&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;experimental_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping monitor&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recorder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Control thread asking recorder to stop&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recorder</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recorder</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;stopped&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error</span></div></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

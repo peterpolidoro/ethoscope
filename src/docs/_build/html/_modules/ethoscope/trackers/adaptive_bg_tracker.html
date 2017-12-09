@@ -1,0 +1,706 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.trackers.adaptive_bg_tracker &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>ethoscope.trackers.adaptive_bg_tracker</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ethoscope.trackers.adaptive_bg_tracker</h1><div class="highlight"><pre>
+<span></span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;quentin&#39;</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log10</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">CV_VERSION</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">CV_VERSION</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
+<span class="kn">from</span> <span class="nn">ethoscope.core.variables</span> <span class="kn">import</span> <span class="n">XPosVariable</span><span class="p">,</span> <span class="n">YPosVariable</span><span class="p">,</span> <span class="n">XYDistance</span><span class="p">,</span> <span class="n">WidthVariable</span><span class="p">,</span> <span class="n">HeightVariable</span><span class="p">,</span> <span class="n">PhiVariable</span><span class="p">,</span> <span class="n">Label</span>
+<span class="kn">from</span> <span class="nn">ethoscope.core.data_point</span> <span class="kn">import</span> <span class="n">DataPoint</span>
+<span class="kn">from</span> <span class="nn">ethoscope.trackers.trackers</span> <span class="kn">import</span> <span class="n">BaseTracker</span><span class="p">,</span> <span class="n">NoPositionError</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<div class="viewcode-block" id="ObjectModel"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.ObjectModel">[docs]</a><span class="k">class</span> <span class="nc">ObjectModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to model, update and predict foreground object (i.e. tracked animal).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_sqrt_2_pi</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history_length</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="c1">#fixme this should be time, not number of points!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_features_header</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;fg_model_area&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fg_model_height&quot;</span><span class="p">,</span>
+            <span class="c1">#&quot;fg_model_aspect_ratio&quot;,</span>
+            <span class="s2">&quot;fg_model_mean_grey&quot;</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_history_length</span> <span class="o">=</span> <span class="n">history_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_history_length</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features_header</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_std_buff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_history_length</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features_header</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff_idx</span><span class="o">=</span><span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_ready</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_img_buff</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_img_buff</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_buff_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_updated_time</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># If the model is not updated for this duration, it is reset. Patches #39</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_unupdated_duration</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span>  <span class="mi">60</span> <span class="o">*</span> <span class="mf">1000.0</span> <span class="c1">#ms</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ready</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">features_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features_header</span>
+
+
+<div class="viewcode-block" id="ObjectModel.update"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">contour</span><span class="p">,</span><span class="n">time</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_updated_time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff_idx</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_features</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">contour</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff_idx</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history_length</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_ready</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff_idx</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff_idx</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ObjectModel.distance"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span><span class="n">time</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_updated_time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_unupdated_duration</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;FG model not updated for too long. Resetting.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_history_length</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_ready</span><span class="p">:</span>
+            <span class="n">last_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff_idx</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">last_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history_length</span>
+
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff</span><span class="p">[:</span><span class="n">last_row</span> <span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ring_buff</span><span class="p">[:</span><span class="n">last_row</span><span class="p">],</span> <span class="n">means</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_std_buff</span><span class="p">[:</span><span class="n">last_row</span><span class="p">])</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_std_buff</span><span class="p">[:</span><span class="n">last_row</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_std_buff</span><span class="p">[:</span><span class="n">last_row</span><span class="p">])</span>
+
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_std_buff</span><span class="p">[:</span><span class="n">last_row</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">stds</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">stds</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sqrt_2_pi</span><span class="p">)</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="p">(</span><span class="n">features</span> <span class="o">-</span> <span class="n">means</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>  <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">stds</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">likelihoods</span> <span class="o">=</span>  <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">likelihoods</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="c1">#print features, means</span>
+        <span class="n">logls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihoods</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">logls</span></div>
+
+
+<div class="viewcode-block" id="ObjectModel.compute_features"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.compute_features">[docs]</a>    <span class="k">def</span> <span class="nf">compute_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">contour</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_img_buff</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_img_buff</span><span class="o">.</span><span class="n">shape</span> <span class="o">&lt;</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="p">:</span>
+            <span class="c1"># dynamically reallocate buffer if needed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_img_buff_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_buff_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">w</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_img_buff_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_buff_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">h</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_roi_img_buff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_buff_shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask_img_buff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_img_buff</span><span class="p">)</span>
+
+        <span class="n">sub_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_img_buff</span><span class="p">[</span><span class="mi">0</span> <span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="n">w</span><span class="p">]</span>
+
+        <span class="n">sub_grey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_img_buff</span><span class="p">[</span> <span class="mi">0</span> <span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="n">w</span><span class="p">]</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="n">y</span> <span class="p">:</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">,</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="p">:],</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">,</span><span class="n">sub_grey</span><span class="p">)</span>
+        <span class="n">sub_mask</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">drawContours</span><span class="p">(</span><span class="n">sub_mask</span><span class="p">,[</span><span class="n">contour</span><span class="p">],</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="n">y</span><span class="p">))</span>
+        <span class="n">mean_col</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sub_grey</span><span class="p">,</span> <span class="n">sub_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+
+        <span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">)</span> <span class="p">,(</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">),</span> <span class="n">angle</span>  <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">minAreaRect</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">)</span>
+        <span class="n">ar</span> <span class="o">=</span> <span class="p">((</span><span class="n">height</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">width</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="c1">#todo speed should use time</span>
+        <span class="c1">#</span>
+        <span class="c1"># if len(self.positions) &gt; 2:</span>
+        <span class="c1">#</span>
+        <span class="c1">#     pm, pmm = self._positions[-1],self._positions[-2]</span>
+        <span class="c1">#     xm, xmm = pm[&quot;x&quot;], pmm[&quot;x&quot;]</span>
+        <span class="c1">#     ym, ymm = pm[&quot;y&quot;], pmm[&quot;y&quot;]</span>
+        <span class="c1">#</span>
+        <span class="c1">#     instantaneous_speed = abs(xm + 1j*ym - xmm + 1j*ymm)</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     instantaneous_speed = 0</span>
+        <span class="c1"># if np.isnan(instantaneous_speed):</span>
+        <span class="c1">#     instantaneous_speed = 0</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">log10</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">),</span>
+                            <span class="n">height</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="c1">#sqrt(ar),</span>
+                            <span class="c1">#instantaneous_speed +1.0,</span>
+                            <span class="n">mean_col</span> <span class="o">+</span><span class="mi">1</span>
+                            <span class="c1"># 1.0</span>
+                             <span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">features</span></div></div>
+
+
+<div class="viewcode-block" id="BackgroundModel"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel">[docs]</a><span class="k">class</span> <span class="nc">BackgroundModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to model background. It uses a dynamic running average and support arbitrary and heterogeneous frame rates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_half_life</span><span class="o">=</span><span class="mf">100.</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">min_half_life</span><span class="o">=</span><span class="mf">1.</span><span class="o">*</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">increment</span> <span class="o">=</span> <span class="mf">1.2</span><span class="p">):</span>
+        <span class="c1"># the maximal half life of a pixel from background, in seconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_half_life</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_half_life</span><span class="p">)</span>
+        <span class="c1"># the minimal one</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_half_life</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">min_half_life</span><span class="p">)</span>
+
+        <span class="c1"># starts with the fastest learning rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_half_life</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_half_life</span>
+
+        <span class="c1"># fixme theoritically this should depend on time, not frame index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_increment</span> <span class="o">=</span> <span class="n">increment</span>
+        <span class="c1"># the mean background</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bg_mean</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c1"># self._bg_sd = None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_invert_alpha_mat</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c1"># the time stamp of the frame las used to update</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_t</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bg_img</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg_mean</span>
+
+<div class="viewcode-block" id="BackgroundModel.increase_learning_rate"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.increase_learning_rate">[docs]</a>    <span class="k">def</span> <span class="nf">increase_learning_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_half_life</span>  <span class="o">/=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_increment</span></div>
+
+<div class="viewcode-block" id="BackgroundModel.decrease_learning_rate"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.decrease_learning_rate">[docs]</a>    <span class="k">def</span> <span class="nf">decrease_learning_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_half_life</span>  <span class="o">*=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_increment</span></div>
+
+
+<div class="viewcode-block" id="BackgroundModel.update"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_t</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">fg_mask</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_t</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># raise EthoscopeException(&quot;Negative time interval between two consecutive frames&quot;)</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span><span class="p">(</span><span class="s2">&quot;Negative time interval between two consecutive frames&quot;</span><span class="p">)</span>
+
+        <span class="c1"># clip the half life to possible value:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_half_life</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_half_life</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_half_life</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_half_life</span><span class="p">)</span>
+
+        <span class="c1"># ensure preallocated buffers exist. otherwise, initialise them</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg_mean</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_mean</span> <span class="o">=</span> <span class="n">img_t</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="c1"># self._bg_sd = np.zeros_like(img_t)</span>
+            <span class="c1"># self._bg_sd.fill(128)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">img_t</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="c1"># the learning rate, alpha, is an exponential function of half life</span>
+        <span class="c1"># it correspond to how much the present frame should account for the background</span>
+
+        <span class="n">lam</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_half_life</span>
+        <span class="c1"># how much the current frame should be accounted for</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">lam</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+
+        <span class="c1"># set-p a matrix of learning rate. it is 0 where foreground map is true</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fg_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">dilate</span><span class="p">(</span><span class="n">fg_mask</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">fg_mask</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">fg_mask</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_invert_alpha_mat</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_invert_alpha_mat</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_invert_alpha_mat</span><span class="p">)</span>
+
+        <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="p">,</span> <span class="n">img_t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_invert_alpha_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_invert_alpha_mat</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_alpha_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_invert_alpha_mat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg_mean</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_t</span> <span class="o">=</span> <span class="n">t</span></div></div>
+
+
+<div class="viewcode-block" id="AdaptiveBGModel"><a class="viewcode-back" href="../../../ethoscope.trackers.html#ethoscope.trackers.adaptive_bg_tracker.AdaptiveBGModel">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveBGModel</span><span class="p">(</span><span class="n">BaseTracker</span><span class="p">):</span>
+    <span class="n">_description</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;overview&quot;</span><span class="p">:</span> <span class="s2">&quot;The default tracker for fruit flies. One animal per ROI.&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;arguments&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="n">fg_model</span> <span class="o">=</span> <span class="n">ObjectModel</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An adaptive background subtraction model to find position of one animal in one roi.</span>
+
+<span class="sd">        TODO more description here</span>
+<span class="sd">        :param roi:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_shape</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_object_expected_size</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="c1"># proportion of the roi main axis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_area</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_object_expected_size</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_tstamp</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_window_dt</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="mi">1000</span> <span class="c1">#miliseconds</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span> <span class="o">=</span> <span class="n">BackgroundModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_m_log_lik</span> <span class="o">=</span> <span class="mf">6.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_object</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_object_old</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey_blurred</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_convolved_mask</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg_backup</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg_diff</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_sum_fg</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AdaptiveBGModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_pre_process_input_minimal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">darker_fg</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">blur_rad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_expected_size</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">blur_rad</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">blur_rad</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+        <span class="c1"># cv2.imshow(&quot;dbg&quot;,self._buff_grey)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">GaussianBlur</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,(</span><span class="n">blur_rad</span><span class="p">,</span><span class="n">blur_rad</span><span class="p">),</span><span class="mf">1.2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">darker_fg</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+        <span class="n">scale</span> <span class="o">=</span> <span class="mf">128.</span> <span class="o">/</span> <span class="n">mean</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span>
+
+    <span class="k">def</span> <span class="nf">_pre_process_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+
+        <span class="n">blur_rad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_expected_size</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">blur_rad</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">blur_rad</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey_blurred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+            <span class="c1"># self._buff_grey_blurred = np.empty_like(self._buff_grey)</span>
+            <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span> <span class="o">*</span> <span class="mi">255</span>
+
+            <span class="n">mask_conv</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">blur</span><span class="p">(</span><span class="n">mask</span><span class="p">,(</span><span class="n">blur_rad</span><span class="p">,</span> <span class="n">blur_rad</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_convolved_mask</span>  <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mf">255.0</span> <span class="o">*</span>  <span class="n">mask_conv</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+
+        <span class="n">hist</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">calcHist</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="p">[</span><span class="mi">256</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">hist</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">mode</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_tstamp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_tstamp</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_tstamp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_tstamp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_window_dt</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode_tstamp</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_smooth_mode</span><span class="p">))</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mf">128.</span> <span class="o">/</span> <span class="n">mode</span>
+
+        <span class="c1"># cv2.GaussianBlur(self._buff_grey,(5,5), 1.5,self._buff_grey)</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">blur</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,(</span><span class="n">blur_rad</span><span class="p">,</span> <span class="n">blur_rad</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey_blurred</span><span class="p">)</span>
+        <span class="c1">#fixme could be optimised</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey_blurred</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey_blurred</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_convolved_mask</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">absdiff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey_blurred</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_grey</span>
+
+
+    <span class="k">def</span> <span class="nf">_find_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+
+        <span class="n">grey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pre_process_input_minimal</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="c1"># grey = self._pre_process_input(img, mask, t)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_track</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">grey</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">NoPositionError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">grey</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+
+    <span class="k">def</span> <span class="nf">_track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span>  <span class="n">grey</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">bg_img</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">grey</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_object</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">grey</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg_backup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">grey</span><span class="p">)</span>
+  <span class="c1">#          self._buff_fg_diff = np.empty_like(grey)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_old_pos</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">+</span><span class="mf">0.0j</span>
+   <span class="c1">#         self._old_sum_fg = 0</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+        <span class="n">bg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">bg_img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">grey</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">)</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_TOZERO</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">)</span>
+
+        <span class="c1"># cv2.bitwise_and(self._buff_fg_backup,self._buff_fg,dst=self._buff_fg_diff)</span>
+        <span class="c1"># sum_fg = cv2.countNonZero(self._buff_fg)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg_backup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">)</span>
+
+        <span class="n">n_fg_pix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">)</span>
+        <span class="n">prop_fg_pix</span>  <span class="o">=</span> <span class="n">n_fg_pix</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">grey</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">grey</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">is_ambiguous</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span>  <span class="n">prop_fg_pix</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_area</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">increase_learning_rate</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+        <span class="k">if</span>  <span class="n">prop_fg_pix</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">increase_learning_rate</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+        <span class="k">if</span> <span class="n">CV_VERSION</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">contours</span><span class="p">,</span><span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">contours</span><span class="p">,</span><span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+
+
+
+
+        <span class="n">contours</span> <span class="o">=</span> <span class="p">[</span><span class="n">cv2</span><span class="o">.</span><span class="n">approxPolyDP</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="mf">1.2</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">contours</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">increase_learning_rate</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">contours</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fg_model</span><span class="o">.</span><span class="n">is_ready</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">NoPositionError</span>
+            <span class="c1"># hulls = [cv2.convexHull( c) for c in contours]</span>
+            <span class="n">hulls</span> <span class="o">=</span> <span class="n">contours</span>
+            <span class="c1">#hulls = merge_blobs(hulls)</span>
+
+            <span class="n">hulls</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hulls</span> <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hulls</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">hulls</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">is_ambiguous</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">cluster_features</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fg_model</span><span class="o">.</span><span class="n">compute_features</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hulls</span><span class="p">]</span>
+            <span class="n">all_distances</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fg_model</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="n">cluster_features</span><span class="p">]</span>
+            <span class="n">good_clust</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">all_distances</span><span class="p">)</span>
+
+            <span class="n">hull</span> <span class="o">=</span> <span class="n">hulls</span><span class="p">[</span><span class="n">good_clust</span><span class="p">]</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">all_distances</span><span class="p">[</span><span class="n">good_clust</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hull</span> <span class="o">=</span> <span class="n">contours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">hull</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">increase_learning_rate</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+            <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fg_model</span><span class="o">.</span><span class="n">compute_features</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">hull</span><span class="p">)</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fg_model</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">distance</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_m_log_lik</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">increase_learning_rate</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="p">,(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">),</span> <span class="n">angle</span>  <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">minAreaRect</span><span class="p">(</span><span class="n">hull</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">w</span> <span class="o">&lt;</span> <span class="n">h</span><span class="p">:</span>
+            <span class="n">angle</span> <span class="o">-=</span> <span class="mi">90</span>
+            <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">,</span><span class="n">w</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span> <span class="o">%</span> <span class="mi">180</span>
+
+        <span class="n">h_im</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">grey</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">w_im</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">grey</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">max_h</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">h_im</span>
+        <span class="k">if</span> <span class="n">w</span><span class="o">&gt;</span><span class="n">max_h</span> <span class="ow">or</span> <span class="n">h</span><span class="o">&gt;</span><span class="n">max_h</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoPositionError</span>
+
+        <span class="n">cv2</span><span class="o">.</span><span class="n">ellipse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span> <span class="p">,((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="mf">1.5</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="o">*</span><span class="mf">1.5</span><span class="p">)),</span><span class="n">angle</span><span class="p">),</span><span class="mi">255</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1">#todo center mass just on the ellipse area</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg_backup</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg_backup</span><span class="p">)</span>
+
+        <span class="n">y</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">measurements</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg_backup</span><span class="p">)</span>
+
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span><span class="mf">1.0j</span><span class="o">*</span><span class="n">y</span>
+        <span class="n">pos</span> <span class="o">/=</span> <span class="n">w_im</span>
+
+        <span class="n">xy_dist</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">log10</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">w_im</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_pos</span><span class="p">))</span><span class="o">*</span><span class="mi">1000</span><span class="p">)</span>
+
+        <span class="c1"># cv2.bitwise_and(self._buff_fg_diff,self._buff_fg,dst=self._buff_fg_diff)</span>
+        <span class="c1"># sum_diff = cv2.countNonZero(self._buff_fg_diff)</span>
+        <span class="c1"># xor_dist = (sum_fg  + self._old_sum_fg - 2*sum_diff)  / float(sum_fg  + self._old_sum_fg)</span>
+        <span class="c1"># xor_dist *=1000.</span>
+        <span class="c1"># self._old_sum_fg = sum_fg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_pos</span> <span class="o">=</span> <span class="n">pos</span>
+
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_ambiguous</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">increase_learning_rate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">grey</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">decrease_learning_rate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bg_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">grey</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buff_fg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fg_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">hull</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">x_var</span> <span class="o">=</span> <span class="n">XPosVariable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="n">y_var</span> <span class="o">=</span> <span class="n">YPosVariable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">XYDistance</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xy_dist</span><span class="p">))</span>
+        <span class="c1">#xor_dist = XorDistance(int(xor_dist))</span>
+        <span class="n">w_var</span> <span class="o">=</span> <span class="n">WidthVariable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span>
+        <span class="n">h_var</span> <span class="o">=</span> <span class="n">HeightVariable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">h</span><span class="p">)))</span>
+        <span class="n">phi_var</span> <span class="o">=</span> <span class="n">PhiVariable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">angle</span><span class="p">)))</span>
+        <span class="c1"># mlogl =   mLogLik(int(distance*1000))</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="n">DataPoint</span><span class="p">([</span><span class="n">x_var</span><span class="p">,</span> <span class="n">y_var</span><span class="p">,</span> <span class="n">w_var</span><span class="p">,</span> <span class="n">h_var</span><span class="p">,</span>
+                         <span class="n">phi_var</span><span class="p">,</span>
+                         <span class="c1">#mlogl,</span>
+                         <span class="n">distance</span><span class="p">,</span>
+                         <span class="c1">#xor_dist</span>
+                        <span class="c1">#Label(0)</span>
+                         <span class="p">])</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_shape</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">hull</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">out</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

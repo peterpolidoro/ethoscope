@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.web_utils package &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>ethoscope.web_utils package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ethoscope.web_utils.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ethoscope-web-utils-package">
+<h1>ethoscope.web_utils package<a class="headerlink" href="#ethoscope-web-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ethoscope.web_utils.control_thread">
+<span id="ethoscope-web-utils-control-thread-module"></span><h2>ethoscope.web_utils.control_thread module<a class="headerlink" href="#module-ethoscope.web_utils.control_thread" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.web_utils.control_thread.ControlThread">
+<em class="property">class </em><code class="descclassname">ethoscope.web_utils.control_thread.</code><code class="descname">ControlThread</code><span class="sig-paren">(</span><em>machine_id</em>, <em>name</em>, <em>version</em>, <em>ethoscope_dir</em>, <em>data=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/control_thread.html#ControlThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/threading.html#threading.Thread" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></a></p>
+<dl class="attribute">
+<dt id="ethoscope.web_utils.control_thread.ControlThread.info">
+<code class="descname">info</code><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread.info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.web_utils.control_thread.ControlThread.k">
+<code class="descname">k</code><em class="property"> = 'roi_builder'</em><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread.k" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.web_utils.control_thread.ControlThread.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/control_thread.html#ControlThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.web_utils.control_thread.ControlThread.set_evanescent">
+<code class="descname">set_evanescent</code><span class="sig-paren">(</span><em>value=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/control_thread.html#ControlThread.set_evanescent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread.set_evanescent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.web_utils.control_thread.ControlThread.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>error=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/control_thread.html#ControlThread.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="ethoscope.web_utils.control_thread.ControlThread.user_options">
+<em class="property">classmethod </em><code class="descname">user_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/control_thread.html#ControlThread.user_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread.user_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.web_utils.control_thread.ControlThread.was_interrupted">
+<code class="descname">was_interrupted</code><a class="headerlink" href="#ethoscope.web_utils.control_thread.ControlThread.was_interrupted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.web_utils.control_thread.ExperimentalInformations">
+<em class="property">class </em><code class="descclassname">ethoscope.web_utils.control_thread.</code><code class="descname">ExperimentalInformations</code><span class="sig-paren">(</span><em>name=''</em>, <em>location=''</em>, <em>code=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/control_thread.html#ExperimentalInformations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.control_thread.ExperimentalInformations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ethoscope.utils.html#ethoscope.utils.description.DescribedObject" title="ethoscope.utils.description.DescribedObject"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.utils.description.DescribedObject</span></code></a></p>
+<dl class="attribute">
+<dt id="ethoscope.web_utils.control_thread.ExperimentalInformations.info_dic">
+<code class="descname">info_dic</code><a class="headerlink" href="#ethoscope.web_utils.control_thread.ExperimentalInformations.info_dic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.web_utils.helpers">
+<span id="ethoscope-web-utils-helpers-module"></span><h2>ethoscope.web_utils.helpers module<a class="headerlink" href="#module-ethoscope.web_utils.helpers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ethoscope.web_utils.helpers.file_in_dir_r">
+<code class="descclassname">ethoscope.web_utils.helpers.</code><code class="descname">file_in_dir_r</code><span class="sig-paren">(</span><em>file</em>, <em>dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/helpers.html#file_in_dir_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.helpers.file_in_dir_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ethoscope.web_utils.helpers.get_commit_version">
+<code class="descclassname">ethoscope.web_utils.helpers.</code><code class="descname">get_commit_version</code><span class="sig-paren">(</span><em>commit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/helpers.html#get_commit_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.helpers.get_commit_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ethoscope.web_utils.helpers.get_machine_info">
+<code class="descclassname">ethoscope.web_utils.helpers.</code><code class="descname">get_machine_info</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/helpers.html#get_machine_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.helpers.get_machine_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the machine NAME file and returns the value.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ethoscope.web_utils.helpers.get_version">
+<code class="descclassname">ethoscope.web_utils.helpers.</code><code class="descname">get_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/helpers.html#get_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.helpers.get_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.web_utils.record">
+<span id="ethoscope-web-utils-record-module"></span><h2>ethoscope.web_utils.record module<a class="headerlink" href="#module-ethoscope.web_utils.record" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.web_utils.record.ControlThreadVideoRecording">
+<em class="property">class </em><code class="descclassname">ethoscope.web_utils.record.</code><code class="descname">ControlThreadVideoRecording</code><span class="sig-paren">(</span><em>machine_id</em>, <em>name</em>, <em>version</em>, <em>ethoscope_dir</em>, <em>data=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#ControlThreadVideoRecording"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.ControlThreadVideoRecording" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.web_utils.control_thread.ControlThread" title="ethoscope.web_utils.control_thread.ControlThread"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.web_utils.control_thread.ControlThread</span></code></a></p>
+<dl class="attribute">
+<dt id="ethoscope.web_utils.record.ControlThreadVideoRecording.k">
+<code class="descname">k</code><em class="property"> = 'experimental_info'</em><a class="headerlink" href="#ethoscope.web_utils.record.ControlThreadVideoRecording.k" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.web_utils.record.ControlThreadVideoRecording.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#ControlThreadVideoRecording.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.ControlThreadVideoRecording.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.web_utils.record.ControlThreadVideoRecording.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>error=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#ControlThreadVideoRecording.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.ControlThreadVideoRecording.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.web_utils.record.GeneralVideoRecorder">
+<em class="property">class </em><code class="descclassname">ethoscope.web_utils.record.</code><code class="descname">GeneralVideoRecorder</code><span class="sig-paren">(</span><em>video_prefix</em>, <em>video_dir</em>, <em>img_path</em>, <em>width=1280</em>, <em>height=960</em>, <em>fps=25</em>, <em>bitrate=200000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#GeneralVideoRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.GeneralVideoRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ethoscope.utils.html#ethoscope.utils.description.DescribedObject" title="ethoscope.utils.description.DescribedObject"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.utils.description.DescribedObject</span></code></a></p>
+<dl class="method">
+<dt id="ethoscope.web_utils.record.GeneralVideoRecorder.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#GeneralVideoRecorder.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.GeneralVideoRecorder.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.web_utils.record.GeneralVideoRecorder.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#GeneralVideoRecorder.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.GeneralVideoRecorder.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.web_utils.record.HDVideoRecorder">
+<em class="property">class </em><code class="descclassname">ethoscope.web_utils.record.</code><code class="descname">HDVideoRecorder</code><span class="sig-paren">(</span><em>video_prefix</em>, <em>video_dir</em>, <em>img_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#HDVideoRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.HDVideoRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.web_utils.record.GeneralVideoRecorder" title="ethoscope.web_utils.record.GeneralVideoRecorder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.web_utils.record.GeneralVideoRecorder</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.web_utils.record.PiCameraProcess">
+<em class="property">class </em><code class="descclassname">ethoscope.web_utils.record.</code><code class="descname">PiCameraProcess</code><span class="sig-paren">(</span><em>stop_queue</em>, <em>video_prefix</em>, <em>video_root_dir</em>, <em>img_path</em>, <em>width</em>, <em>height</em>, <em>fps</em>, <em>bitrate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#PiCameraProcess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.PiCameraProcess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.process.Process</span></code></p>
+<dl class="method">
+<dt id="ethoscope.web_utils.record.PiCameraProcess.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#PiCameraProcess.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.PiCameraProcess.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.web_utils.record.StandardVideoRecorder">
+<em class="property">class </em><code class="descclassname">ethoscope.web_utils.record.</code><code class="descname">StandardVideoRecorder</code><span class="sig-paren">(</span><em>video_prefix</em>, <em>video_dir</em>, <em>img_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/web_utils/record.html#StandardVideoRecorder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.web_utils.record.StandardVideoRecorder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.web_utils.record.GeneralVideoRecorder" title="ethoscope.web_utils.record.GeneralVideoRecorder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.web_utils.record.GeneralVideoRecorder</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.web_utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ethoscope.web_utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

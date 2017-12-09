@@ -1,0 +1,406 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.utils package &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>ethoscope.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ethoscope.utils.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ethoscope-utils-package">
+<h1>ethoscope.utils package<a class="headerlink" href="#ethoscope-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-ethoscope.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ethoscope.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ethoscope.utils.debug">
+<span id="ethoscope-utils-debug-module"></span><h2>ethoscope.utils.debug module<a class="headerlink" href="#module-ethoscope.utils.debug" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="ethoscope.utils.debug.EthoscopeException">
+<em class="property">exception </em><code class="descclassname">ethoscope.utils.debug.</code><code class="descname">EthoscopeException</code><span class="sig-paren">(</span><em>value</em>, <em>img=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/debug.html#EthoscopeException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.debug.EthoscopeException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></a></p>
+<p>A custom exception. It can store an image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> &#8211; A value passed to the exception, generally a text message</li>
+<li><strong>img</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; an image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ethoscope.utils.debug.show">
+<code class="descclassname">ethoscope.utils.debug.</code><code class="descname">show</code><span class="sig-paren">(</span><em>im</em>, <em>t=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/debug.html#show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.debug.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function to simply display an image and wait. This is for debugging purposes only.
+:param im: the image to show
+:type im: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>
+:param t: the time to wait, in ms. Lower than 1 means until user enter a key.
+:type t: int
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.utils.description">
+<span id="ethoscope-utils-description-module"></span><h2>ethoscope.utils.description module<a class="headerlink" href="#module-ethoscope.utils.description" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.utils.description.DescribedObject">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.description.</code><code class="descname">DescribedObject</code><a class="reference internal" href="_modules/ethoscope/utils/description.html#DescribedObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.description.DescribedObject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>An object that contains a <code class="docutils literal"><span class="pre">description</span></code> attribute.
+This is used to parse user option for the web interface.
+This way, users can send option to the different objects used.
+<code class="docutils literal"><span class="pre">description</span></code> is a dictionary with the fields &#8220;overview&#8221; and &#8220;arguments&#8221;.
+&#8220;overview&#8221; is simply a string. &#8220;arguments&#8221; is a list of dictionaries. Each has the field:</p>
+<blockquote>
+<div><ul class="simple">
+<li>name: The name of the argument as it is in &#8220;__init__&#8221;</li>
+<li>description: &#8220;A user friendly description of the argument&#8221;</li>
+<li>type: &#8220;number&#8221;, &#8220;datetime&#8221;, &#8220;daterange&#8221; and &#8220;string&#8221;.</li>
+<li>min, max and step: only for type &#8220;number&#8221;, defines the accepted limits of the arguments as well as the increment in the user interface</li>
+<li>default: the default value</li>
+</ul>
+</div></blockquote>
+<p>Each argument must match a argument in <cite>__init__</cite>.</p>
+<dl class="attribute">
+<dt id="ethoscope.utils.description.DescribedObject.description">
+<code class="descname">description</code><a class="headerlink" href="#ethoscope.utils.description.DescribedObject.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.utils.img_proc">
+<span id="ethoscope-utils-img-proc-module"></span><h2>ethoscope.utils.img_proc module<a class="headerlink" href="#module-ethoscope.utils.img_proc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ethoscope.utils.img_proc.merge_blobs">
+<code class="descclassname">ethoscope.utils.img_proc.</code><code class="descname">merge_blobs</code><span class="sig-paren">(</span><em>contours</em>, <em>prop=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/img_proc.html#merge_blobs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.img_proc.merge_blobs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge together contour according to their position and size.
+If the distance between two blobs is smaller than the longest axis of, at least, one of them,
+then they get merged.
+This algorithm is aimed at merging together part of the same physical object without morphological operations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>contours</strong> &#8211; list of contours</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the convex hulls of the merged contours, list of contourss</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.utils.io">
+<span id="ethoscope-utils-io-module"></span><h2>ethoscope.utils.io module<a class="headerlink" href="#module-ethoscope.utils.io" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.utils.io.AsyncMySQLWriter">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.io.</code><code class="descname">AsyncMySQLWriter</code><span class="sig-paren">(</span><em>db_credentials</em>, <em>queue</em>, <em>erase_old_db=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#AsyncMySQLWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.AsyncMySQLWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.process.Process</span></code></p>
+<dl class="method">
+<dt id="ethoscope.utils.io.AsyncMySQLWriter.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#AsyncMySQLWriter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.AsyncMySQLWriter.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.utils.io.AsyncSQLiteWriter">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.io.</code><code class="descname">AsyncSQLiteWriter</code><span class="sig-paren">(</span><em>db_name</em>, <em>queue</em>, <em>erase_old_db=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#AsyncSQLiteWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.AsyncSQLiteWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.process.Process</span></code></p>
+<dl class="method">
+<dt id="ethoscope.utils.io.AsyncSQLiteWriter.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#AsyncSQLiteWriter.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.AsyncSQLiteWriter.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.utils.io.DAMFileHelper">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.io.</code><code class="descname">DAMFileHelper</code><span class="sig-paren">(</span><em>period=60.0</em>, <em>n_rois=32</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#DAMFileHelper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.DAMFileHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="ethoscope.utils.io.DAMFileHelper.flush">
+<code class="descname">flush</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#DAMFileHelper.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.DAMFileHelper.flush" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.utils.io.DAMFileHelper.input_roi_data">
+<code class="descname">input_roi_data</code><span class="sig-paren">(</span><em>t</em>, <em>roi</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#DAMFileHelper.input_roi_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.DAMFileHelper.input_roi_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.utils.io.DAMFileHelper.make_dam_file_sql_fields">
+<code class="descname">make_dam_file_sql_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#DAMFileHelper.make_dam_file_sql_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.DAMFileHelper.make_dam_file_sql_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.utils.io.ImgToMySQLHelper">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.io.</code><code class="descname">ImgToMySQLHelper</code><span class="sig-paren">(</span><em>period=300.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#ImgToMySQLHelper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.ImgToMySQLHelper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>period</strong> &#8211; how often snapshots are saved, in seconds</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.utils.io.ImgToMySQLHelper.flush">
+<code class="descname">flush</code><span class="sig-paren">(</span><em>t</em>, <em>img</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#ImgToMySQLHelper.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.ImgToMySQLHelper.flush" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> &#8211; the time since start of the experiment, in ms</li>
+<li><strong>img</strong> (<em>np.ndarray</em>) &#8211; an array representing an image.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.utils.io.Null">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.io.</code><code class="descname">Null</code><a class="reference internal" href="_modules/ethoscope/utils/io.html#Null"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.Null" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.utils.io.ResultWriter">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.io.</code><code class="descname">ResultWriter</code><span class="sig-paren">(</span><em>db_credentials</em>, <em>rois</em>, <em>metadata=None</em>, <em>make_dam_like_table=True</em>, <em>take_frame_shots=False</em>, <em>erase_old_db=True</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#ResultWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.ResultWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="ethoscope.utils.io.ResultWriter.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#ResultWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.ResultWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.utils.io.ResultWriter.flush">
+<code class="descname">flush</code><span class="sig-paren">(</span><em>t</em>, <em>img=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#ResultWriter.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.ResultWriter.flush" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.utils.io.ResultWriter.metadata">
+<code class="descname">metadata</code><a class="headerlink" href="#ethoscope.utils.io.ResultWriter.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.utils.io.ResultWriter.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>t</em>, <em>roi</em>, <em>data_rows</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#ResultWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.ResultWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.utils.io.SQLiteResultWriter">
+<em class="property">class </em><code class="descclassname">ethoscope.utils.io.</code><code class="descname">SQLiteResultWriter</code><span class="sig-paren">(</span><em>db_credentials</em>, <em>rois</em>, <em>metadata=None</em>, <em>make_dam_like_table=False</em>, <em>take_frame_shots=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/utils/io.html#SQLiteResultWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.utils.io.SQLiteResultWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.utils.io.ResultWriter" title="ethoscope.utils.io.ResultWriter"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.utils.io.ResultWriter</span></code></a></p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

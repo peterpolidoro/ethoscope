@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.roi_builder package &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="index.html"/>
+        <link rel="next" title="ethoscope.trackers package" href="ethoscope.trackers.html"/>
+        <link rel="prev" title="ethoscope.core package" href="ethoscope.core.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ethoscope.roi_builder package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.roi_builders">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.roi_builders.roi_builders">ethoscope.roi_builders.roi_builders module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.roi_builders.img_roi_builder">ethoscope.roi_builders.img_roi_builder module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.roi_builders.target_roi_builder">ethoscope.roi_builders.target_roi_builder module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>ethoscope.roi_builder package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ethoscope.roi_builders.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ethoscope-roi-builder-package">
+<h1>ethoscope.roi_builder package<a class="headerlink" href="#ethoscope-roi-builder-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-ethoscope.roi_builders">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ethoscope.roi_builders" title="Permalink to this headline">¶</a></h2>
+<p>This module define modular <em>ROI builders</em>. These objects take an image (or camera stream) and use them to construct a list of <code class="xref py py-class docutils literal"><span class="pre">BaseROIBuilder</span></code> is defined.
+This will typically be done when new arenas (hardware components) is defined.</p>
+</div>
+<div class="section" id="module-ethoscope.roi_builders.roi_builders">
+<span id="ethoscope-roi-builders-roi-builders-module"></span><h2>ethoscope.roi_builders.roi_builders module<a class="headerlink" href="#module-ethoscope.roi_builders.roi_builders" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.roi_builders.roi_builders.BaseROIBuilder">
+<em class="property">class </em><code class="descclassname">ethoscope.roi_builders.roi_builders.</code><code class="descname">BaseROIBuilder</code><a class="reference internal" href="_modules/ethoscope/roi_builders/roi_builders.html#BaseROIBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.roi_builders.BaseROIBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ethoscope.utils.html#ethoscope.utils.description.DescribedObject" title="ethoscope.utils.description.DescribedObject"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.utils.description.DescribedObject</span></code></a></p>
+<p>Template to design ROIBuilders. Subclasses must implement a <code class="docutils literal"><span class="pre">_rois_from_img</span></code> method.</p>
+<dl class="method">
+<dt id="ethoscope.roi_builders.roi_builders.BaseROIBuilder.build">
+<code class="descname">build</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/roi_builders/roi_builders.html#BaseROIBuilder.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.roi_builders.BaseROIBuilder.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses an input (image or camera) to build ROIs.
+When a camera is used, several frames are acquired and averaged to build a reference image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input</strong> (<code class="xref py py-class docutils literal"><span class="pre">BaseCamera</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Either a camera object, or an image.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list(<a class="reference internal" href="ethoscope.core.html#ethoscope.core.roi.ROI" title="ethoscope.core.roi.ROI"><code class="xref py py-class docutils literal"><span class="pre">ROI</span></code></a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.roi_builders.roi_builders.DefaultROIBuilder">
+<em class="property">class </em><code class="descclassname">ethoscope.roi_builders.roi_builders.</code><code class="descname">DefaultROIBuilder</code><a class="reference internal" href="_modules/ethoscope/roi_builders/roi_builders.html#DefaultROIBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.roi_builders.DefaultROIBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.roi_builders.roi_builders.BaseROIBuilder" title="ethoscope.roi_builders.roi_builders.BaseROIBuilder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.roi_builders.roi_builders.BaseROIBuilder</span></code></a></p>
+<p>The default ROI builder. It simply defines the entire image as a unique ROI.</p>
+<p>Template to design ROIBuilders. Subclasses must implement a <code class="docutils literal"><span class="pre">_rois_from_img</span></code> method.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.roi_builders.img_roi_builder">
+<span id="ethoscope-roi-builders-img-roi-builder-module"></span><h2>ethoscope.roi_builders.img_roi_builder module<a class="headerlink" href="#module-ethoscope.roi_builders.img_roi_builder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.roi_builders.img_roi_builder.ImgMaskROIBuilder">
+<em class="property">class </em><code class="descclassname">ethoscope.roi_builders.img_roi_builder.</code><code class="descname">ImgMaskROIBuilder</code><span class="sig-paren">(</span><em>mask_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/roi_builders/img_roi_builder.html#ImgMaskROIBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.img_roi_builder.ImgMaskROIBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.roi_builders.roi_builders.BaseROIBuilder" title="ethoscope.roi_builders.roi_builders.BaseROIBuilder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.roi_builders.roi_builders.BaseROIBuilder</span></code></a></p>
+<p>Class to build rois from greyscale image file.
+Each continuous region is used as a ROI.
+The greyscale value inside the ROI determines it&#8217;s value.</p>
+<p>IMAGE HERE</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.roi_builders.target_roi_builder">
+<span id="ethoscope-roi-builders-target-roi-builder-module"></span><h2>ethoscope.roi_builders.target_roi_builder module<a class="headerlink" href="#module-ethoscope.roi_builders.target_roi_builder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.roi_builders.target_roi_builder.HD12TubesRoiBuilder">
+<em class="property">class </em><code class="descclassname">ethoscope.roi_builders.target_roi_builder.</code><code class="descname">HD12TubesRoiBuilder</code><a class="reference internal" href="_modules/ethoscope/roi_builders/target_roi_builder.html#HD12TubesRoiBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.target_roi_builder.HD12TubesRoiBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder" title="ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder</span></code></a></p>
+<p>Class to build ROIs for a twelve columns, one row for the HD tracking arena
+(<a class="reference external" href="https://github.com/gilestrolab/ethoscope_hardware/tree/master/arenas/arena_mini_12_tubes">see here</a>)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.roi_builders.target_roi_builder.OlfactionAssayROIBuilder">
+<em class="property">class </em><code class="descclassname">ethoscope.roi_builders.target_roi_builder.</code><code class="descname">OlfactionAssayROIBuilder</code><a class="reference internal" href="_modules/ethoscope/roi_builders/target_roi_builder.html#OlfactionAssayROIBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.target_roi_builder.OlfactionAssayROIBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder" title="ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder</span></code></a></p>
+<p>Class to build ROIs for a one-column, ten-rows
+(<a class="reference external" href="https://github.com/gilestrolab/ethoscope_hardware/tree/master/arenas/arena_10x1_longTubes">see here</a>)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.roi_builders.target_roi_builder.SleepMonitorWithTargetROIBuilder">
+<em class="property">class </em><code class="descclassname">ethoscope.roi_builders.target_roi_builder.</code><code class="descname">SleepMonitorWithTargetROIBuilder</code><a class="reference internal" href="_modules/ethoscope/roi_builders/target_roi_builder.html#SleepMonitorWithTargetROIBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.target_roi_builder.SleepMonitorWithTargetROIBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder" title="ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder</span></code></a></p>
+<p>Class to build ROIs for a two-columns, ten-rows for the sleep monitor
+(<a class="reference external" href="https://github.com/gilestrolab/ethoscope_hardware/tree/master/arenas/arena_10x2_shortTubes">see here</a>).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder">
+<em class="property">class </em><code class="descclassname">ethoscope.roi_builders.target_roi_builder.</code><code class="descname">TargetGridROIBuilder</code><span class="sig-paren">(</span><em>n_rows=1</em>, <em>n_cols=1</em>, <em>top_margin=0</em>, <em>bottom_margin=0</em>, <em>left_margin=0</em>, <em>right_margin=0</em>, <em>horizontal_fill=0.9</em>, <em>vertical_fill=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/roi_builders/target_roi_builder.html#TargetGridROIBuilder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.roi_builders.target_roi_builder.TargetGridROIBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.roi_builders.roi_builders.BaseROIBuilder" title="ethoscope.roi_builders.roi_builders.BaseROIBuilder"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.roi_builders.roi_builders.BaseROIBuilder</span></code></a></p>
+<p>This roi builder uses three black circles drawn on the arena (targets) to align a grid layout:</p>
+<p>IMAGE HERE</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n_rows</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of rows in the grid.</li>
+<li><strong>n_cols</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of columns.</li>
+<li><strong>top_margin</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The vertical distance between the middle of the top ROIs and the middle of the top target</li>
+<li><strong>bottom_margin</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; same as top_margin, but for the bottom.</li>
+<li><strong>left_margin</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; same as top_margin, but for the left side.</li>
+<li><strong>right_margin</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; same as top_margin, but for the right side.</li>
+<li><strong>horizontal_fill</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The proportion of the grid space user by the roi, horizontally (between 0 and 1).</li>
+<li><strong>vertical_fill</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; same as vertical_fill, but horizontally.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ethoscope.trackers.html" class="btn btn-neutral float-right" title="ethoscope.trackers package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ethoscope.core.html" class="btn btn-neutral" title="ethoscope.core package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

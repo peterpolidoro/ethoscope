@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.hardware.input package &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>ethoscope.hardware.input package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ethoscope.hardware.input.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ethoscope-hardware-input-package">
+<h1>ethoscope.hardware.input package<a class="headerlink" href="#ethoscope-hardware-input-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ethoscope.hardware.input.cameras">
+<span id="ethoscope-hardware-input-cameras-module"></span><h2>ethoscope.hardware.input.cameras module<a class="headerlink" href="#module-ethoscope.hardware.input.cameras" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera">
+<em class="property">class </em><code class="descclassname">ethoscope.hardware.input.cameras.</code><code class="descname">BaseCamera</code><span class="sig-paren">(</span><em>drop_each=1</em>, <em>max_duration=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#BaseCamera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>The template class to generate and use video streams.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>drop_each</strong> &#8211; keep only <code class="docutils literal"><span class="pre">1/drop_each</span></code>&#8216;th frame</li>
+<li><strong>max_duration</strong> &#8211; stop the video stream if <code class="docutils literal"><span class="pre">t</span> <span class="pre">&gt;</span> <span class="pre">max_duration</span></code> (in seconds).</li>
+<li><strong>args</strong> &#8211; additional arguments</li>
+<li><strong>kwargs</strong> &#8211; additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera.capture">
+<code class="descname">capture</code><em class="property"> = None</em><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera.capture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera.height">
+<code class="descname">height</code><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera.height" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the height of the returned frames</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera.is_last_frame">
+<code class="descname">is_last_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#BaseCamera.is_last_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera.is_last_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera.is_opened">
+<code class="descname">is_opened</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#BaseCamera.is_opened"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera.is_opened" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera.resolution">
+<code class="descname">resolution</code><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera.resolution" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The resolution of the camera W x H.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(int, int)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#BaseCamera.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restarts a camera (also resets time).
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.BaseCamera.width">
+<code class="descname">width</code><a class="headerlink" href="#ethoscope.hardware.input.cameras.BaseCamera.width" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the width of the returned frames</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.hardware.input.cameras.DummyFrameGrabber">
+<em class="property">class </em><code class="descclassname">ethoscope.hardware.input.cameras.</code><code class="descname">DummyFrameGrabber</code><span class="sig-paren">(</span><em>target_fps</em>, <em>target_resolution</em>, <em>queue</em>, <em>stop_queue</em>, <em>path</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#DummyFrameGrabber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.DummyFrameGrabber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.process.Process</span></code></p>
+<p>Class to mimic the behaviour of <a class="reference internal" href="#ethoscope.hardware.input.cameras.PiFrameGrabber" title="ethoscope.hardware.input.cameras.PiFrameGrabber"><code class="xref py py-class docutils literal"><span class="pre">PiFrameGrabber</span></code></a>.
+This is intended for testing purposes.
+This way, we can emulate the async functionality of the hardware camera by a video file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target_fps</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the desired number of frames par second (FPS)</li>
+<li><strong>target_fps</strong> &#8211; the desired resolution (W x H)</li>
+<li><strong>target_resolution</strong> &#8211; (int,int)</li>
+<li><strong>args</strong> &#8211; additional arguments</li>
+<li><strong>kwargs</strong> &#8211; additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.DummyFrameGrabber.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#DummyFrameGrabber.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.DummyFrameGrabber.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.hardware.input.cameras.DummyPiCameraAsync">
+<em class="property">class </em><code class="descclassname">ethoscope.hardware.input.cameras.</code><code class="descname">DummyPiCameraAsync</code><span class="sig-paren">(</span><em>target_fps=20</em>, <em>target_resolution=(1280</em>, <em>960)</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#DummyPiCameraAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.DummyPiCameraAsync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.hardware.input.cameras.OurPiCameraAsync" title="ethoscope.hardware.input.cameras.OurPiCameraAsync"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.hardware.input.cameras.OurPiCameraAsync</span></code></a></p>
+<p>Class to mimic the behaviour of <a class="reference internal" href="#ethoscope.hardware.input.cameras.OurPiCameraAsync" title="ethoscope.hardware.input.cameras.OurPiCameraAsync"><code class="xref py py-class docutils literal"><span class="pre">OurPiCameraAsync</span></code></a>.
+This is intended for testing purposes. This way, we can emulate the async functionality of the hardware camera by a video file.</p>
+<p>Class to acquire frames from the raspberry pi camera asynchronously.
+At the moment, frames are only greyscale images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target_fps</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the desired number of frames par second (FPS)</li>
+<li><strong>target_fps</strong> &#8211; the desired resolution (W x H)</li>
+<li><strong>target_resolution</strong> &#8211; (int,int)</li>
+<li><strong>args</strong> &#8211; additional arguments</li>
+<li><strong>kwargs</strong> &#8211; additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.hardware.input.cameras.MovieVirtualCamera">
+<em class="property">class </em><code class="descclassname">ethoscope.hardware.input.cameras.</code><code class="descname">MovieVirtualCamera</code><span class="sig-paren">(</span><em>path</em>, <em>use_wall_clock=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#MovieVirtualCamera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.MovieVirtualCamera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.hardware.input.cameras.BaseCamera" title="ethoscope.hardware.input.cameras.BaseCamera"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.hardware.input.cameras.BaseCamera</span></code></a></p>
+<p>Class to acquire frames from a video file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the path of the video file</li>
+<li><strong>use_wall_clock</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; whether to use the real time from the machine (True) or from the video file (False).            The former can be useful for prototyping.</li>
+<li><strong>args</strong> &#8211; additional arguments.</li>
+<li><strong>kwargs</strong> &#8211; additional keyword arguments.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.MovieVirtualCamera.is_last_frame">
+<code class="descname">is_last_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#MovieVirtualCamera.is_last_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.MovieVirtualCamera.is_last_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.MovieVirtualCamera.is_opened">
+<code class="descname">is_opened</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#MovieVirtualCamera.is_opened"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.MovieVirtualCamera.is_opened" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.MovieVirtualCamera.path">
+<code class="descname">path</code><a class="headerlink" href="#ethoscope.hardware.input.cameras.MovieVirtualCamera.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.MovieVirtualCamera.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#MovieVirtualCamera.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.MovieVirtualCamera.restart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.MovieVirtualCamera.start_time">
+<code class="descname">start_time</code><a class="headerlink" href="#ethoscope.hardware.input.cameras.MovieVirtualCamera.start_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.hardware.input.cameras.OurPiCameraAsync">
+<em class="property">class </em><code class="descclassname">ethoscope.hardware.input.cameras.</code><code class="descname">OurPiCameraAsync</code><span class="sig-paren">(</span><em>target_fps=20</em>, <em>target_resolution=(1280</em>, <em>960)</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#OurPiCameraAsync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.OurPiCameraAsync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.hardware.input.cameras.BaseCamera" title="ethoscope.hardware.input.cameras.BaseCamera"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.hardware.input.cameras.BaseCamera</span></code></a></p>
+<p>Class to acquire frames from the raspberry pi camera asynchronously.
+At the moment, frames are only greyscale images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target_fps</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the desired number of frames par second (FPS)</li>
+<li><strong>target_fps</strong> &#8211; the desired resolution (W x H)</li>
+<li><strong>target_resolution</strong> &#8211; (int,int)</li>
+<li><strong>args</strong> &#8211; additional arguments</li>
+<li><strong>kwargs</strong> &#8211; additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.OurPiCameraAsync.is_last_frame">
+<code class="descname">is_last_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#OurPiCameraAsync.is_last_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.OurPiCameraAsync.is_last_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.OurPiCameraAsync.is_opened">
+<code class="descname">is_opened</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#OurPiCameraAsync.is_opened"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.OurPiCameraAsync.is_opened" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.OurPiCameraAsync.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#OurPiCameraAsync.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.OurPiCameraAsync.restart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.OurPiCameraAsync.start_time">
+<code class="descname">start_time</code><a class="headerlink" href="#ethoscope.hardware.input.cameras.OurPiCameraAsync.start_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.hardware.input.cameras.PiFrameGrabber">
+<em class="property">class </em><code class="descclassname">ethoscope.hardware.input.cameras.</code><code class="descname">PiFrameGrabber</code><span class="sig-paren">(</span><em>target_fps</em>, <em>target_resolution</em>, <em>queue</em>, <em>stop_queue</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#PiFrameGrabber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.PiFrameGrabber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.process.Process</span></code></p>
+<p>Class to grab frames from pi camera. Designed to be used within <code class="xref py py-class docutils literal"><span class="pre">OurPiCameraAsync</span></code>
+This allows to get frames asynchronously as acquisition is a bottleneck.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target_fps</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; desired fps</li>
+<li><strong>target_resolution</strong> (<em>(int, int)</em>) &#8211; the desired resolution (w, h)</li>
+<li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/multiprocessing.html#multiprocessing.JoinableQueue" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">JoinableQueue</span></code></a>) &#8211; a queue that stores frame and makes them available to the parent process</li>
+<li><strong>stop_queue</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/multiprocessing.html#multiprocessing.JoinableQueue" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">JoinableQueue</span></code></a>) &#8211; a queue that can stop the async acquisition</li>
+<li><strong>args</strong> &#8211; additional arguments</li>
+<li><strong>kwargs</strong> &#8211; additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.PiFrameGrabber.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#PiFrameGrabber.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.PiFrameGrabber.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise pi camera, get frames, convert them fo greyscale, and make them available in a queue.
+Run stops if the _stop_queue is not empty.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.hardware.input.cameras.V4L2Camera">
+<em class="property">class </em><code class="descclassname">ethoscope.hardware.input.cameras.</code><code class="descname">V4L2Camera</code><span class="sig-paren">(</span><em>device</em>, <em>target_fps=5</em>, <em>target_resolution=(960</em>, <em>720)</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#V4L2Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.V4L2Camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.hardware.input.cameras.BaseCamera" title="ethoscope.hardware.input.cameras.BaseCamera"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.hardware.input.cameras.BaseCamera</span></code></a></p>
+<p>class to acquire stream from a video for linux compatible device (v4l2).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>device</strong> (<em>int or str</em>) &#8211; The index of the device, or its path.</li>
+<li><strong>target_fps</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the desired number of frames par second (FPS)</li>
+<li><strong>target_fps</strong> &#8211; the desired resolution (W x H)</li>
+<li><strong>target_resolution</strong> &#8211; (int,int)</li>
+<li><strong>args</strong> &#8211; additional arguments</li>
+<li><strong>kwargs</strong> &#8211; additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.V4L2Camera.is_last_frame">
+<code class="descname">is_last_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#V4L2Camera.is_last_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.V4L2Camera.is_last_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.V4L2Camera.is_opened">
+<code class="descname">is_opened</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#V4L2Camera.is_opened"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.V4L2Camera.is_opened" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.hardware.input.cameras.V4L2Camera.restart">
+<code class="descname">restart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/hardware/input/cameras.html#V4L2Camera.restart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.hardware.input.cameras.V4L2Camera.restart" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.hardware.input.cameras.V4L2Camera.start_time">
+<code class="descname">start_time</code><a class="headerlink" href="#ethoscope.hardware.input.cameras.V4L2Camera.start_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.hardware.input">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ethoscope.hardware.input" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

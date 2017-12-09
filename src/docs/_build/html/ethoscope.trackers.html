@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.trackers package &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="index.html"/>
+        <link rel="next" title="ethoscope.interactors package" href="ethoscope.stimulators.html"/>
+        <link rel="prev" title="ethoscope.roi_builder package" href="ethoscope.roi_builders.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ethoscope.trackers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.trackers">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.trackers.trackers">ethoscope.trackers.trackers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.trackers.single_roi_tracker">ethoscope.trackers.single_roi_tracker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.trackers.adaptive_bg_tracker">ethoscope.trackers.adaptive_bg_tracker module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.stimulators.html">ethoscope.interactors package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>ethoscope.trackers package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ethoscope.trackers.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ethoscope-trackers-package">
+<h1>ethoscope.trackers package<a class="headerlink" href="#ethoscope-trackers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-ethoscope.trackers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ethoscope.trackers" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ethoscope.trackers.trackers">
+<span id="ethoscope-trackers-trackers-module"></span><h2>ethoscope.trackers.trackers module<a class="headerlink" href="#module-ethoscope.trackers.trackers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.trackers.trackers.BaseTracker">
+<em class="property">class </em><code class="descclassname">ethoscope.trackers.trackers.</code><code class="descname">BaseTracker</code><span class="sig-paren">(</span><em>roi</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/trackers.html#BaseTracker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.trackers.BaseTracker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ethoscope.utils.html#ethoscope.utils.description.DescribedObject" title="ethoscope.utils.description.DescribedObject"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.utils.description.DescribedObject</span></code></a></p>
+<p>Template class for video trackers.
+A video tracker locate animal in a ROI.
+Derived class must implement the <code class="docutils literal"><span class="pre">_find_position</span></code> method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>roi</strong> (<code class="xref py py-class docutils literal"><span class="pre">ROI</span></code>) &#8211; The Region Of Interest the the tracker will use to locate the animal.</li>
+<li><strong>data</strong> &#8211; An optional data set. For instance, it can be used for pre-trained algorithms</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="ethoscope.trackers.trackers.BaseTracker.last_time_point">
+<code class="descname">last_time_point</code><a class="headerlink" href="#ethoscope.trackers.trackers.BaseTracker.last_time_point" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The last time point that the tracker used.            This is updated even when position is inferred/no animal is found</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.trackers.trackers.BaseTracker.positions">
+<code class="descname">positions</code><a class="headerlink" href="#ethoscope.trackers.trackers.BaseTracker.positions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The last few positions found by the tracker.            Positions are kept for a certain duration defined by the <code class="docutils literal"><span class="pre">_max_history_length</span></code> attribute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">deque</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.trackers.trackers.BaseTracker.times">
+<code class="descname">times</code><a class="headerlink" href="#ethoscope.trackers.trackers.BaseTracker.times" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The last few time points corresponding to <a class="reference internal" href="#ethoscope.trackers.trackers.BaseTracker.positions" title="ethoscope.trackers.trackers.BaseTracker.positions"><code class="xref py py-class docutils literal"><span class="pre">positions</span></code></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-class docutils literal"><span class="pre">deque</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.trackers.trackers.BaseTracker.track">
+<code class="descname">track</code><span class="sig-paren">(</span><em>t</em>, <em>img</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/trackers.html#BaseTracker.track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.trackers.BaseTracker.track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locate the animal in a image, at a given time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; time in ms</li>
+<li><strong>img</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; the whole frame.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The position of the animal at time <code class="docutils literal"><span class="pre">t</span></code></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="ethoscope.core.html#ethoscope.core.data_point.DataPoint" title="ethoscope.core.data_point.DataPoint"><code class="xref py py-class docutils literal"><span class="pre">DataPoint</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.trackers.trackers.BaseTracker.xy_pos">
+<code class="descname">xy_pos</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/trackers.html#BaseTracker.xy_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.trackers.BaseTracker.xy_pos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="ethoscope.trackers.trackers.NoPositionError">
+<em class="property">exception </em><code class="descclassname">ethoscope.trackers.trackers.</code><code class="descname">NoPositionError</code><a class="reference internal" href="_modules/ethoscope/trackers/trackers.html#NoPositionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.trackers.NoPositionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></a></p>
+<p>Used to abort tracking. When it is raised within the <code class="docutils literal"><span class="pre">_find_position</span></code> method, data is inferred from previous position.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.trackers.single_roi_tracker">
+<span id="ethoscope-trackers-single-roi-tracker-module"></span><h2>ethoscope.trackers.single_roi_tracker module<a class="headerlink" href="#module-ethoscope.trackers.single_roi_tracker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.trackers.single_roi_tracker.AdaptiveBGModelOneObject">
+<em class="property">class </em><code class="descclassname">ethoscope.trackers.single_roi_tracker.</code><code class="descname">AdaptiveBGModelOneObject</code><span class="sig-paren">(</span><em>roi</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/single_roi_tracker.html#AdaptiveBGModelOneObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.single_roi_tracker.AdaptiveBGModelOneObject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.trackers.trackers.BaseTracker" title="ethoscope.trackers.trackers.BaseTracker"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.trackers.trackers.BaseTracker</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.trackers.adaptive_bg_tracker">
+<span id="ethoscope-trackers-adaptive-bg-tracker-module"></span><h2>ethoscope.trackers.adaptive_bg_tracker module<a class="headerlink" href="#module-ethoscope.trackers.adaptive_bg_tracker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.AdaptiveBGModel">
+<em class="property">class </em><code class="descclassname">ethoscope.trackers.adaptive_bg_tracker.</code><code class="descname">AdaptiveBGModel</code><span class="sig-paren">(</span><em>roi</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#AdaptiveBGModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.AdaptiveBGModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.trackers.trackers.BaseTracker" title="ethoscope.trackers.trackers.BaseTracker"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.trackers.trackers.BaseTracker</span></code></a></p>
+<p>An adaptive background subtraction model to find position of one animal in one roi.</p>
+<p>TODO more description here
+:param roi:
+:param data:
+:return:</p>
+<dl class="attribute">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.AdaptiveBGModel.fg_model">
+<code class="descname">fg_model</code><em class="property"> = &lt;ethoscope.trackers.adaptive_bg_tracker.ObjectModel object&gt;</em><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.AdaptiveBGModel.fg_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.BackgroundModel">
+<em class="property">class </em><code class="descclassname">ethoscope.trackers.adaptive_bg_tracker.</code><code class="descname">BackgroundModel</code><span class="sig-paren">(</span><em>max_half_life=100000.0</em>, <em>min_half_life=1000.0</em>, <em>increment=1.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#BackgroundModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A class to model background. It uses a dynamic running average and support arbitrary and heterogeneous frame rates</p>
+<dl class="attribute">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.bg_img">
+<code class="descname">bg_img</code><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.bg_img" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.decrease_learning_rate">
+<code class="descname">decrease_learning_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#BackgroundModel.decrease_learning_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.decrease_learning_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.increase_learning_rate">
+<code class="descname">increase_learning_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#BackgroundModel.increase_learning_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.increase_learning_rate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>img_t</em>, <em>t</em>, <em>fg_mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#BackgroundModel.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.BackgroundModel.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.ObjectModel">
+<em class="property">class </em><code class="descclassname">ethoscope.trackers.adaptive_bg_tracker.</code><code class="descname">ObjectModel</code><span class="sig-paren">(</span><em>history_length=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#ObjectModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.ObjectModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A class to model, update and predict foreground object (i.e. tracked animal).</p>
+<dl class="method">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.ObjectModel.compute_features">
+<code class="descname">compute_features</code><span class="sig-paren">(</span><em>img</em>, <em>contour</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#ObjectModel.compute_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.compute_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.ObjectModel.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>features</em>, <em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#ObjectModel.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.ObjectModel.features_header">
+<code class="descname">features_header</code><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.features_header" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.ObjectModel.is_ready">
+<code class="descname">is_ready</code><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.is_ready" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.trackers.adaptive_bg_tracker.ObjectModel.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>img</em>, <em>contour</em>, <em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/trackers/adaptive_bg_tracker.html#ObjectModel.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.trackers.adaptive_bg_tracker.ObjectModel.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ethoscope.stimulators.html" class="btn btn-neutral float-right" title="ethoscope.interactors package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ethoscope.roi_builders.html" class="btn btn-neutral" title="ethoscope.roi_builder package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

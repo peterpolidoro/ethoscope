@@ -1,0 +1,427 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ethoscope.interactors package &mdash; ethoscope 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="ethoscope 1.0 documentation" href="index.html"/>
+        <link rel="next" title="ethoscope.drawers package" href="ethoscope.drawers.html"/>
+        <link rel="prev" title="ethoscope.trackers package" href="ethoscope.trackers.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ethoscope
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.core.html">ethoscope.core package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.roi_builders.html">ethoscope.roi_builder package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.trackers.html">ethoscope.trackers package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ethoscope.interactors package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.stimulators">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.stimulators.stimulators">ethoscope.stimulators.stimulators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.stimulators.sleep_depriver_stimulators">ethoscope.stimulators.sleep_depriver_stimulators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ethoscope.stimulators.odour_stimulators">ethoscope.stimulators.odour_stimulators module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ethoscope.drawers.html">ethoscope.drawers package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ethoscope</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>ethoscope.interactors package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/ethoscope.stimulators.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ethoscope-interactors-package">
+<h1>ethoscope.interactors package<a class="headerlink" href="#ethoscope-interactors-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-ethoscope.stimulators">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ethoscope.stimulators" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ethoscope.stimulators.stimulators">
+<span id="ethoscope-stimulators-stimulators-module"></span><h2>ethoscope.stimulators.stimulators module<a class="headerlink" href="#module-ethoscope.stimulators.stimulators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.stimulators.stimulators.BaseStimulator">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.stimulators.</code><code class="descname">BaseStimulator</code><span class="sig-paren">(</span><em>hardware_connection</em>, <em>date_range=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/stimulators.html#BaseStimulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.stimulators.BaseStimulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ethoscope.utils.html#ethoscope.utils.description.DescribedObject" title="ethoscope.utils.description.DescribedObject"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.utils.description.DescribedObject</span></code></a></p>
+<p>Template class to interact with the tracked animal in a real-time feedback loop.
+Derived classes must have an attribute <code class="docutils literal"><span class="pre">_hardwareInterfaceClass</span></code> defining the class of the
+<a class="reference internal" href="ethoscope.hardware.interfaces.html#ethoscope.hardware.interfaces.interfaces.BaseInterface" title="ethoscope.hardware.interfaces.interfaces.BaseInterface"><code class="xref py py-class docutils literal"><span class="pre">BaseInterface</span></code></a> object (not on object) that instances will
+share with one another. In addition, they must implement a <code class="docutils literal"><span class="pre">_decide()</span></code> method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hardware_connection</strong> (<a class="reference internal" href="ethoscope.hardware.interfaces.html#ethoscope.hardware.interfaces.interfaces.BaseInterface" title="ethoscope.hardware.interfaces.interfaces.BaseInterface"><code class="xref py py-class docutils literal"><span class="pre">BaseInterface</span></code></a>) &#8211; The hardware interface to use.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.stimulators.stimulators.BaseStimulator.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/stimulators.html#BaseStimulator.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.stimulators.BaseStimulator.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply this stimulator. This method will:</p>
+<ol class="arabic simple">
+<li>check <code class="docutils literal"><span class="pre">_tracker</span></code> exists</li>
+<li>decide (<code class="docutils literal"><span class="pre">_decide</span></code>) whether to interact</li>
+<li>if 2. pass the interaction arguments to the hardware interface</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether a stimulator has worked, and a result dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ethoscope.stimulators.stimulators.BaseStimulator.bind_tracker">
+<code class="descname">bind_tracker</code><span class="sig-paren">(</span><em>tracker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/stimulators.html#BaseStimulator.bind_tracker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.stimulators.BaseStimulator.bind_tracker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link a tracker to this interactor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tracker</strong> (<a class="reference internal" href="ethoscope.trackers.html#ethoscope.trackers.trackers.BaseTracker" title="ethoscope.trackers.trackers.BaseTracker"><code class="xref py py-class docutils literal"><span class="pre">BaseTracker</span></code></a>) &#8211; a tracker object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.stimulators.stimulators.DefaultStimulator">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.stimulators.</code><code class="descname">DefaultStimulator</code><span class="sig-paren">(</span><em>hardware_connection</em>, <em>date_range=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/stimulators.html#DefaultStimulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.stimulators.DefaultStimulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.stimulators.stimulators.BaseStimulator" title="ethoscope.stimulators.stimulators.BaseStimulator"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.stimulators.stimulators.BaseStimulator</span></code></a></p>
+<p>Default interactor. Simply never interacts</p>
+<p>Template class to interact with the tracked animal in a real-time feedback loop.
+Derived classes must have an attribute <code class="docutils literal"><span class="pre">_hardwareInterfaceClass</span></code> defining the class of the
+<a class="reference internal" href="ethoscope.hardware.interfaces.html#ethoscope.hardware.interfaces.interfaces.BaseInterface" title="ethoscope.hardware.interfaces.interfaces.BaseInterface"><code class="xref py py-class docutils literal"><span class="pre">BaseInterface</span></code></a> object (not on object) that instances will
+share with one another. In addition, they must implement a <code class="docutils literal"><span class="pre">_decide()</span></code> method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hardware_connection</strong> (<a class="reference internal" href="ethoscope.hardware.interfaces.html#ethoscope.hardware.interfaces.interfaces.BaseInterface" title="ethoscope.hardware.interfaces.interfaces.BaseInterface"><code class="xref py py-class docutils literal"><span class="pre">BaseInterface</span></code></a>) &#8211; The hardware interface to use.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.stimulators.stimulators.HasInteractedVariable">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.stimulators.</code><code class="descname">HasInteractedVariable</code><a class="reference internal" href="_modules/ethoscope/stimulators/stimulators.html#HasInteractedVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.stimulators.HasInteractedVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="ethoscope.core.html#ethoscope.core.variables.BaseIntVariable" title="ethoscope.core.variables.BaseIntVariable"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.core.variables.BaseIntVariable</span></code></a></p>
+<dl class="docutils">
+<dt>Custom variable to save whether the stimulator has sent instruction to its hardware interface. 0 means</dt>
+<dd>no interaction. Any positive integer describes a different interaction.</dd>
+</dl>
+<dl class="attribute">
+<dt id="ethoscope.stimulators.stimulators.HasInteractedVariable.functional_type">
+<code class="descname">functional_type</code><em class="property"> = 'interaction'</em><a class="headerlink" href="#ethoscope.stimulators.stimulators.HasInteractedVariable.functional_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ethoscope.stimulators.stimulators.HasInteractedVariable.header_name">
+<code class="descname">header_name</code><em class="property"> = 'has_interacted'</em><a class="headerlink" href="#ethoscope.stimulators.stimulators.HasInteractedVariable.header_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.stimulators.sleep_depriver_stimulators">
+<span id="ethoscope-stimulators-sleep-depriver-stimulators-module"></span><h2>ethoscope.stimulators.sleep_depriver_stimulators module<a class="headerlink" href="#module-ethoscope.stimulators.sleep_depriver_stimulators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.stimulators.sleep_depriver_stimulators.ExperimentalSleepDepStimulator">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.sleep_depriver_stimulators.</code><code class="descname">ExperimentalSleepDepStimulator</code><span class="sig-paren">(</span><em>hardware_connection</em>, <em>velocity_threshold=0.006</em>, <em>date_range=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/sleep_depriver_stimulators.html#ExperimentalSleepDepStimulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.sleep_depriver_stimulators.ExperimentalSleepDepStimulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator" title="ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator</span></code></a></p>
+<p>A stimulator to control a sleep depriver module.
+This is an experimental version where each channel has a different inactivity_time_threshold.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hardware_connection</strong> (<code class="xref py py-class docutils literal"><span class="pre">SleepDepriverInterface</span></code>) &#8211; the sleep depriver module hardware interface</li>
+<li><strong>velocity_threshold</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="ethoscope.stimulators.sleep_depriver_stimulators.ExperimentalSleepDepStimulator.bind_tracker">
+<code class="descname">bind_tracker</code><span class="sig-paren">(</span><em>tracker</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/sleep_depriver_stimulators.html#ExperimentalSleepDepStimulator.bind_tracker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.sleep_depriver_stimulators.ExperimentalSleepDepStimulator.bind_tracker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.stimulators.sleep_depriver_stimulators.IsMovingStimulator">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.sleep_depriver_stimulators.</code><code class="descname">IsMovingStimulator</code><span class="sig-paren">(</span><em>hardware_connection=None</em>, <em>velocity_threshold=0.006</em>, <em>date_range=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/sleep_depriver_stimulators.html#IsMovingStimulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.sleep_depriver_stimulators.IsMovingStimulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.stimulators.stimulators.BaseStimulator" title="ethoscope.stimulators.stimulators.BaseStimulator"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.stimulators.stimulators.BaseStimulator</span></code></a></p>
+<p>class implementing an stimulator that decides whether an animal has moved though does nothing   accordingly.
+:param hardware_connection: a default hardware interface object
+:param velocity_threshold: Up to which velocity an animal is considered to be immobile
+:type velocity_threshold: float</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.sleep_depriver_stimulators.</code><code class="descname">SleepDepStimulator</code><span class="sig-paren">(</span><em>hardware_connection</em>, <em>velocity_threshold=0.006</em>, <em>min_inactive_time=120</em>, <em>date_range=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/sleep_depriver_stimulators.html#SleepDepStimulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.stimulators.sleep_depriver_stimulators.IsMovingStimulator" title="ethoscope.stimulators.sleep_depriver_stimulators.IsMovingStimulator"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.stimulators.sleep_depriver_stimulators.IsMovingStimulator</span></code></a></p>
+<p>A stimulator to control a sleep depriver module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hardware_connection</strong> (<code class="xref py py-class docutils literal"><span class="pre">SleepDepriverInterface</span></code>) &#8211; the sleep depriver module hardware interface</li>
+<li><strong>velocity_threshold</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; </li>
+<li><strong>min_inactive_time</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the minimal time without motion after which an animal should be disturbed (in seconds)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ethoscope.stimulators.odour_stimulators">
+<span id="ethoscope-stimulators-odour-stimulators-module"></span><h2>ethoscope.stimulators.odour_stimulators module<a class="headerlink" href="#module-ethoscope.stimulators.odour_stimulators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ethoscope.stimulators.odour_stimulators.DynamicOdourDeliverer">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.odour_stimulators.</code><code class="descname">DynamicOdourDeliverer</code><span class="sig-paren">(</span><em>hardware_connection</em>, <em>date_range=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/odour_stimulators.html#DynamicOdourDeliverer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.odour_stimulators.DynamicOdourDeliverer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.stimulators.odour_stimulators.HasChangedSideStimulator" title="ethoscope.stimulators.odour_stimulators.HasChangedSideStimulator"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.stimulators.odour_stimulators.HasChangedSideStimulator</span></code></a></p>
+<p>A stimulator to control a sleep depriver module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hardware_connection</strong> (<code class="xref py py-class docutils literal"></code>) &#8211; the sleep depriver module hardware interface</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.stimulators.odour_stimulators.DynamicOdourSleepDepriver">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.odour_stimulators.</code><code class="descname">DynamicOdourSleepDepriver</code><span class="sig-paren">(</span><em>hardware_connection</em>, <em>velocity_threshold=0.012</em>, <em>min_inactive_time=120</em>, <em>stimulus_duration=5</em>, <em>date_range=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/odour_stimulators.html#DynamicOdourSleepDepriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.odour_stimulators.DynamicOdourSleepDepriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator" title="ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.stimulators.sleep_depriver_stimulators.SleepDepStimulator</span></code></a></p>
+<p>A stimulator to control an odour sleep depriver module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hardware_connection</strong> (<code class="xref py py-class docutils literal"><span class="pre">SleepDepriverInterface</span></code>) &#8211; the sleep depriver module hardware interface</li>
+<li><strong>velocity_threshold</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The minimal velocity that counts as movement.</li>
+<li><strong>stimulus_duration</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; how long the odour delivery takes place for</li>
+<li><strong>min_inactive_time</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the minimal time without motion after which an animal should be disturbed (in seconds)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="ethoscope.stimulators.odour_stimulators.HasChangedSideStimulator">
+<em class="property">class </em><code class="descclassname">ethoscope.stimulators.odour_stimulators.</code><code class="descname">HasChangedSideStimulator</code><span class="sig-paren">(</span><em>hardware_connection=None</em>, <em>middle_line=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ethoscope/stimulators/odour_stimulators.html#HasChangedSideStimulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ethoscope.stimulators.odour_stimulators.HasChangedSideStimulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ethoscope.stimulators.stimulators.BaseStimulator" title="ethoscope.stimulators.stimulators.BaseStimulator"><code class="xref py py-class docutils literal"><span class="pre">ethoscope.stimulators.stimulators.BaseStimulator</span></code></a></p>
+<p>class implementing a stimulator that decides whether an animal has change side in its ROI.
+:param hardware_connection: a default hardware interface object
+:param middle_line: the x position defining the line to be crossed (from 0 to 1, relative to ROI)
+:type middle_line: float</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ethoscope.drawers.html" class="btn btn-neutral float-right" title="ethoscope.drawers package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ethoscope.trackers.html" class="btn btn-neutral" title="ethoscope.trackers package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Quentin Geissmann.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
