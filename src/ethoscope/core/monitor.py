@@ -3,6 +3,7 @@ __author__ = 'quentin'
 from tracking_unit import TrackingUnit
 import logging
 import traceback
+import time  # Janelia
 
 
 class Monitor(object):
@@ -99,7 +100,8 @@ class Monitor(object):
             self._is_running = True
 
             for i,(t, frame) in enumerate(self._camera):
-
+                # Janelia measures performance
+                #start = time.clock()
                 if self._force_stop:
                     logging.info("Monitor object stopped from external request")
                     break
@@ -128,6 +130,12 @@ class Monitor(object):
                 if drawer is not None:
                     drawer.draw(frame, self._last_positions, self._unit_trackers)
                 self._last_t = t
+
+
+                # Janelia measures performance
+                #end = time.clock()
+                #print t, i, end-start, end-initial_time
+                #print t, i
 
         except Exception as e:
             logging.error("Monitor closing with an exception: '%s'" % traceback.format_exc(e))
