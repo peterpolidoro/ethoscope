@@ -265,6 +265,28 @@ class SleepMonitorWithTargetROIBuilder(TargetGridROIBuilder):
                                                                vertical_fill= .7
                                                                )
 
+# Janelia new Ethoscope
+class SleepMonitorWithTargetROIBuilderJanelia(TargetGridROIBuilder):
+
+    _description = {"overview": "The Janelia sleep monitor arena with ten rows of two tubes.",
+                    "arguments": []}
+
+    def __init__(self):
+        """
+        Class to build ROIs for a two-columns, seven-rows for the sleep monitor
+
+        """
+
+
+        super(SleepMonitorWithTargetROIBuilderJanelia, self).__init__(n_rows=7,
+                                                               n_cols=2,
+                                                               top_margin= 2.99 / 135.00,
+                                                               bottom_margin = 4.99 / 135.00,
+                                                               left_margin = -.09,
+                                                               right_margin = -.1,
+                                                               horizontal_fill = 1,
+                                                               vertical_fill= 0.6#.41
+                                                               )
 
 
 class OlfactionAssayROIBuilder(TargetGridROIBuilder):
