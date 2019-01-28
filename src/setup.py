@@ -22,9 +22,10 @@ setup(
     # data e.g. classifiers can be added as part of the package
     # TODO
     # package_data={'ethoscope': ['data/classifiers/*.pkl']},
+    # Janelia: change cherrypy from 3.6.0 to 10.2.1
     extras_require={
          'device': ['picamera>=1.8', "GitPython >=1.0.1",
-                    "MySQL-python >= 1.2.5", "cherrypy >= 3.6.0", "pyserial>=2.7","bottle>=0.12.8"],
+                    "MySQL-python >= 1.2.5", "cherrypy >= 10.2.1", "pyserial>=2.7","bottle>=0.12.8"],
          'dev': ['Sphinx >= 1.4.4', "sphinx_rtd_theme >= 0.1.9", "mock >= 2.0.0"]
      },
     setup_requires=[
