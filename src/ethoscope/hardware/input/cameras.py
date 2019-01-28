@@ -354,10 +354,26 @@ class PiFrameGrabber(multiprocessing.Process):
                 logging.warning(capture)
                 capture.resolution = self._target_resolution
 
+                #janelia configurations
+                #capture.zoom = (0.0, 0.15, 1.0, 0.8)
+                #capture.awb_mode = 'fluorescent'
+                #capture.exposure_mode = 'backlight'
+                #Janelia add the start time
+                self._start_time = time.time()
+                # end of janelia configs
+
                 capture.framerate = self._target_fps
                 raw_capture = PiRGBArray(capture, size=self._target_resolution)
 
-                for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+                # janelia:
+                # allow the camera to warm up
+                # time.sleep(0.1)
+                # capture.rotation = 0
+
+                #janelia adds enumerate for performance measurements
+                for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
+                    # now = time.clock();
+                #for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
                     if not self._stop_queue.empty():
                         logging.warning("The stop queue is not empty. Stop acquiring frames")
 
@@ -371,6 +387,12 @@ class PiFrameGrabber(multiprocessing.Process):
                     #fixme here we could actually pass a JPG compressed file object (http://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.misc.imsave.html)
                     # This way, we would manage to get faster FPS
                     self._queue.put(out)
+                    #janelia debugging
+                    # Check the framerate every 5000 frames
+                    if i % 5000 == 0:
+                         now = time.time()
+                         print i, i/(now - self._start_time)
+                    #print i, now, self._queue.qsize(), self._stop_queue.qsize()
         finally:
             logging.warning("Closing frame grabber process")
             self._stop_queue.close()
