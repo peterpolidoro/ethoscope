@@ -11,7 +11,8 @@ import pickle
 
 import trace
 from ethoscope.hardware.input.cameras import OurPiCameraAsync, MovieVirtualCamera, DummyPiCameraAsync, V4L2Camera
-from ethoscope.roi_builders.target_roi_builder import  OlfactionAssayROIBuilder, SleepMonitorWithTargetROIBuilder, TargetGridROIBuilder
+#Add the sleep monitor builder Janelia
+from ethoscope.roi_builders.target_roi_builder import  OlfactionAssayROIBuilder, SleepMonitorWithTargetROIBuilder, SleepMonitorWithTargetROIBuilderJanelia, TargetGridROIBuilder
 from ethoscope.roi_builders.roi_builders import  DefaultROIBuilder
 from ethoscope.core.monitor import Monitor
 from ethoscope.drawers.drawers import NullDrawer, DefaultDrawer
@@ -69,7 +70,7 @@ class ControlThread(Thread):
     _evanescent = False
     _option_dict = {
         "roi_builder":{
-                "possible_classes":[DefaultROIBuilder, SleepMonitorWithTargetROIBuilder, TargetGridROIBuilder, OlfactionAssayROIBuilder],
+                "possible_classes":[DefaultROIBuilder, SleepMonitorWithTargetROIBuilder, SleepMonitorWithTargetROIBuilderJanelia, TargetGridROIBuilder, OlfactionAssayROIBuilder],
             },
         "tracker":{
                 "possible_classes":[AdaptiveBGModel],
