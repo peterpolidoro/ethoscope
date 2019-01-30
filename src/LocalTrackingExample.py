@@ -12,6 +12,9 @@ from ethoscope.drawers.drawers import DefaultDrawer
 # You can also load other types of ROI builder. This one is for 20 tubes (two columns of ten rows)
 from ethoscope.roi_builders.target_roi_builder import SleepMonitorWithTargetROIBuilder
 from ethoscope.roi_builders.target_roi_builder import SleepMonitorWithTargetROIBuilderJanelia
+from modular_client import ModularClient
+
+
 
 #camera = PiCamera()
 #camera.resolution = (1640, 1232)
@@ -19,9 +22,18 @@ from ethoscope.roi_builders.target_roi_builder import SleepMonitorWithTargetROIB
 # change these three variables according to how you name your input/output files
 #INPUT_VIDEO = "arena_10x2_sortTubes.mp4"
 #INPUT_VIDEO = "videoNew_h264.mp4"
-INPUT_VIDEO = "videoCoveredtarget_h264.mp4"
+
+#INPUT_VIDEO = "videoCoveredtarget_h264.mp4"
 OUTPUT_VIDEO = "/tmp/my_output_new_etho_covered.avi"
 OUTPUT_DB = "/tmp/results_new_etho.db"
+
+# Initialize the modular motors
+dev = ModularClient() # Might automatically find device if one available
+id = dev.get_device_id()
+methods = dev.get_methods()
+print(id)
+print(methods)
+
 
 # We use a video input file as if it was a "camera"
 #cam = MovieVirtualCamera(INPUT_VIDEO)
