@@ -9,6 +9,7 @@ from ethoscope.stimulators.stimulators import BaseStimulator, HasInteractedVaria
 
 from ethoscope.hardware.interfaces.interfaces import  DefaultInterface
 from ethoscope.hardware.interfaces.sleep_depriver_interface import SleepDepriverInterface, SleepDepriverInterfaceCR
+from ethoscope.hardware.interfaces.janelia_sleep_depriver_interface import JaneliaSleepDepriverInterface
 from ethoscope.hardware.interfaces.optomotor import OptoMotor
 
 
@@ -67,6 +68,8 @@ class IsMovingStimulator(BaseStimulator):
             self._last_active = t[-1]
             return HasInteractedVariable(False), {}
         return HasInteractedVariable(True), {}
+
+
 
 class SleepDepStimulator(IsMovingStimulator):
     _description = {"overview": "A stimulator to sleep deprive an animal using servo motor. See http://todo/fixme.html",
@@ -170,6 +173,62 @@ class SleepDepStimulatorCR(SleepDepStimulator):
         
         super(SleepDepStimulator, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
 
+
+class JaneliaSleepDepStimultor(IsMovingStimulator):
+    _HardwareInterfaceClass = JaneliaSleepDepriverInterface
+    _roi_to_channel = {  # TODO: check if the roi and channel mapping are the same with the second rpi
+        1: 6, 2: 5, 3: 4, 4: 3, 5: 2, 6: 1, 7: 0,
+        8: 6, 9: 5, 10: 4, 11: 3, 12: 2, 13: 1, 14: 0
+    }
+    _roi_to_motor_board = {
+        1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0,
+        8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1
+    }
+
+    def __init__(self,
+                 hardware_connection,
+                 velocity_threshold=0.0060,
+                 min_inactive_time=120,  # s
+                 date_range=""):
+        """
+        A stimulator to control a sleep depriver module.
+
+        :param hardware_connection: the sleep depriver module hardware interface
+        :type hardware_connection: :class:`~ethoscope.hardware.interfaces.sleep_depriver_interface.SleepDepriverInterface`
+        :param velocity_threshold:
+        :type velocity_threshold: float
+        :param min_inactive_time: the minimal time without motion after which an animal should be disturbed (in seconds)
+        :type min_inactive_time: float
+        :return:
+        """
+
+        self._inactivity_time_threshold_ms = min_inactive_time * 1000  # so we use ms internally
+        self._t0 = None
+
+        super(JaneliaSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
+
+    def _decide(self):
+        roi_id = self._tracker._roi.idx
+        now = self._tracker.last_time_point
+
+        try:
+            channel = self._roi_to_channel[roi_id]
+            board = self._roi_to_motor_board[roi_id]
+        except KeyError:
+            return HasInteractedVariable(False), {}
+
+        has_moved = self._has_moved()
+
+        if self._t0 is None:
+            self._t0 = now
+
+        if not has_moved:
+            if float(now - self._t0) > self._inactivity_time_threshold_ms:
+                self._t0 = None
+                return HasInteractedVariable(True), {"board": board, "channel": channel}  # speed is fixed now at 100
+        else:
+            self._t0 = now
+        return HasInteractedVariable(False), {}
 
 
 class OptomotorSleepDepriver(SleepDepStimulator):
