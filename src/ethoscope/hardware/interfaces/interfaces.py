@@ -4,7 +4,7 @@ from threading import Thread
 import time
 import collections
 
-class   HardwareConnection(Thread):
+class HardwareConnection(Thread):
     def __init__(self, interface_class, *args, **kwargs):
         """
         A class to build a connection to arbitrary hardware.
