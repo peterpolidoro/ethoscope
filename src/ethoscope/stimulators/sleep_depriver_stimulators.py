@@ -226,7 +226,8 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         current_velocity = self._get_velocity()
         # fly velocity range: 0.0 ->  1.0 with 0.0001 step
         # rotation speed range: 0.0 -> 100 with 0.01 step
-        speed = round(current_velocity * 100.0)
+        # the lower the speed the more velocity
+        speed = round(100.0-(current_velocity * 100.0))
 
         if self._t0 is None:
             self._t0 = now
