@@ -4,7 +4,7 @@ from ethoscope.hardware.interfaces.modular_client_stepper_controller import Modu
 
 
 class JaneliaSleepDepriverInterface(ModularClientInterface):
-    def send(self, board, channel):
+    def send(self, board=None, channel=None, speed=100):
         """
         Sleep deprive an animal by rotating its tube.
 
@@ -15,5 +15,5 @@ class JaneliaSleepDepriverInterface(ModularClientInterface):
         :param speed: the speed, between -100 and 100. The sign indicates the rotation direction (CW or CCW)
         :type speed: int
         """
-        speed = 100 # max speed for now. #TODO: make this configurable in the send command
-        self.move_with_speed(board, channel)
+
+        self.move_with_speed(board, channel, speed)

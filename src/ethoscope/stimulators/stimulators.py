@@ -53,7 +53,7 @@ class BaseStimulator(DescribedObject):
 
         if self._scheduler.check_time_range() is False:
             return HasInteractedVariable(False) , {}
-        interact, result  = self._decide()
+        interact, result = self._decide()
         if interact > 0:
             self._deliver(**result)
 

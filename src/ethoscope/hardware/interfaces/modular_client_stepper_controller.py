@@ -53,7 +53,7 @@ class ModularClientInterface(BaseInterface):
         else:
             raise Exception("Could not initialize the motor boards.")
 
-    def move_with_speed(self, board, channel, speed=0, duration=1000):
+    def move_with_speed(self, board, channel, speed=100, duration=1000):
         """
         Move a specified rotation to a speed for a certain time.
 

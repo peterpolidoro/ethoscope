@@ -28,8 +28,8 @@ class IsMovingStimulator(BaseStimulator):
         """
         self._velocity_threshold = velocity_threshold
         self._last_active = 0
+        self._current_velocity = 0.0    # Janelia: add velocity
         super(IsMovingStimulator, self).__init__(hardware_connection, date_range)
-
 
     def _has_moved(self):
 
@@ -55,9 +55,14 @@ class IsMovingStimulator(BaseStimulator):
         dist = 10.0 ** (tail_m["xy_dist_log10x1000"]/1000.0)
         velocity = dist / dt_s
 
+        self._current_velocity = velocity # Janelia: Update the velocity
+
         if velocity > self._velocity_threshold:
             return True
         return False
+
+    def _get_velocity(self):
+        return self._current_velocity
 
     def _decide(self):
 
@@ -86,6 +91,7 @@ class SleepDepStimulator(IsMovingStimulator):
             1:1,  3:2,  5:3,  7:4,  9:5,
             12:6, 14:7, 16:8, 18:9, 20:10
         }
+
     def __init__(self,
                  hardware_connection,
                  velocity_threshold=0.0060,
@@ -121,7 +127,6 @@ class SleepDepStimulator(IsMovingStimulator):
             return HasInteractedVariable(False), {}
 
         has_moved = self._has_moved()
-
 
         if self._t0 is None:
             self._t0 = now
@@ -194,7 +199,7 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         A stimulator to control a sleep depriver module.
 
         :param hardware_connection: the sleep depriver module hardware interface
-        :type hardware_connection: :class:`~ethoscope.hardware.interfaces.sleep_depriver_interface.SleepDepriverInterface`
+        :type hardware_connection: :class:`~ethoscope.hardware.interfaces.janelia_sleep_depriver_interface.JaneliaSleepDepriverInterface`
         :param velocity_threshold:
         :type velocity_threshold: float
         :param min_inactive_time: the minimal time without motion after which an animal should be disturbed (in seconds)
@@ -218,6 +223,10 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
             return HasInteractedVariable(False), {}
 
         has_moved = self._has_moved()
+        current_velocity = self._get_velocity()
+        # fly velocity range: 0.0 ->  1.0 with 0.0001 step
+        # rotation speed range: 0.0 -> 100 with 0.01 step
+        speed = round(current_velocity * 100.0)
 
         if self._t0 is None:
             self._t0 = now
@@ -225,7 +234,7 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
-                return HasInteractedVariable(True), {"board": board, "channel": channel}  # speed is fixed now at 100
+                return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': speed}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}

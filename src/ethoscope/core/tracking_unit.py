@@ -99,6 +99,7 @@ class TrackingUnit(object):
 
         # TODO data_row should have some result
         for dr in data_rows:
-            dr.append(interact)
+            dr.append(interact) # For now add the value of speed in the place of interact or if speed is not defined for this tracker then just add the default boolean value
+            #dr.append(result.get('speed', 0.0))  # Janelia: add the speed to the writer; has to be have a header at variables.py
 
         return data_rows

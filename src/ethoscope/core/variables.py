@@ -38,6 +38,14 @@ class IsInferredVariable(BaseBoolVariable):
     """
     header_name = "is_inferred"
 
+# #Janelia: add speed as a label
+# class RotationSpeedVariable(BaseIntVariable):
+#     """
+#     Type encoding the speed of a rotation of a tube
+#     """
+#     header_name = "speed"
+#     functional_type = "float"
+#     sql_data_type = "FLOAT(5)"
 
 class PhiVariable(BaseIntVariable):
     """
