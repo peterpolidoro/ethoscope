@@ -26,7 +26,10 @@ class ModularClientInterface(BaseInterface):
         else:
             self._dev0 = port0
             self._dev1 = port1
-
+            
+        # wake up all motors        
+        self._wake_all()
+        self._warm_up()
         # reset the positions of the motors
         self._reset_all()
 
@@ -52,6 +55,14 @@ class ModularClientInterface(BaseInterface):
             self._dev1.acceleration_max('setAllElementValues', 10)  # fix the acceleration of all the motors at 10
         else:
             raise Exception("Could not initialize the motor boards.")
+     
+    def _wake_all(self):
+        if self._dev0 is not None and self._dev1 is not None:
+            self._dev0.wake_all()
+            self._dev1.wake_all()
+        else:
+            raise Exception("Could not wake up the motor boards.")
+    
 
     def move_with_speed(self, board, channel, speed=100, duration=1000):
         """
@@ -61,7 +72,7 @@ class ModularClientInterface(BaseInterface):
         :type channel: int
         :param channel: the number of the stepper motor to be moved
         :type channel: int
-        :param speed: the speed, between -100 and 100. The sign indicates the rotation direction (CW or CCW)
+        :param speed: the speed, between -360/s and 360/s. The sign indicates the rotation direction (CW or CCW)
         :type speed: int
         :param duration: the time (ms) the stimulus should last
         :type duration: int
@@ -80,10 +91,20 @@ class ModularClientInterface(BaseInterface):
             motor = self._dev1
 
         # TODO: fix the duration: This should be done as a timer on the motor board
-        motor.move_at(channel, speed)
-        time.sleep(float(duration) / 1000.0)
-        motor.stop(channel)
+        #motor.move_at(channel, speed)
+        motor.move_for_at(channel, speed, duration)
+        #time.sleep(float(duration)/1000)
+        #motor.stop(channel)
         return
+    
+    
+    def sleep_all(self):
+        if self._dev0 is not None and self._dev1 is not None:
+            self._dev0.sleep_all()
+            self._dev1.sleep_all()
+        else:
+            raise Exception("Could not sleep the motor boards.")
+
 
     def send(self, *args, **kwargs):
         """
@@ -92,6 +113,7 @@ class ModularClientInterface(BaseInterface):
         # raise NotImplementedError
         pass
 
+
     def _warm_up(self):
         """
         This will move all motors.
@@ -99,9 +121,9 @@ class ModularClientInterface(BaseInterface):
         """
         # for i in range(1, 1 + self._n_channels):
         #    self.send(i)
-        self._dev0.move_all_at(30)
-        self._dev1.move_all_at(30)
-        time.sleep(2)
+        self._dev0.move_all_at(100)
+        self._dev1.move_all_at(100)
+        time.sleep(10)
         self._dev0.stop_all()
         self._dev1.stop_all()
         self._dev0.zero_all()

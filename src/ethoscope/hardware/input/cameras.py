@@ -16,6 +16,7 @@ import logging
 import os
 from ethoscope.utils.debug import EthoscopeException
 import multiprocessing
+import threading
 import traceback
 
 class BaseCamera(object):
@@ -310,7 +311,6 @@ class V4L2Camera(BaseCamera):
         return self._frame
 
 class PiFrameGrabber(multiprocessing.Process):
-
     def __init__(self, target_fps, target_resolution, queue,stop_queue, *args, **kwargs):
         """
         Class to grab frames from pi camera. Designed to be used within :class:`~ethoscope.hardware.camreras.camreras.OurPiCameraAsync`
@@ -389,7 +389,7 @@ class PiFrameGrabber(multiprocessing.Process):
                     self._queue.put(out)
                     #janelia debugging
                     # Check the framerate every 5000 frames
-                    if i % 5000 == 0:
+                    if i % 100 == 0:
                          now = time.time()
                          print i, i/(now - self._start_time)
                     #print i, now, self._queue.qsize(), self._stop_queue.qsize()

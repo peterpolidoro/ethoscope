@@ -70,7 +70,6 @@ class BaseDrawer(object):
         """
 
         self._last_drawn_frame = img.copy()
-
         self._annotate_frame(self._last_drawn_frame, positions,tracking_units)
 
         if self._draw_frames:

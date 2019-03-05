@@ -4,7 +4,7 @@ from tracking_unit import TrackingUnit
 import logging
 import traceback
 import time  # Janelia
-
+import csv
 
 class Monitor(object):
 
@@ -121,10 +121,14 @@ class Monitor(object):
                     # if abs_pos is not None:
                     self._last_positions[track_u.roi.idx] = abs_pos
 
-                    if not result_writer is None:
+                    if result_writer is not None:
                         result_writer.write(t,track_u.roi, data_rows)
+                        
+#                    with open ('ethoscope.csv', 'a+') as fd:
+#                         writer = csv.writer(fd)
+#                         writer.writerow([t,track_u.roi, data_rows])
 
-                if result_writer is not None:
+                if not result_writer is None:
                     result_writer.flush(t, frame)
 
                 if drawer is not None:
