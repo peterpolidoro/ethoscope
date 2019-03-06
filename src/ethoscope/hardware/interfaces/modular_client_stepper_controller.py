@@ -64,7 +64,7 @@ class ModularClientInterface(BaseInterface):
             raise Exception("Could not wake up the motor boards.")
     
 
-    def move_with_speed(self, board, channel, speed=100, duration=1000):
+    def move_with_speed(self, board, channel, speed=180, duration=1000):
         """
         Move a specified rotation to a speed for a certain time.
 
@@ -72,7 +72,7 @@ class ModularClientInterface(BaseInterface):
         :type channel: int
         :param channel: the number of the stepper motor to be moved
         :type channel: int
-        :param speed: the speed, between -360/s and 360/s. The sign indicates the rotation direction (CW or CCW)
+        :param speed: the speed, between -360 and 360 (degree/s). The sign indicates the rotation direction (CW or CCW)
         :type speed: int
         :param duration: the time (ms) the stimulus should last
         :type duration: int
@@ -89,8 +89,6 @@ class ModularClientInterface(BaseInterface):
             motor = self._dev0
         elif board == 1:
             motor = self._dev1
-
-        # TODO: fix the duration: This should be done as a timer on the motor board
         #motor.move_at(channel, speed)
         motor.move_for_at(channel, speed, duration)
         #time.sleep(float(duration)/1000)
@@ -121,8 +119,8 @@ class ModularClientInterface(BaseInterface):
         """
         # for i in range(1, 1 + self._n_channels):
         #    self.send(i)
-        self._dev0.move_all_at(100)
-        self._dev1.move_all_at(100)
+        self._dev0.move_all_at(180)
+        self._dev1.move_all_at(180)
         time.sleep(10)
         self._dev0.stop_all()
         self._dev1.stop_all()
