@@ -48,11 +48,11 @@ class ModularClientInterface(BaseInterface):
         if self._dev0 is not None and self._dev1 is not None:
             self._dev0.stop_all()
             self._dev0.zero_all()
-            self._dev0.acceleration_max('setAllElementValues', 10)  # fix the acceleration of all the motors at 10
+            self._dev0.acceleration_max('setAllElementValues', '10')  # fix the acceleration of all the motors at 10
 
             self._dev1.stop_all()
             self._dev1.zero_all()
-            self._dev1.acceleration_max('setAllElementValues', 10)  # fix the acceleration of all the motors at 10
+            self._dev1.acceleration_max('setAllElementValues', '10')  # fix the acceleration of all the motors at 10
         else:
             raise Exception("Could not initialize the motor boards.")
      
