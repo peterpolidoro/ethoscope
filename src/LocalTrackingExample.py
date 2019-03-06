@@ -258,7 +258,7 @@ stimulators = [JaneliaSleepDepStimultor(hc) for _ in rois]
 cam.restart()
 
 # we use a drawer to show inferred position for each animal, display frames and save them as a video
-drawer = DefaultDrawer(OUTPUT_VIDEO, draw_frames = True)
+drawer = DefaultDrawer(OUTPUT_VIDEO, draw_frames = False)
 
 # We build our monitor
 monitor = Monitor(cam, AdaptiveBGModel, rois, stimulators)

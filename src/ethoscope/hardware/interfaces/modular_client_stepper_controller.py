@@ -64,7 +64,7 @@ class ModularClientInterface(BaseInterface):
             raise Exception("Could not wake up the motor boards.")
     
 
-    def move_with_speed(self, board, channel, speed=180, duration=1000):
+    def move_with_speed(self, board, channel, speed=180, duration=5000):
         """
         Move a specified rotation to a speed for a certain time.
 
@@ -90,7 +90,7 @@ class ModularClientInterface(BaseInterface):
         elif board == 1:
             motor = self._dev1
         #motor.move_at(channel, speed)
-        motor.move_for_at(channel, speed, duration)
+        motor.move_at_for(channel, speed, duration)
         #time.sleep(float(duration)/1000)
         #motor.stop(channel)
         return
