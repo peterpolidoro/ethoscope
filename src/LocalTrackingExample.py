@@ -34,8 +34,8 @@ from ethoscope.hardware.interfaces.janelia_sleep_depriver_interface import Janel
 #INPUT_VIDEO = "videoNew_h264.mp4"
 
 #INPUT_VIDEO = "videoCoveredtarget_h264.mp4"
-OUTPUT_VIDEO = "/tmp/my_output_new_etho_covered.avi"
-OUTPUT_DB = "/tmp/results_new_etho.db"
+OUTPUT_VIDEO = "/tmp/output_etho_motor.avi"
+OUTPUT_DB = "/tmp/results_etho_motor.db"
 
 
 #class ModularClientInterface(BaseInterface):

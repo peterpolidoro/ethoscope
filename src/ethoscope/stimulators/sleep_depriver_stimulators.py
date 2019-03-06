@@ -189,10 +189,10 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0,
         8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1
     }
-
-    # Linearly space the motor speed from 0 to 360 into 10000 steps to match the fly velocity steps
+    
+    # Linearly space the motor speed from 0 to 360 into 10000 steps to match the fly velocity
     _motor_speed = [round(x) for x in np.linspace(0, 360, 10000+1)]
-
+    
     def __init__(self,
                  hardware_connection,
                  velocity_threshold=0.0060,
@@ -233,9 +233,13 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         # speed = round(100.0-(current_velocity * 100.0))
 
         # Use degree/s for speed instead of steps
-        # fly velocity range: 0.0 ->  1.0 with 0.0001 step
+        # fly velocity range: 0.0 ->  
         # rotation speed range: 0.0 -> 360 with 1 step
         # the lower the speed the more velocity
+        #print(current_velocity)
+        current_velocity = 1 if current_velocity > 1 else current_velocity
+        current_velocity = 0 if current_velocity < 0 else current_velocity 
+        
         speed = 360 - self._motor_speed[int(current_velocity * 10000)]
 
         if self._t0 is None:
