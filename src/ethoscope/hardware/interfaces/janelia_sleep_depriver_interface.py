@@ -4,7 +4,7 @@ from ethoscope.hardware.interfaces.modular_client_stepper_controller import Modu
 
 
 class JaneliaSleepDepriverInterface(ModularClientInterface):
-    def send(self, board=None, channel=None, speed=180, duration=1000):
+    def send(self, board=None, channel=None, speed=180, duration=5000):
         """
         Sleep deprive an animal by rotating its tube.
 

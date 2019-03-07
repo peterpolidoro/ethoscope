@@ -182,12 +182,36 @@ class SleepDepStimulatorCR(SleepDepStimulator):
 class JaneliaSleepDepStimultor(IsMovingStimulator):
     _HardwareInterfaceClass = JaneliaSleepDepriverInterface
     _roi_to_channel = {  # TODO: check if the roi and channel mapping are the same with the second rpi
-        1: 6, 2: 5, 3: 4, 4: 3, 5: 2, 6: 1, 7: 0,
-        8: 6, 9: 5, 10: 4, 11: 3, 12: 2, 13: 1, 14: 0
+        1: 6,
+        2: 5,
+        3: 4,
+        4: 3,
+        5: 2,
+        6: 1,
+        7: 0,
+        8: 6,
+        9: 5,
+        10: 4,
+        11: 3,
+        12: 2,
+        13: 1,
+        14: 0
     }
     _roi_to_motor_board = {
-        1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0,
-        8: 1, 9: 1, 10: 1, 11: 1, 12: 1, 13: 1, 14: 1
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 1,
+        9: 1,
+        10: 1,
+        11: 1,
+        12: 1,
+        13: 1,
+        14: 1
     }
     
     # Linearly space the motor speed from 0 to 360 into 10000 steps to match the fly velocity
@@ -195,8 +219,8 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
     
     def __init__(self,
                  hardware_connection,
-                 velocity_threshold=0.0060,
-                 min_inactive_time=120,  # s
+                 velocity_threshold= 0.01, #0.0060,  # decrease the velocity threshold
+                 min_inactive_time=60, #120,  # s    # decrease the min inactive time
                  date_range=""):
         """
         A stimulator to control a sleep depriver module.
