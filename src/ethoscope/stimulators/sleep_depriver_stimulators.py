@@ -215,12 +215,36 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
     }
     
     # Linearly space the motor speed from 0 to 360 into 10000 steps to match the fly velocity
-    _motor_speed = [round(x) for x in np.linspace(0, 360, 10000+1)]
-    
+    #_motor_speed = [round(x) for x in np.linspace(0, 360, 10000+1)]
+
+    # Create dictionary of current fly_velocity/motor_speed status for each roi
+    _stimulus_info = {'t': 0, 'v': 0.006, 's': 90} # initialize the stimulus info for each roi
+    _roi_stimulus_status = {1: _stimulus_info,
+                                 2: _stimulus_info,
+                                 3: _stimulus_info,
+                                 4: _stimulus_info,
+                                 5: _stimulus_info,
+                                 6: _stimulus_info,
+                                 7: _stimulus_info,
+                                 8: _stimulus_info,
+                                 9: _stimulus_info,
+                                 10: _stimulus_info,
+                                 11: _stimulus_info,
+                                 12: _stimulus_info,
+                                 13: _stimulus_info,
+                                 14: _stimulus_info
+                                 }
+
+    _time_delta = 1000 * 5       # 5 sec for time delta
+    _motor_speed_delta = 10      # 5 degree step for each increase/decrease in velocity
+    _min_motor_speed = 90
+    _max_motor_speed = 360
+
+
     def __init__(self,
                  hardware_connection,
-                 velocity_threshold= 0.01, #0.0060,  # decrease the velocity threshold
-                 min_inactive_time=60, #120,  # s    # decrease the min inactive time
+                 velocity_threshold= 0.0060, #0.01, #0.0060,  # decrease the velocity threshold
+                 min_inactive_time=120, #120,  # s    # decrease the min inactive time
                  date_range=""):
         """
         A stimulator to control a sleep depriver module.
@@ -257,14 +281,14 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         # speed = round(100.0-(current_velocity * 100.0))
 
         # Use degree/s for speed instead of steps
-        # fly velocity range: 0.0 ->  
+        # fly velocity range: 0.0 ->  1.0 with 0.0001 step
         # rotation speed range: 0.0 -> 360 with 1 step
         # the lower the speed the more velocity
         #print(current_velocity)
         current_velocity = 1 if current_velocity > 1 else current_velocity
         current_velocity = 0 if current_velocity < 0 else current_velocity 
         
-        speed = 360 - self._motor_speed[int(current_velocity * 10000)]
+        #speed = 360 - self._motor_speed[int(current_velocity * 10000)]
 
         if self._t0 is None:
             self._t0 = now
@@ -272,6 +296,15 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
+                speed = self._roi_stimulus_status[roi_id]['s']
+                # Check the previous status of the stimulus if the fly was asleep in the previous recording
+                # Stay in the same motor speed unless the fly fell asleep again quickly
+                if float(now - self._roi_stimulus_status[roi_id]['t']) <=  self._inactivity_time_threshold_ms + self._time_delta:
+                    # kick more speed for the motor until max rotation speed
+                    if speed < self._max_motor_speed:
+                        speed = speed + self._motor_speed_delta
+                # update the stimulus status of the roi
+                self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed}
                 return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': speed}
         else:
             self._t0 = now
