@@ -12,7 +12,6 @@ from ethoscope.hardware.interfaces.sleep_depriver_interface import SleepDepriver
 from ethoscope.hardware.interfaces.janelia_sleep_depriver_interface import JaneliaSleepDepriverInterface
 from ethoscope.hardware.interfaces.optomotor import OptoMotor
 
-
 import random
 import numpy as np
 
@@ -235,7 +234,9 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
                                  14: _stimulus_info
                                  }
 
-    _time_delta = 1000 * 5       # 5 sec for time delta
+    _time_delta_min = 1000 * 60       # 1 min for time delta (min time thresh in hysteresis)
+    _time_delta_max = 1000 * 120      # 2 min for time delta (max time thresh in hysteresis)  
+    
     _motor_speed_delta = 10      # 5 degree step for each increase/decrease in velocity
     _min_motor_speed = 90
     _max_motor_speed = 360
@@ -299,12 +300,18 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
                 speed = self._roi_stimulus_status[roi_id]['s']
                 # Check the previous status of the stimulus if the fly was asleep in the previous recording
                 # Stay in the same motor speed unless the fly fell asleep again quickly
-                if float(now - self._roi_stimulus_status[roi_id]['t']) <=  self._inactivity_time_threshold_ms + self._time_delta:
-                    # kick more speed for the motor until max rotation speed
+                # The hysteresis loop for the stimulus staus
+                if float(now - self._roi_stimulus_status[roi_id]['t']) <=  self._inactivity_time_threshold_ms + self._time_delta_min:
+                    # increase the speed of the motor until max rotation speed
                     if speed < self._max_motor_speed:
                         speed = speed + self._motor_speed_delta
+                elif float(now - self._roi_stimulus_status[roi_id]['t']) >= self._inactivity_time_threshold_ms + self._time_delta_max:
+                    # reduce the speed of the motor until min rotation speed
+                    if speed > self._min_motor_speed:
+                        speed = speed - self._motor_speed_delta
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed}
+                print('%d, board%d, channel%d, velocity%f, speed%d' %(now, board, channel, current_velocity, speed))
                 return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': speed}
         else:
             self._t0 = now
