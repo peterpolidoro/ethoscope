@@ -239,7 +239,7 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
     
     _motor_speed_delta = 10      # 5 degree step for each increase/decrease in velocity
     _min_motor_speed = 90
-    _max_motor_speed = 360
+    _max_motor_speed = 2520      # based on modular_client max motor speed
 
 
     def __init__(self,
