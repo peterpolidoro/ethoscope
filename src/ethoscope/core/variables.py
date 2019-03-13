@@ -46,6 +46,14 @@ class RotationSpeedVariable(BaseIntVariable):
      header_name = "speed"
      functional_type = "speed"
 
+#Janelia: add velocity as a label
+class FlyVelocityVariable(BaseIntVariable):
+     """
+     Type encoding the fly velocity 
+     """
+     header_name = "velocity_log10x1000"
+     functional_type = "velocity"
+
 class PhiVariable(BaseIntVariable):
     """
     Type encoding the angle of a detected object, in degrees.
