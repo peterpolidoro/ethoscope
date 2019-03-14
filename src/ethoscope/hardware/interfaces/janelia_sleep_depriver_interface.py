@@ -14,7 +14,7 @@ class JaneliaSleepDepriverInterface(ModularClientInterface):
         :type channel: int
         :param speed: the speed, between -360 and 360 (degree/s) The sign indicates the rotation direction (CW or CCW)
         :type speed: int
-        :param duration: the duration of time to rotate the tube in ms
+        :param duration: the duration of time to rotate the tube in ms (max is 6s. The masking duration in ethomics is 6s)
         :type: duration: int
         :param velocity: fly velocity in m/s
         :type: duration: float
