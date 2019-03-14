@@ -235,10 +235,10 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
                                  14: _stimulus_info
                                  }
 
-    _time_delta_min = 1000 * 60       # 1 min for time delta (min time thresh in hysteresis)
-    _time_delta_max = 1000 * 120      # 2 min for time delta (max time thresh in hysteresis)  
+    _time_delta_min = 1000 * 60 * 2       # 2 min for time delta (min time thresh in hysteresis)
+    _time_delta_max = 1000 * 60 * 30      # 30 min for time delta (max time thresh in hysteresis)  
     
-    _motor_speed_delta = 10      # 5 degree step for each increase/decrease in velocity
+    _motor_speed_delta = 360      # 360 degree step for each increase/decrease in velocity
     _min_motor_speed = 90
     _max_motor_speed = 2520      # based on modular_client max motor speed
 
@@ -305,11 +305,11 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
                 if float(now - self._roi_stimulus_status[roi_id]['t']) <=  self._inactivity_time_threshold_ms + self._time_delta_min:
                     # increase the speed of the motor until max rotation speed
                     if speed < self._max_motor_speed:
-                        speed = speed + self._motor_speed_delta
+                        speed = min(speed + self._motor_speed_delta, self._max_motor_speed)
                 elif float(now - self._roi_stimulus_status[roi_id]['t']) >= self._inactivity_time_threshold_ms + self._time_delta_max:
                     # reduce the speed of the motor until min rotation speed
                     if speed > self._min_motor_speed:
-                        speed = speed - self._motor_speed_delta
+                        speed = max(speed - self._motor_speed_delta, self._min_motor_speed)
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed}
                 print('%d, board%d, channel%d, velocity%f, speed%d' %(now, board, channel, current_velocity, speed))
