@@ -101,7 +101,7 @@ class TrackingUnit(object):
         for dr in data_rows:
             dr.append(interact)
             speed = RotationSpeedVariable(int(result.get('speed', 0.0)))
-            velocity = FlyVelocityVariable(int(result.get('velocity',0.0)))
+            velocity = FlyVelocityVariable(int(result.get('velocity_log10x1000',0.0)))
             dr.append(speed)  # Janelia: add the speed of the rotation to the tracking info
             dr.append(velocity) # Janelia: add the velocity of the fly to the tracking info
         return data_rows
