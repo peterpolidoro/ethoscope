@@ -3,7 +3,7 @@ any new class added here need to be added to web_utils/control_thread.py too
 '''
 
 __author__ = 'quentin'
-
+# Modified by Salma Elmalaki for Janelia Ethoscope
 
 from ethoscope.stimulators.stimulators import BaseStimulator, HasInteractedVariable
 
@@ -313,7 +313,8 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed}
                 print('%d, board%d, channel%d, velocity%f, speed%d' %(now, board, channel, current_velocity, speed))
-                return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': speed, 'velocity':round(log10(current_velocity)*1000)}
+                reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
+                return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': speed, 'velocity':reported_velocity}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
