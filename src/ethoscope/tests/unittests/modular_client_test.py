@@ -18,6 +18,10 @@ try:
         dev1.wake_all()
         dev0.acceleration_max('setAllElementValues', '1000')
         dev1.acceleration_max('setAllElementValues', '1000')
+        dev0.velocity_max('setAllElementValues', '2520')
+        dev0.velocity_min('setAllElementValues', '-2520')
+        dev1.velocity_max('setAllElementValues', '2520')
+        dev1.velocity_min('setAllElementValues', '-2520')
         #dev0.move_at_for(2, 180, 10000)
         speed = 90
         now = time.time()
