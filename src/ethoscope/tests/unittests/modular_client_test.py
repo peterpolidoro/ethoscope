@@ -28,18 +28,18 @@ try:
         while True:
             dev0.move_all_at(speed)
             vel = dev0.get_velocities()
-            if speed > 450:
+            if speed > 2520:
                 dev0.stop_all()
                 break
            
             #special case for 450
-            elif speed == 450 and all(v == 359 for v in vel):
+            elif speed == 2520 and all(v == 2519 for v in vel):
                 all_v[speed].append((time.time() - now, vel[0]))
                 print(str(speed)+' '+ str(vel[0]))
                 dev0.stop_all()
                 break
             
-            elif all(speed-1<= v <=speed for v in vel):
+            elif all(speed-3<= v <=speed for v in vel):
                 all_v[speed].append((time.time() - now, vel[0]))
                 print(str(speed)+' '+ str(vel[0]))
                 dev0.stop_all()
