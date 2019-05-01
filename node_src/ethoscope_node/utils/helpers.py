@@ -10,9 +10,11 @@ def get_last_backup_time(device):
     except Exception:
         return "No backup"
 
-def get_local_ip(local_subnet_ip ="192.169.123.0", max_node_subnet_address=5, localhost=False):
+#def get_local_ip(local_subnet_ip ="192.169.123.0", max_node_subnet_address=5, localhost=False):
+def get_local_ip(local_subnet_ip ="10.150.0.0", max_node_subnet_address=5, localhost=False):
     subnet_ip_list = local_subnet_ip.split(".")
-    local_router_ip = ".".join(subnet_ip_list[0:3] + ["254"])
+#    local_router_ip = ".".join(subnet_ip_list[0:3] + ["254"])
+    local_router_ip = ".".join(subnet_ip_list[0:3] + ["1"]) 	
     if localhost:
         return "127.0.0.1"
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -23,11 +25,12 @@ def get_local_ip(local_subnet_ip ="192.169.123.0", max_node_subnet_address=5, lo
     ip = s.getsockname()[0]
     s.close()
 
-    ip_list = ip.split(".")
-    if subnet_ip_list[0:3] != ip_list[0:3]:
-        raise Exception("The local ip address does not match the expected router subnet: %s != %s" % (str(subnet_ip_list[0:3]), str(ip_list[0:3])))
-    if  int(ip_list[3]) >  max_node_subnet_address:
-        raise Exception("The the last field of the node ip should be lower or equal to %i. current ip = %s" % (max_node_subnet_address, ip))
+    #salma commented this check for now	
+    #ip_list = ip.split(".")
+    #if subnet_ip_list[0:3] != ip_list[0:3]:
+    #    raise Exception("The local ip address does not match the expected router subnet: %s != %s" % (str(subnet_ip_list[0:3]), str(ip_list[0:3])))
+    #if  int(ip_list[3]) >  max_node_subnet_address:
+    #    raise Exception("The the last field of the node ip should be lower or equal to %i. current ip = %s" % (max_node_subnet_address, ip))
     return ip
 
 def get_internet_ip():
