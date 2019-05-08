@@ -14,17 +14,21 @@ def get_last_backup_time(device):
 def get_local_ip(local_subnet_ip ="10.150.0.0", max_node_subnet_address=5, localhost=False):
     subnet_ip_list = local_subnet_ip.split(".")
 #    local_router_ip = ".".join(subnet_ip_list[0:3] + ["254"])
-    local_router_ip = ".".join(subnet_ip_list[0:3] + ["1"]) 	
+#    local_router_ip = ".".join(subnet_ip_list[0:3] + ["1"]) 	
+    local_router_ip = "10.150.0.1"
     if localhost:
         return "127.0.0.1"
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
         s.connect((local_router_ip, 80))
+	# janelia moves this here
+        #ip =  s.getsockname()[0]
+	#s.close()
     except socket.gaierror:
         raise Exception("Cannot find local ip, check your connection")
     ip = s.getsockname()[0]
     s.close()
-
+    print('local ip:'+ip)
     #salma commented this check for now	
     #ip_list = ip.split(".")
     #if subnet_ip_list[0:3] != ip_list[0:3]:
@@ -32,6 +36,7 @@ def get_local_ip(local_subnet_ip ="10.150.0.0", max_node_subnet_address=5, local
     #if  int(ip_list[3]) >  max_node_subnet_address:
     #    raise Exception("The the last field of the node ip should be lower or equal to %i. current ip = %s" % (max_node_subnet_address, ip))
     return ip
+    
 
 def get_internet_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
