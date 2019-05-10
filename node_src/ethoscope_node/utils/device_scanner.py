@@ -144,10 +144,10 @@ class DeviceScanner(Thread):
                 last_device_filter_time = time.time()
             for d in self._devices:
                 if d.ip() in valid_ips:
-		    print('skip_scan = F')
+		    #print('skip_scan = F')
                     d.skip_scanning(False)
                 else:
-	            print('skip_scan = T')
+	            #print('skip_scan = T')
                     d.skip_scanning(True)
             for d in self._devices:
                 id = d.id()
@@ -233,10 +233,10 @@ class Device(Thread):
             time.sleep(.2)
             if time.time() - last_refresh > self._refresh_period:
                 if not self._skip_scanning:
-		    print('not skip scan')	
+		    #print('not skip scan')	
                     self._update_info()
                 else:
-                    print('reset info')
+                    #print('reset info')
                     self._reset_info()
                 last_refresh = time.time()
 
@@ -312,8 +312,6 @@ class Device(Thread):
             logging.warning(traceback.format_exc(e))
 
 
-
-
     @retry(ScanException, tries=3, delay=1, backoff=1)
     def _get_json(self, url,timeout=5, post_data=None):
 
@@ -384,12 +382,17 @@ class Device(Thread):
 
     def _make_backup_path(self,  timeout=30):
         try:
-            import MySQLdb
+            #import MySQLdb
+            #Janelia
+	    import mysql.connector
             device_id = self._info["id"]
             device_name = self._info["name"]
             com = "SELECT value from METADATA WHERE field = 'date_time'"
 
-            mysql_db = MySQLdb.connect(host=self._ip,
+            #mysql_db = MySQLdb.connect(host=self._ip,
+            #                           connect_timeout=timeout,
+            #                           **self._ethoscope_db_credentials)
+	    mysql_db = mysql.connector.connect(host=self._ip,
                                        connect_timeout=timeout,
                                        **self._ethoscope_db_credentials)
             cur = mysql_db.cursor()

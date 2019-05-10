@@ -28,8 +28,10 @@ class BackupClass(object):
 
             if self._device_info["backup_path"] is None:
                 raise ValueError("backup path is None for device %s" % self._device_info["id"])
-            backup_path = os.path.join(self._results_dir, self._device_info["backup_path"])
-
+	    #print('device: backup_path:' + self._device_info["backup_path"])
+            backup_path = os.path.join(self._results_dir, self._device_info["backup_path"]) # commented this to use path that does not need root
+            #backup_path = '~/ethoscope_results' # Janelia use the passed results_dir directly
+            print('backup_path:'+ backup_path)
             mirror= MySQLdbToSQlite(backup_path, self._db_credentials["name"],
                             remote_host=self._database_ip,
                             remote_pass=self._db_credentials["password"],
@@ -67,9 +69,11 @@ if __name__ == '__main__':
         parser = optparse.OptionParser()
         parser.add_option("-D", "--debug", dest="debug", default=False, help="Set DEBUG mode ON", action="store_true")
         parser.add_option("-e", "--results-dir", dest="results_dir", default="/ethoscope_results",
-                          help="Where temporary result files are stored")
+                       help="Where temporary result files are stored")
+       # parser.add_option("-e", "--results-dir", dest="results_dir", default="~/ethoscope_results", 
+       #		          help= "Where temporary result files are stored")
        # parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="192.169.123.0",
-                          help="the ip of the router in your setup")
+       #                   help="the ip of the router in your setup")
         parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="10.150.0.1",
                           help="the ip of the router in your setup")
         parser.add_option("-s", "--safe", dest="safe", default=False,help="Set Safe mode ON", action="store_true")

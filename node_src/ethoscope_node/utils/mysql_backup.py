@@ -1,6 +1,7 @@
 __author__ = 'quentin'
 
-import MySQLdb
+#import MySQLdb
+import mysql.connector
 import sqlite3
 import os
 import logging
@@ -39,10 +40,12 @@ class MySQLdbToSQlite(object):
         self._remote_pass = remote_pass
         self._remote_db_name = remote_db_name
 
-        src = MySQLdb.connect(host=self._remote_host, user=self._remote_user,
-                                         passwd=self._remote_pass, db=self._remote_db_name,
-                                        connect_timeout= 45)
-
+        #src = MySQLdb.connect(host=self._remote_host, user=self._remote_user,
+        #                                 passwd=self._remote_pass, db=self._remote_db_name,
+        #                                connect_timeout= 45)
+	src = mysql.connector.connect(host=self._remote_host, user=self._remote_user,
+				 passwd=self._remote_pass, db=self._remote_db_name,
+				 connect_timeout=45)
 
         self._dst_path=dst_path
         logging.info("Initializing local database static tables at %s" % self._dst_path)
@@ -53,6 +56,7 @@ class MySQLdbToSQlite(object):
         # we remove file and create dir, if needed
 
         if overwrite:
+
             logging.info("Trying to remove old database")
             try:
                 os.remove(self._dst_path)
@@ -72,7 +76,9 @@ class MySQLdbToSQlite(object):
 
         try:
             logging.info("Making parent directories")
-            os.makedirs(os.path.dirname(self._dst_path))
+            #os.makedirs(os.path.dirname(self._dst_path))
+            # Janelia: Debug use a folder that doesnt require root access
+            os.makedirs('ethoscope_results')
             logging.info("Success")
         except OSError as e:
             logging.warning(e)
@@ -83,7 +89,7 @@ class MySQLdbToSQlite(object):
             pass
 
         with sqlite3.connect(self._dst_path, check_same_thread=False) as conn:
-            src_cur = src.cursor()
+            src_cur = src.cursor(buffered = True) # Janelia set buffered to True
 
             command = "SELECT * FROM VAR_MAP"
             src_cur.execute(command)
@@ -107,8 +113,8 @@ class MySQLdbToSQlite(object):
     def _copy_table(self,table_name, src, dst, dump_in_csv=False):
 
 
-        src_cur = src.cursor()
-        dst_cur = dst.cursor()
+        src_cur = src.cursor(buffered = True) # Janelia: set buffered to True
+        dst_cur = dst.cursor(buffered = True) 
 
         src_command = "SHOW COLUMNS FROM %s " % table_name
 
@@ -138,8 +144,8 @@ class MySQLdbToSQlite(object):
 
         :return:
         """
-
-        src = MySQLdb.connect(host=self._remote_host, user=self._remote_user,
+	# Janelia: uses mysql.connector
+        src = mysql.connector.connect(host=self._remote_host, user=self._remote_user,
                                          passwd=self._remote_pass, db=self._remote_db_name)
 
         with sqlite3.connect(self._dst_path, check_same_thread=False) as dst:
@@ -167,8 +173,8 @@ class MySQLdbToSQlite(object):
 
 
     def _replace_table(self,table_name, src, dst, dump_in_csv=False):
-        src_cur = src.cursor()
-        dst_cur = dst.cursor()
+        src_cur = src.cursor(buffered = True) #Janelia set buffered to True
+        dst_cur = dst.cursor(buffered = True) #Janelia set buffered to True
 
         src_command = "SELECT * FROM %s " % table_name
 
@@ -200,8 +206,8 @@ class MySQLdbToSQlite(object):
 
 
     def _update_one_roi_table(self, table_name, src, dst, dump_in_csv=False):
-        src_cur = src.cursor()
-        dst_cur = dst.cursor()
+        src_cur = src.cursor(buffered = True)
+        dst_cur = dst.cursor(buffered = True)
 
         try:
             dst_command= "SELECT MAX(id) FROM %s" % table_name
@@ -249,8 +255,8 @@ class MySQLdbToSQlite(object):
 
     def _update_img_snapshot_table(self, table_name, src, dst):
 
-        src_cur = src.cursor()
-        dst_cur = dst.cursor()
+        src_cur = src.cursor(buffered = True)
+        dst_cur = dst.cursor(buffered = True)
 
         try:
             dst_command= "SELECT MAX(id) FROM %s" % table_name
@@ -277,8 +283,8 @@ class MySQLdbToSQlite(object):
             dst.commit()
 
     def _replace_img_snapshot_table(self,table_name, src, dst):
-        src_cur = src.cursor()
-        dst_cur = dst.cursor()
+        src_cur = src.cursor(buffered = True)
+        dst_cur = dst.cursor(buffered = True)
 
         src_command = "SELECT id,t,img FROM %s" % table_name
         src_cur.execute(src_command)
