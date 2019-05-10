@@ -76,9 +76,10 @@ class MySQLdbToSQlite(object):
 
         try:
             logging.info("Making parent directories")
-            #os.makedirs(os.path.dirname(self._dst_path))
+            logging.info('dst_path:'+self._dst_path)
+            os.makedirs(os.path.dirname(self._dst_path))
             # Janelia: Debug use a folder that doesnt require root access
-            os.makedirs('ethoscope_results')
+            #os.makedirs('ethoscope_results')
             logging.info("Success")
         except OSError as e:
             logging.warning(e)
