@@ -395,9 +395,10 @@ class Device(Thread):
 	    mysql_db = mysql.connector.connect(host=self._ip,
                                        connect_timeout=timeout,
                                        **self._ethoscope_db_credentials)
-            cur = mysql_db.cursor()
+            cur = mysql_db.cursor(buffered = True)
             cur.execute(com)
             query = [c for c in cur]
+	    print(query)
             timestamp = float(query[0][0])
             mysql_db.close()
             date_time = datetime.datetime.fromtimestamp(timestamp)

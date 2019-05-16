@@ -114,8 +114,8 @@ class MySQLdbToSQlite(object):
     def _copy_table(self,table_name, src, dst, dump_in_csv=False):
 
 
-        src_cur = src.cursor(buffered = True) # Janelia: set buffered to True
-        dst_cur = dst.cursor(buffered = True) 
+        src_cur = src.cursor() # Janelia: set buffered to True
+        dst_cur = dst.cursor() 
 
         src_command = "SHOW COLUMNS FROM %s " % table_name
 
@@ -174,8 +174,8 @@ class MySQLdbToSQlite(object):
 
 
     def _replace_table(self,table_name, src, dst, dump_in_csv=False):
-        src_cur = src.cursor(buffered = True) #Janelia set buffered to True
-        dst_cur = dst.cursor(buffered = True) #Janelia set buffered to True
+        src_cur = src.cursor() #Janelia set buffered to True
+        dst_cur = dst.cursor() #Janelia set buffered to True
 
         src_command = "SELECT * FROM %s " % table_name
 
@@ -207,8 +207,8 @@ class MySQLdbToSQlite(object):
 
 
     def _update_one_roi_table(self, table_name, src, dst, dump_in_csv=False):
-        src_cur = src.cursor(buffered = True)
-        dst_cur = dst.cursor(buffered = True)
+        src_cur = src.cursor()
+        dst_cur = dst.cursor()
 
         try:
             dst_command= "SELECT MAX(id) FROM %s" % table_name
@@ -256,8 +256,8 @@ class MySQLdbToSQlite(object):
 
     def _update_img_snapshot_table(self, table_name, src, dst):
 
-        src_cur = src.cursor(buffered = True)
-        dst_cur = dst.cursor(buffered = True)
+        src_cur = src.cursor()
+        dst_cur = dst.cursor()
 
         try:
             dst_command= "SELECT MAX(id) FROM %s" % table_name
@@ -284,8 +284,8 @@ class MySQLdbToSQlite(object):
             dst.commit()
 
     def _replace_img_snapshot_table(self,table_name, src, dst):
-        src_cur = src.cursor(buffered = True)
-        dst_cur = dst.cursor(buffered = True)
+        src_cur = src.cursor()
+        dst_cur = dst.cursor()
 
         src_command = "SELECT id,t,img FROM %s" % table_name
         src_cur.execute(src_command)

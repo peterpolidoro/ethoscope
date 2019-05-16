@@ -28,11 +28,14 @@ class BackupClass(object):
 
             if self._device_info["backup_path"] is None:
                 raise ValueError("backup path is None for device %s" % self._device_info["id"])
-	    #print('device: backup_path:' + self._device_info["backup_path"])
-            backup_path = os.path.join(self._results_dir, self._device_info["backup_path"]) # commented this to use path that does not need root
-            #backup_path = '~/ethoscope_results' # Janelia use the passed results_dir directly
-            print('backup_path:'+ backup_path)
-            mirror= MySQLdbToSQlite(backup_path, self._db_credentials["name"],
+            #backup_path = os.path.join(self._results_dir, self._device_info["backup_path"]) # commented this to use path that does not need root
+            #results_dir = './ethoscope_results'
+	    #backup_path = os.path.join(results_dir, self._device_info["backup_path"])
+	    results_dir = '/groups/scicompsoft/home/elmalakis/ethoscope_results'
+	    backup_path = results_dir + self._device_info["backup_path"]
+	    print('backup_path_janelia:'+ backup_path)
+            
+	    mirror= MySQLdbToSQlite(backup_path, self._db_credentials["name"],
                             remote_host=self._database_ip,
                             remote_pass=self._db_credentials["password"],
                             remote_user=self._db_credentials["user"])
