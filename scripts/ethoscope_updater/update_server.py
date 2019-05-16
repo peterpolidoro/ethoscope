@@ -191,6 +191,32 @@ def close(exit_status=0):
     os._exit(exit_status)
 
 
+#======================================================================================================================#
+############# Janelia: Added this class from server.py
+### CLASSS TO BE REMOVED IF BOTTLE CHANGES TO 0.13
+############
+class CherootServer(ServerAdapter):
+    def run(self, handler): # pragma: no cover
+        from cheroot import wsgi
+        from cheroot.ssl import builtin
+        self.options['bind_addr'] = (self.host, self.port)
+        self.options['wsgi_app'] = handler
+        certfile = self.options.pop('certfile', None)
+        keyfile = self.options.pop('keyfile', None)
+        chainfile = self.options.pop('chainfile', None)
+        server = wsgi.Server(**self.options)
+        if certfile and keyfile:
+            server.ssl_adapter = builtin.BuiltinSSLAdapter(
+                    certfile, keyfile, chainfile)
+        try:
+            server.start()
+        finally:
+            server.stop()
+#############
+
+
+
+
 if __name__ == '__main__':
 
     logging.getLogger().setLevel(logging.INFO)
@@ -200,10 +226,10 @@ if __name__ == '__main__':
     # when no bare repo path is declares. we are in a device else, we are on a node
     parser.add_option("-b", "--bare-repo", dest="bare_repo", default=None, help="route to bare repository")
     #parser.add_option("-i", "--node-ip", dest="node_ip", help="Ip of the node in the local network")
-   # parser.add_option("-r", "--router-ip", dest="router_ip", default="192.169.123.254",
-   #                   help="the ip of the router in your setup")
-    parser.add_option("-r", "--router-ip", dest="router_ip", default="10.150.0.1",
+    parser.add_option("-r", "--router-ip", dest="router_ip", default="192.168.123.254",
                       help="the ip of the router in your setup")
+    # parser.add_option("-r", "--router-ip", dest="router_ip", default="10.150.0.1",
+    #                  help="the ip of the router in your setup")
 
     parser.add_option("-p", "--port", default=8888, dest="port", help="the port to run the server on")
     parser.add_option("-D", "--debug", dest="debug", default=False, help="Set DEBUG mode ON", action="store_true")
@@ -245,6 +271,16 @@ if __name__ == '__main__':
 
 
     try:
+	#Janelia added the handle to import --> taken from server.py
+	try:
+	  from cherrypy import wsgiserver
+	except: 
+	  #Trick bottle to think that cheroot is actulay cherrypy server adds the pacth to BOTTLE
+            server_names["cherrypy"]=CherootServer(host='0.0.0.0', port=port)
+            logging.warning("Cherrypy version is bigger than 9, we have to change to cheroot server")
+            pass  
+	#end janelia
+	
         run(app, host='0.0.0.0', port=port, debug=debug, server='cherrypy')
 
     except KeyboardInterrupt:
