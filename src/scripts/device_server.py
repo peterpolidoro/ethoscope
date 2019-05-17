@@ -271,7 +271,7 @@ if __name__ == '__main__':
             logging.warning("Cherrypy version is bigger than 9, we have to change to cheroot server")
             pass
         #########
-        run(app, host='0.0.0.0', port=port, debug=option_dict["debug"], server='cherrypy')
+        run(api, host='0.0.0.0', port=port, debug=option_dict["debug"], server='cherrypy')
 
     except Exception as e:
         logging.error(e)
