@@ -28,12 +28,12 @@ class BackupClass(object):
 
             if self._device_info["backup_path"] is None:
                 raise ValueError("backup path is None for device %s" % self._device_info["id"])
-            #backup_path = os.path.join(self._results_dir, self._device_info["backup_path"]) # commented this to use path that does not need root
+            backup_path = os.path.join(self._results_dir, self._device_info["backup_path"]) # commented this to use path that does not need root
             #results_dir = './ethoscope_results'
 	    #backup_path = os.path.join(results_dir, self._device_info["backup_path"])
-	    results_dir = '/groups/scicompsoft/home/elmalakis/ethoscope_results'
-	    backup_path = results_dir + self._device_info["backup_path"]
-	    print('backup_path_janelia:'+ backup_path)
+	    #results_dir = '/groups/scicompsoft/home/elmalakis/ethoscope_results'
+	    #backup_path = results_dir + self._device_info["backup_path"]
+	    #print('backup_path_janelia:'+ backup_path)
             
 	    mirror= MySQLdbToSQlite(backup_path, self._db_credentials["name"],
                             remote_host=self._database_ip,
@@ -73,12 +73,10 @@ if __name__ == '__main__':
         parser.add_option("-D", "--debug", dest="debug", default=False, help="Set DEBUG mode ON", action="store_true")
         parser.add_option("-e", "--results-dir", dest="results_dir", default="/ethoscope_results",
                        help="Where temporary result files are stored")
-       # parser.add_option("-e", "--results-dir", dest="results_dir", default="~/ethoscope_results", 
-       #		          help= "Where temporary result files are stored")
-       # parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="192.169.123.0",
-       #                   help="the ip of the router in your setup")
-        parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="10.150.0.1",
+        parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="192.168.123.254",
                           help="the ip of the router in your setup")
+       # parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="10.150.0.1",
+       #                   help="the ip of the router in your setup")
         parser.add_option("-s", "--safe", dest="safe", default=False,help="Set Safe mode ON", action="store_true")
         parser.add_option("-l", "--local", dest="local", default=False,
                           help="Run on localhost (run a node and device on the same machine, for development)",

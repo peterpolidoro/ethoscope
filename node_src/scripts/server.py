@@ -14,7 +14,8 @@ import tempfile
 import shutil
 
 app = Bottle()
-STATIC_DIR = "../static"
+#STATIC_DIR = "../static"
+STATIC_DIR = "/opt/ethoscope-git/node_src/static"
 
 def error_decorator(func):
     """
@@ -342,7 +343,7 @@ if __name__ == '__main__':
     RESULTS_DIR = option_dict["results_dir"]
     max_address = 255 if DEBUG else 5
     LOCAL_IP = get_local_ip(option_dict["subnet_ip"], max_node_subnet_address=max_address, localhost=option_dict["local"])
-    print("server: "+LOCAL_IP)
+    #print("server: "+LOCAL_IP)
     try:
         WWW_IP = get_internet_ip()
     except Exception as e:

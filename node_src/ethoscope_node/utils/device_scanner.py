@@ -67,7 +67,7 @@ class DeviceScanner(Thread):
 	
 	d.start()
 	self._devices.append(d)   
-	print('device_scanner: '+local_ip)
+	#print('device_scanner: '+local_ip)
        # for ip in self._subnet_ips(local_ip, (4,254)):
        #     d =  Device(ip, device_refresh_period, results_dir=results_dir)
        #     d.start()
@@ -138,7 +138,7 @@ class DeviceScanner(Thread):
     def run(self):
         last_device_filter_time = 0
         valid_ips = [ip for ip in self._available_ips(self._local_ip, self._ip_range)]
-        print('valid_ips:'+str(valid_ips))
+        #print('valid_ips:'+str(valid_ips))
         while self._is_active :
             if time.time() - last_device_filter_time > self._filter_device_period:
                 valid_ips = [ip for ip in self._available_ips(self._local_ip, self._ip_range)]
@@ -152,7 +152,7 @@ class DeviceScanner(Thread):
                     d.skip_scanning(True)
             for d in self._devices:
                 id = d.id()
-		print('id: '+str(id))
+		#print('id: '+str(id))
 
                 if id and  (id not in self._device_id_map.keys()):
                     logging.info("New device detected with id = %s" % id)
@@ -317,7 +317,7 @@ class Device(Thread):
     def _get_json(self, url,timeout=5, post_data=None):
 
         try:
-	    print('url in _get_json:'+url)
+	    #print('url in _get_json:'+url)
             req = urllib2.Request(url, data=post_data, headers={'Content-Type': 'application/json'})
             f = urllib2.urlopen(req, timeout=timeout)
             message = f.read()
@@ -331,20 +331,20 @@ class Device(Thread):
                 logging.error("Could not parse response from %s as JSON object" % self._id_url) #Janelia: uncomment this
                 raise ScanException("Could not parse Json object")
         except urllib2.URLError as e:
-	    print('_get_json_url error:'+str(e))
+	    #print('_get_json_url error:'+str(e))
             raise ScanException(str(e))
         except Exception as e:
             raise ScanException("Unexpected error" + str(e))
 
 
     def _update_id(self):
-        print('_update_id')
+        #print('_update_id')
         if self._skip_scanning:
             raise ScanException("Not scanning this ip (%s)." % self._ip)
 
         old_id = self._id
-        print('old_ip='+old_id)
-        print('update id._id_url:'+self._id_url)
+        #print('old_ip='+old_id)
+        #print('update id._id_url:'+self._id_url)
         resp = self._get_json(self._id_url)
         self._id = resp['id']
         if self._id != old_id:
@@ -362,15 +362,15 @@ class Device(Thread):
 
     def _update_info(self):
         try:
-            print('update info')
+            #print('update info')
             self._update_id()
         except ScanException:
-	    print('scan exception')
+	    #print('scan exception')
             self._reset_info()
             return
         try:
             data_url = "http://%s:%i/data/%s" % (self._ip, self._port, self._id)
-            print('data_url:'+data_url)
+            #print('data_url:'+data_url)
             resp = self._get_json(data_url)
             self._info.update(resp)
             resp = self._make_backup_path()
@@ -391,15 +391,15 @@ class Device(Thread):
             com = "SELECT value from METADATA WHERE field = 'date_time'"
 
             #mysql_db = MySQLdb.connect(host=self._ip,
-            #                           connect_timeout=timeout,
-            #                           **self._ethoscope_db_credentials)
+            #                          connect_timeout=timeout,
+            #                          **self._ethoscope_db_credentials)
 	    mysql_db = mysql.connector.connect(host=self._ip,
                                        connect_timeout=timeout,
                                        **self._ethoscope_db_credentials)
             cur = mysql_db.cursor(buffered = True)
             cur.execute(com)
             query = [c for c in cur]
-	    print(query)
+	    #print(query)
             timestamp = float(query[0][0])
             mysql_db.close()
             date_time = datetime.datetime.fromtimestamp(timestamp)
