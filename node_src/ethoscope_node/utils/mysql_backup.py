@@ -1,4 +1,5 @@
 __author__ = 'quentin'
+# Modified by Salma Elmalaki for Janelia Ethoscope to use mysql.connector
 
 #import MySQLdb
 import mysql.connector
