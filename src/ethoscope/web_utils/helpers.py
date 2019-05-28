@@ -40,6 +40,9 @@ def pi_version():
     elif hardware.group(1) == 'BCM2709' and '2082' in revision.group(1):
         # Pi 3
         return 3
+    # 2019 hardware specs of RPI
+    elif hardware.group(1) == 'BCM2835' and '20d3' in revision.group(1):
+        return 3
     else:
         # Something else, not a pi.
         return None
