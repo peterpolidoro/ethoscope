@@ -4,7 +4,7 @@ from ethoscope.hardware.interfaces.modular_client_stepper_controller import Modu
 
 
 class JaneliaSleepDepriverInterface(ModularClientInterface):
-    def send(self, board=None, channel=None, speed=180, duration=5000, velocity=0.5):
+    def send(self, board=None, channel=None, speed=180, duration=5000, acceleration=100, deceleration=100, velocity=0.5):
         """
         Sleep deprive an animal by rotating its tube.
 
@@ -16,8 +16,18 @@ class JaneliaSleepDepriverInterface(ModularClientInterface):
         :type speed: int
         :param duration: the duration of time to rotate the tube in ms (max is 6s. The masking duration in ethomics is 6s)
         :type: duration: int
+        :param acceleration: the acceleration, between 100 and 10000 (degree/sec^2)
+        :type: acceleration: int
+        :param deceleration: the deceleration, between 100 and 10000 (degree/sec^2)
+        :type: deceleration: int
         :param velocity: fly velocity in m/s
         :type: duration: float
         """
 
-        self.move_with_speed(board, channel, speed, duration)
+        self.move_with_speed(board,
+                             channel,
+                             speed=speed,
+                             duration=duration,
+                             acceleration=acceleration,
+                             deceleration=deceleration
+                             )
