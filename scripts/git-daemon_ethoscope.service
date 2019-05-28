@@ -3,7 +3,7 @@ Description=Start Git Daemon
 
 [Service]
 
-ExecStart=/usr/bin/git daemon --reuseaddr --export-all --informative-errors --verbose --base-path=/srv/git/ /srv/git/
+ExecStart=/usr/bin/git daemon --reuseaddr --export-all --informative-errors --verbose --base-path=/srv/git/
 Restart=always
 RestartSec=5
 
