@@ -16,7 +16,7 @@ class GenericBackupWrapper(object):
         self._results_dir = results_dir
         self._safe = safe
         self._backup_job = backup_job
-        local_ip = "192.168.123.3"
+        local_ip = "192.168.123.2"
 	#local_ip = "10.150.100.157"
         self._device_scanner = DeviceScanner(local_ip, device_refresh_period=60, results_dir=self._results_dir)
         for d in self._device_scanner.get_all_devices_info():

@@ -50,7 +50,7 @@ class DeviceScanner(Thread):
     _filter_device_period = 5
 
     #def __init__(self, local_ip = "192.169.123.1", ip_range = (6,100),device_refresh_period = 5, results_dir="/ethoscope_results"):
-    def __init__(self, local_ip = "192.168.123.3", ip_range = (2, 100), device_refresh_period = 5, results_dir="/ethoscope_results"):
+    def __init__(self, local_ip = "192.168.123.2", ip_range = (3, 100), device_refresh_period = 5, results_dir="/ethoscope_results"):
     #def __init__(self, local_ip = "10.150.100.157", ip_range = (6,100),device_refresh_period = 5, results_dir="/tmp/ethoscope_results"):
         self._is_active = True
         self._devices = []
@@ -66,7 +66,7 @@ class DeviceScanner(Thread):
 	#d.start()
 	#self._devices.append(d)
 	#print('device_scanner: '+local_ip)
-        for ip in self._subnet_ips(local_ip, (2,254)):
+        for ip in self._subnet_ips(local_ip, (3,254)):
             d =  Device(ip, device_refresh_period, results_dir=results_dir)
             d.start()
             self._devices.append(d)
