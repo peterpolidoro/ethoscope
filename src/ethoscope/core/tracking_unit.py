@@ -1,5 +1,5 @@
 __author__ = 'quentin'
-from ethoscope.core.variables import BaseRelativeVariable, RotationSpeedVariable, FlyVelocityVariable
+from ethoscope.core.variables import BaseRelativeVariable, RotationSpeedVariable, FlyVelocityVariable, RotationAccelerationVariable
 from ethoscope.core.data_point import DataPoint
 from ethoscope.stimulators.stimulators import DefaultStimulator
 
@@ -102,6 +102,8 @@ class TrackingUnit(object):
             dr.append(interact)
             speed = RotationSpeedVariable(int(result.get('speed', 0.0)))
             velocity = FlyVelocityVariable(int(result.get('velocity_log10x1000',0.0)))
+            acc = RotationAccelerationVariable(int(result.get('acc', 0.0)))
             dr.append(speed)  # Janelia: add the speed of the rotation to the tracking info
             dr.append(velocity) # Janelia: add the velocity of the fly to the tracking info
+            dr.append(acc)
         return data_rows
