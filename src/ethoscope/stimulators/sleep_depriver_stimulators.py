@@ -21,7 +21,7 @@ class IsMovingStimulator(BaseStimulator):
 
     def __init__(self, hardware_connection=None, velocity_threshold=0.0060, date_range = "", **kwargs):
         """
-        class implementing an stimulator that decides whether an animal has moved though does nothing   accordingly.
+        class implementing an stimulator that decides whether an animal has moved though does nothing accordingly.
         :param hardware_connection: a default hardware interface object
         :param velocity_threshold: Up to which velocity an animal is considered to be immobile
         :type velocity_threshold: float
@@ -180,6 +180,24 @@ class SleepDepStimulatorCR(SleepDepStimulator):
 
 
 class JaneliaSleepDepStimultor(IsMovingStimulator):
+
+    _description = {"overview": "A stimulator to sleep deprive an animal using modular client motors.",
+                    "arguments": [
+                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.0060},
+                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken","default":120},
+                                    {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "min_motor_speed","description": "The motor speed in degree/sec", "default": 180},
+                                    {"type": "number", "min": 10, "max": 720, "step": 1, "name": "delta_motor_speed", "description": "The increase/decrease in motor speed", "default": 90},
+                                    {"type": "number", "min": 100, "max": 10000, "step": 1, "name": "min_motor_acceleration", "description": "The minimal motor acceleration", "default": 100},
+                                    {"type": "number", "min": 100, "max": 10000, "step": 1, "name": "max_motor_acceleration", "description": "The maximal motor acceleration", "default": 10000},
+                                    {"type": "number", "min": 10, "max": 10000, "step": 1, "name": "delta_motor_acceleration", "description": "The increase/decrease in motor acceleration", "default": 10},
+                                    {"type": "number", "min": 10, "max": 10000, "step": 1, "name": "motor_deceleration", "description": "The motor deceleration", "default": 10000},
+                                    {"type": "number", "min": 60, "max": 5*60, "step": 1, "name": "low_time_threshold", "description": "The minimal time threshold to increase the speed if fly falls asleep again quickly", "default": 120},
+                                    {"type": "number", "min": 60, "max": 30*60, "step": 1, "name": "high_time_threshold", "description": "The maximal time threshold to decrease the speed if fly does not fall asleep quickly", "default": 60 * 30},
+                                    {"type": "date_range", "name": "date_range",
+                                     "description": "A date and time range in which the device will perform (see http://tinyurl.com/jv7k826)",
+                                     "default": ""},
+                                   ]}
+
     _HardwareInterfaceClass = JaneliaSleepDepriverInterface
     _roi_to_channel = {  # TODO: check if the roi and channel mapping are the same with the second rpi
         1: 6,
@@ -218,7 +236,7 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
     #_motor_speed = [round(x) for x in np.linspace(0, 360, 10000+1)]
 
     # Create dictionary of current fly_velocity/motor_speed status for each roi
-    _stimulus_info = {'t': 0, 'v': 0.006, 's': 90} # initialize the stimulus info for each roi
+    _stimulus_info = {'t': 0, 'v': 0.006, 's': 90, 'a':100} # initialize the stimulus info for each roi
     _roi_stimulus_status = {1: _stimulus_info,
                                  2: _stimulus_info,
                                  3: _stimulus_info,
@@ -235,18 +253,28 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
                                  14: _stimulus_info
                                  }
 
-    _time_delta_min = 1000 * 60 * 2       # 2 min for time delta (min time thresh in hysteresis)
-    _time_delta_max = 1000 * 60 * 30      # 30 min for time delta (max time thresh in hysteresis)  
-    
-    _motor_speed_delta = 360      # 360 degree step for each increase/decrease in velocity
-    _min_motor_speed = 90
-    _max_motor_speed = 2520      # based on modular_client max motor speed
-
+    # _time_delta_min = 1000 * 60 * 2       # 2 min for time delta (min time thresh in hysteresis)
+    # _time_delta_max = 1000 * 60 * 30      # 30 min for time delta (max time thresh in hysteresis)
+    #
+    # _motor_speed_delta = 90      # 360 degree step for each increase/decrease in velocity
+    # _min_motor_speed = 90
+    # _max_motor_speed = 720      # based on modular_client max motor speed
+    # _min_motor_acc = 100
+    # _max_motor_acc = 10000
+    #
 
     def __init__(self,
                  hardware_connection,
                  velocity_threshold= 0.0060, #0.01, #0.0060,  # decrease the velocity threshold
                  min_inactive_time=120, #120,  # s    # decrease the min inactive time
+                 min_motor_speed=180,
+                 delta_motor_speed=90,
+                 min_motor_acceleration=100,
+                 max_motor_acceleration=10000,
+                 delta_motor_acceleration=10,
+                 motor_deceleration=10000,
+                 low_time_threshold=120,
+                 high_time_threshold=1800,
                  date_range=""):
         """
         A stimulator to control a sleep depriver module.
@@ -257,10 +285,37 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
         :type velocity_threshold: float
         :param min_inactive_time: the minimal time without motion after which an animal should be disturbed (in seconds)
         :type min_inactive_time: float
+        :param min_motor_speed: the minimal motor speed in degree/sec
+        :type min_motor_speed: int
+        :param delta_motor_speed: the increase/decrease in motor speed
+        :type delta_motor_speed: int
+        :param min_motor_acceleration: the minimal motor acceleration in degree/sec^2
+        :type min_motor_acceleration: int
+        :param max_motor_acceleration: the maximal motor acceleration in degree/sec^2
+        :type max_motor_acceleration: int
+        :param delta_motor_acceleration: the increase/decrease in degree/sec^2
+        :type delta_motor_acceleration: int
+        :param motor_deceleration: the motor deceleration in degree/sec^2
+        :type motor_deceleration: int
+        :param low_time_threshold: the minimal time the fly falls back to sleep before increasing the speed and acceleration
+        :type low_time_threshold: int
+        :param high_time_threshold: the maximal time the fly falls back to sleep before decreasing the speed and acceleration
+        :type high_time_threshold: int
         :return:
         """
 
         self._inactivity_time_threshold_ms = min_inactive_time * 1000  # so we use ms internally
+
+        self._time_delta_min = low_time_threshold * 1000   # 2 min for time delta (min time thresh in hysteresis)
+        self._time_delta_max = high_time_threshold * 1000   # 30 min for time delta (max time thresh in hysteresis)
+
+        self._motor_speed_delta = delta_motor_speed  # 90 degree step for each increase/decrease in velocity
+        self._min_motor_speed = min_motor_speed
+        self._max_motor_speed = 720  # based on modular_client max motor speed
+        self._min_motor_acc = min_motor_acceleration
+        self._max_motor_acc = max_motor_acceleration
+        self._motor_acc_delta = delta_motor_acceleration
+        self._motor_dec = motor_deceleration
         self._t0 = None
 
         super(JaneliaSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
@@ -299,6 +354,7 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
                 speed = self._roi_stimulus_status[roi_id]['s']
+                acc = self._roi_stimulus_status[roi_id]['a']
                 # Check the previous status of the stimulus if the fly was asleep in the previous recording
                 # Stay in the same motor speed unless the fly fell asleep again quickly
                 # The hysteresis loop for the stimulus staus
@@ -306,15 +362,22 @@ class JaneliaSleepDepStimultor(IsMovingStimulator):
                     # increase the speed of the motor until max rotation speed
                     if speed < self._max_motor_speed:
                         speed = min(speed + self._motor_speed_delta, self._max_motor_speed)
+                     # increase the acc of the motor untill max acc
+                    if acc < self._max_motor_acc:
+                        acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
                 elif float(now - self._roi_stimulus_status[roi_id]['t']) >= self._inactivity_time_threshold_ms + self._time_delta_max:
                     # reduce the speed of the motor until min rotation speed
                     if speed > self._min_motor_speed:
                         speed = max(speed - self._motor_speed_delta, self._min_motor_speed)
+                    # reduce the acc of the motor until min acc
+                    if acc > self._min_motor_acc:
+                        acc = max(acc - self._motor_acc_delta, self._min_motor_acc)
+
                 # update the stimulus status of the roi
-                self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed}
-                print('%d, board%d, channel%d, velocity%f, speed%d' %(now, board, channel, current_velocity, speed))
+                self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
+                print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
                 reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
-                return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': speed, 'velocity':reported_velocity}
+                return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': speed, 'velocity':reported_velocity, "acceleration":acc, "deceleration":self._motor_dec}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
