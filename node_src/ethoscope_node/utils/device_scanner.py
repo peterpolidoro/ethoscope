@@ -62,7 +62,7 @@ class DeviceScanner(Thread):
         self._use_scapy = _use_scapy
 
 	#janelia: for debugging use specific ethoscope/comment out the loop for all devices
-	d = Device("192.168.123.4", device_refresh_period, results_dir= results_dir)
+	d = Device("192.168.123.2", device_refresh_period, results_dir= results_dir)
 	#d = Device("10.8.2.36", device_refresh_period, results_dir= results_dir)
 	
 	d.start()
