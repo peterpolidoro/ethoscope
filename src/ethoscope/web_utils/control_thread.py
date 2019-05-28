@@ -70,24 +70,25 @@ class ControlThread(Thread):
     _evanescent = False
     _option_dict = {
         "roi_builder":{
-                "possible_classes":[DefaultROIBuilder, SleepMonitorWithTargetROIBuilder, SleepMonitorWithTargetROIBuilderJanelia, TargetGridROIBuilder, OlfactionAssayROIBuilder],
+                #"possible_classes":[DefaultROIBuilder, SleepMonitorWithTargetROIBuilder, SleepMonitorWithTargetROIBuilderJanelia, TargetGridROIBuilder, OlfactionAssayROIBuilder],
+                "possible_classes": [SleepMonitorWithTargetROIBuilderJanelia],
             },
         "tracker":{
                 "possible_classes":[AdaptiveBGModel],
             },
         "interactor":{
                         "possible_classes":[DefaultStimulator, 
-                                            SleepDepStimulator,
-                                            JaneliaSleepDepStimultor,
-                                            OptomotorSleepDepriver,
-                                            MiddleCrossingStimulator,
+                                            #SleepDepStimulator,
+                                            JaneliaSleepDepStimultor
+                                            #OptomotorSleepDepriver,
+                                            #MiddleCrossingStimulator,
                                             #SystematicSleepDepInteractor,
-                                            ExperimentalSleepDepStimulator,
+                                            #ExperimentalSleepDepStimulator,
                                             #GearMotorSleepDepStimulator,
                                             #DynamicOdourDeliverer,
-                                            DynamicOdourSleepDepriver,
-                                            OptoMidlineCrossStimulator,
-                                            MiddleCrossingOdourStimulator
+                                            #DynamicOdourSleepDepriver,
+                                            #OptoMidlineCrossStimulator,
+                                            #MiddleCrossingOdourStimulator
                                             ],
                     },
         "drawer":{
