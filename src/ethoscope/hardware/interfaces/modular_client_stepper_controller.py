@@ -69,7 +69,7 @@ class ModularClientInterface(BaseInterface):
             raise Exception("Could not wake up the motor boards.")
     
 
-    def move_with_speed(self, board, channel, speed=180, duration=5000):
+    def move_with_speed(self, board, channel, speed=180, acceleration=100, deceleration=100, duration=5000):
         """
         Move a specified rotation to a speed for a certain time.
 
@@ -79,6 +79,10 @@ class ModularClientInterface(BaseInterface):
         :type channel: int
         :param speed: the speed, between -360 and 360 (degree/s). The sign indicates the rotation direction (CW or CCW)
         :type speed: int
+        :param acceleration: the acceleration, between 100 and 10000 (degree/s^2).
+        :type acceleration: int
+        :param deceleration the deceleration, between 100 and 10000 (degree/s^2).
+        :type deceleration: int
         :param duration: the time (ms) the stimulus should last
         :type duration: int
         :return:
@@ -90,14 +94,20 @@ class ModularClientInterface(BaseInterface):
         if board < 0 or board > 1:
             raise Exception("idx board must be 0 or 1")
 
+
+        motor = None
+
         if board == 0:
             motor = self._dev0
         elif board == 1:
             motor = self._dev1
-        #motor.move_at(channel, speed)
-        motor.move_at_for(channel, speed, duration)
-        #time.sleep(float(duration)/1000)
-        #motor.stop(channel)
+
+        if motor is not None:
+            motor.move_at_for(channel, speed, duration, acceleration, deceleration)
+
+        else:
+            raise Exception("Motors are not configured to apply stimulus")
+
         return
     
     
