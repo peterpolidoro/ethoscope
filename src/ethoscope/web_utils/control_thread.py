@@ -315,8 +315,8 @@ class ControlThread(Thread):
         import socket, time
         server_ip = '192.168.123.2'
         tcp_port = 9998
-        t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        msg = self._info["name"] + t
+        t = camera.start_time.strftime("%y%m%d_%H%M%S")
+        msg = self._info["name"] +'_'+ t
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((server_ip, tcp_port))
         time.sleep(1)
