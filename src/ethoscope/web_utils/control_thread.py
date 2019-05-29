@@ -312,7 +312,7 @@ class ControlThread(Thread):
         self._monit.run(result_writer, self._drawer)
 
     def _trigger_backlight_controller(self):
-        path = "/ethoscope_results/"
+        path = "/ethoscope_data/"
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
         open(path+'start_'+t+'.txt', 'a+')#.close()
 
