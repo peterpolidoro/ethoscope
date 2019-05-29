@@ -6,6 +6,7 @@ import logging
 import time
 import re
 import cv2
+import datetime
 from threading import Thread
 import pickle
 
@@ -19,12 +20,8 @@ from ethoscope.drawers.drawers import NullDrawer, DefaultDrawer
 from ethoscope.trackers.adaptive_bg_tracker import AdaptiveBGModel
 from ethoscope.hardware.interfaces.interfaces import HardwareConnection
 from ethoscope.stimulators.stimulators import DefaultStimulator
-#<<<<<<< HEAD
-#from ethoscope.stimulators.sleep_depriver_stimulators import , SleepDepStimulator, SleepDepStimulatorCR, ExperimentalSleepDepStimulator, MiddleCrossingStimulator#, SystematicSleepDepInteractor
 
-
-
-from ethoscope.stimulators.sleep_depriver_stimulators import SleepDepStimulator, JaneliaSleepDepStimultor, OptomotorSleepDepriver, ExperimentalSleepDepStimulator, MiddleCrossingStimulator#, SystematicSleepDepInteractor
+from ethoscope.stimulators.sleep_depriver_stimulators import SleepDepStimulator, JaneliaAdaptiveSleepDepStimultor, JaneliaShakerSleepDepStimultor, OptomotorSleepDepriver, ExperimentalSleepDepStimulator, MiddleCrossingStimulator#, SystematicSleepDepInteractor
 from ethoscope.stimulators.odour_stimulators import DynamicOdourSleepDepriver, MiddleCrossingOdourStimulator #, DynamicOdourDeliverer
 from ethoscope.stimulators.optomotor_stimulators import OptoMidlineCrossStimulator
 
@@ -79,7 +76,8 @@ class ControlThread(Thread):
         "interactor":{
                         "possible_classes":[DefaultStimulator, 
                                             #SleepDepStimulator,
-                                            JaneliaSleepDepStimultor
+                                            JaneliaAdaptiveSleepDepStimultor,
+                                            JaneliaShakerSleepDepStimultor
                                             #OptomotorSleepDepriver,
                                             #MiddleCrossingStimulator,
                                             #SystematicSleepDepInteractor,
@@ -297,7 +295,7 @@ class ControlThread(Thread):
 
         #Here the stimulator passes args. Hardware connection was previously open as thread.
         stimulators = [StimulatorClass(hardware_connection, **stimulator_kwargs) for _ in rois]
-        
+
         kwargs = self._monit_kwargs.copy()
         kwargs.update(tracker_kwargs)
 
@@ -309,7 +307,15 @@ class ControlThread(Thread):
         self._info["status"] = "running"
         logging.info("Setting monitor status as running: '%s'" % self._info["status"])
 
+        # Janelia: Send a tracking signal to the backlight controller
+        self._trigger_backlight_controller()
         self._monit.run(result_writer, self._drawer)
+
+    def _trigger_backlight_controller(self):
+        path = "/ethoscope_results/"
+        t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+        open(path+'start_'+t+'.txt', 'w').close()
+
 
     def _set_tracking_from_pickled(self):
         with open(self._persistent_state_file, "r") as f:
@@ -417,7 +423,7 @@ class ControlThread(Thread):
             with rw as result_writer:
                 if cam.canbepickled:
                     self._save_pickled_state(cam, rw, rois, TrackerClass, tracker_kwargs, hardware_connection, StimulatorClass, stimulator_kwargs)
-                
+
                 self._start_tracking(cam, result_writer, rois, TrackerClass, tracker_kwargs,
                                      hardware_connection, StimulatorClass, stimulator_kwargs)
             self.stop()
