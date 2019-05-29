@@ -183,13 +183,16 @@ class ModularClientInterface(BaseInterface):
         """
         # for i in range(1, 1 + self._n_channels):
         #    self.send(i)
-        self._dev0.move_all_at(180)
-        self._dev1.move_all_at(180)
-        time.sleep(10)
-        self._dev0.stop_all()
-        self._dev1.stop_all()
-        self._dev0.zero_all()
-        self._dev1.zero_all()
+
+        # Comment this for now
+        # self._dev0.move_all_at(180)
+        # self._dev1.move_all_at(180)
+        # time.sleep(10)
+        # self._dev0.stop_all()
+        # self._dev1.stop_all()
+        # self._dev0.zero_all()
+        # self._dev1.zero_all()
+        return
 
 
 
