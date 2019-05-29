@@ -312,9 +312,16 @@ class ControlThread(Thread):
         self._monit.run(result_writer, self._drawer)
 
     def _trigger_backlight_controller(self):
-        path = "/ethoscope_data/"
+        import socket, time
+        server_ip = '192.168.123.2'
+        tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        open(path+'start_'+t+'.txt', 'a+')#.close()
+        msg = self._info["name"] + t
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((server_ip, tcp_port))
+        time.sleep(1)
+        s.send(msg)
+        s.close()
 
 
     def _set_tracking_from_pickled(self):
@@ -386,7 +393,7 @@ class ControlThread(Thread):
         self._metadata = {
             "machine_id": self._info["id"],
             "machine_name": self._info["name"],
-            "date_time": cam.start_time,  # the camera start time is the reference 0
+            "date_time": cam.start_time,  # the camera start time is the reference 0 #TODO: change time to readable format
             "frame_width": cam.width,
             "frame_height": cam.height,
             "version": self._info["version"]["id"],
