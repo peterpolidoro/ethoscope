@@ -146,7 +146,7 @@ OUTPUT_DB = "/tmp/results_etho_motor.db"
 #        
 #
 #
-#class JaneliaSleepDepriverInterface(ModularClientInterface):
+#class JaneliaAdaptiveSleepDepriverInterface(ModularClientInterface):
 #    def send(self, board, channel):
 #        """
 #        Sleep deprive an animal by rotating its tube.
@@ -162,8 +162,8 @@ OUTPUT_DB = "/tmp/results_etho_motor.db"
 #        self.move_with_speed(board, channel)
 #
 #        
-#class JaneliaSleepDepStimultor(IsMovingStimulator):
-#    _HardwareInterfaceClass = JaneliaSleepDepriverInterface
+#class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
+#    _HardwareInterfaceClass = JaneliaAdaptiveSleepDepriverInterface
 #    _roi_to_channel = { #TODO: check if the roi and  channel is the same when the second 
 #            1:6, 2:5, 3:4, 4:3, 5:2, 6:1, 7:0,
 #            8:6, 9:5, 10:4, 11:3, 12:2, 13:1, 14:0
@@ -193,7 +193,7 @@ OUTPUT_DB = "/tmp/results_etho_motor.db"
 #        self._inactivity_time_threshold_ms = min_inactive_time *1000 #so we use ms internally
 #        self._t0 = None
 #        
-#        super(JaneliaSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
+#        super(JaneliaAdaptiveSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
 #
 #
 #
