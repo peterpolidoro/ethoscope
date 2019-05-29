@@ -308,10 +308,10 @@ class ControlThread(Thread):
         logging.info("Setting monitor status as running: '%s'" % self._info["status"])
 
         # Janelia: Send a tracking signal to the backlight controller
-        self._trigger_backlight_controller()
+        self._trigger_backlight_controller(camera)
         self._monit.run(result_writer, self._drawer)
 
-    def _trigger_backlight_controller(self):
+    def _trigger_backlight_controller(self, camera):
         import socket, time
         server_ip = '192.168.123.2'
         tcp_port = 9998
