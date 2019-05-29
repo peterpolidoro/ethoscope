@@ -314,7 +314,7 @@ class ControlThread(Thread):
     def _trigger_backlight_controller(self):
         path = "/ethoscope_results/"
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        open(path+'start_'+t+'.txt', 'w').close()
+        open(path+'start_'+t+'.txt', 'a+')#.close()
 
 
     def _set_tracking_from_pickled(self):
