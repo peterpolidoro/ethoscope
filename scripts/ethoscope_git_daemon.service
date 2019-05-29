@@ -2,17 +2,10 @@
 Description=Start Git Daemon
 
 [Service]
-
+Type=simple
 ExecStart=/usr/bin/git daemon --reuseaddr --export-all --informative-errors --verbose --base-path=/srv/git/
 Restart=always
 RestartSec=5
-
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=git-daemon
-
-User=git
-Group=git
 
 [Install]
 WantedBy=multi-user.target
