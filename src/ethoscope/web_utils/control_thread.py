@@ -317,11 +317,15 @@ class ControlThread(Thread):
         tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
         msg = self._info["name"] +'_'+ t
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((server_ip, tcp_port))
-        time.sleep(1)
-        s.send(msg)
-        s.close()
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((server_ip, tcp_port))
+            time.sleep(1)
+            s.send(msg)
+            s.close()
+        except:
+            logging.info("trigger backlight was not successful")
+            pass
 
 
     def _set_tracking_from_pickled(self):
