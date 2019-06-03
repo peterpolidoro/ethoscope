@@ -356,7 +356,7 @@ class PiFrameGrabber(multiprocessing.Process):
 
                 #janelia configurations
                 capture.exposure_mode = 'sports'
-                capture.shutter_speed = 100000
+                capture.shutter_speed = 50000
                 #capture.zoom = (0.0, 0.15, 1.0, 0.8)
                 #capture.awb_mode = 'fluorescent'
                 #capture.exposure_mode = 'backlight'
