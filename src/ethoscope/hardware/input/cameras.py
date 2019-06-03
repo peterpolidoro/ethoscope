@@ -355,7 +355,7 @@ class PiFrameGrabber(multiprocessing.Process):
                 capture.resolution = self._target_resolution
 
                 #janelia configurations
-                capture.exposure = 'sports'
+                capture.exposure_mode = 'sports'
                 capture.shutter_speed = 1000000
                 #capture.zoom = (0.0, 0.15, 1.0, 0.8)
                 #capture.awb_mode = 'fluorescent'
