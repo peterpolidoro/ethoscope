@@ -105,7 +105,8 @@ class ControlThread(Thread):
     #some classes do not need to be offered as choices to the user in normal conditions
     #these are shown only if the machine is not a PI
     _is_a_rPi = isMachinePI()
-    _hidden_options = {'camera', 'result_writer'}
+    #_hidden_options = {'camera', 'result_writer'}
+    _hidden_options = {'result_writer'}
     
     for k in _option_dict:
         _option_dict[k]["class"] =_option_dict[k]["possible_classes"][0]
