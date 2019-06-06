@@ -29,7 +29,7 @@ class ModularClientInterface(BaseInterface):
             
         # wake up all motors        
         self._wake_all()
-        self._warm_up()
+        #self._warm_up()
         # reset the positions of the motors
         self._reset_all()
 
@@ -48,15 +48,15 @@ class ModularClientInterface(BaseInterface):
         if self._dev0 is not None and self._dev1 is not None:
             self._dev0.stop_all()
             self._dev0.zero_all()
-            self._dev0.acceleration_max('setAllElementValues', '10000')  # fix the acceleration of all the motors at 1000
-            self._dev0.velocity_max('setAllElementValues', '720')
-            self._dev0.velocity_min('setAllElementValues', '-720')
+            #self._dev0.acceleration_max('setAllElementValues', '10000')  # fix the acceleration of all the motors at 1000
+            #self._dev0.velocity_max('setAllElementValues', '720')
+            #self._dev0.velocity_min('setAllElementValues', '-720')
             
             self._dev1.stop_all()
             self._dev1.zero_all()
-            self._dev1.acceleration_max('setAllElementValues', '10000')  # fix the acceleration of all the motors at 1000
-            self._dev1.velocity_max('setAllElementValues', '720')
-            self._dev1.velocity_min('setAllElementValues', '-720')
+            #self._dev1.acceleration_max('setAllElementValues', '10000')  # fix the acceleration of all the motors at 1000
+            #self._dev1.velocity_max('setAllElementValues', '720')
+            #self._dev1.velocity_min('setAllElementValues', '-720')
             
         else:
             raise Exception("Could not initialize the motor boards.")
@@ -183,13 +183,16 @@ class ModularClientInterface(BaseInterface):
         """
         # for i in range(1, 1 + self._n_channels):
         #    self.send(i)
-        self._dev0.move_all_at(180)
-        self._dev1.move_all_at(180)
-        time.sleep(10)
-        self._dev0.stop_all()
-        self._dev1.stop_all()
-        self._dev0.zero_all()
-        self._dev1.zero_all()
+
+        # Comment this for now
+        # self._dev0.move_all_at(180)
+        # self._dev1.move_all_at(180)
+        # time.sleep(10)
+        # self._dev0.stop_all()
+        # self._dev1.stop_all()
+        # self._dev0.zero_all()
+        # self._dev1.zero_all()
+        return
 
 
 

@@ -355,6 +355,8 @@ class PiFrameGrabber(multiprocessing.Process):
                 capture.resolution = self._target_resolution
 
                 #janelia configurations
+                capture.exposure_mode = 'sports'
+                capture.shutter_speed = 5000
                 #capture.zoom = (0.0, 0.15, 1.0, 0.8)
                 #capture.awb_mode = 'fluorescent'
                 #capture.exposure_mode = 'backlight'
@@ -391,7 +393,8 @@ class PiFrameGrabber(multiprocessing.Process):
                     # Check the framerate every 5000 frames
                     if i % 100 == 0:
                          now = time.time()
-                         print i, i/(now - self._start_time)
+                         #print i, i/(now - self._start_time)
+                         logging.info('%d, %d', i, i/(now - self._start_time) )
                     #print i, now, self._queue.qsize(), self._stop_queue.qsize()
         finally:
             logging.warning("Closing frame grabber process")
