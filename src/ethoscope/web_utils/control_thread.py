@@ -6,7 +6,6 @@ import logging
 import time
 import re
 import cv2
-import datetime
 from threading import Thread
 import pickle
 
@@ -307,15 +306,7 @@ class ControlThread(Thread):
         self._info["status"] = "running"
         logging.info("Setting monitor status as running: '%s'" % self._info["status"])
 
-        # Janelia: Send a tracking signal to the backlight controller
-        self._trigger_backlight_controller()
         self._monit.run(result_writer, self._drawer)
-
-    def _trigger_backlight_controller(self):
-        path = "/ethoscope_results/"
-        t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        open(path+'start_'+t+'.txt', 'w').close()
-
 
     def _set_tracking_from_pickled(self):
         with open(self._persistent_state_file, "r") as f:
