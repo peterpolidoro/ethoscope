@@ -20,7 +20,7 @@ from ethoscope.trackers.adaptive_bg_tracker import AdaptiveBGModel
 from ethoscope.hardware.interfaces.interfaces import HardwareConnection
 from ethoscope.stimulators.stimulators import DefaultStimulator
 
-from ethoscope.stimulators.sleep_depriver_stimulators import SleepDepStimulator, JaneliaAdaptiveSleepDepStimultor, JaneliaShakerSleepDepStimultor, OptomotorSleepDepriver, ExperimentalSleepDepStimulator, MiddleCrossingStimulator#, SystematicSleepDepInteractor
+from ethoscope.stimulators.sleep_depriver_stimulators import SleepDepStimulator, JaneliaAdaptiveSleepDepStimultor, JaneliaShakerSleepDepStimultor, JaneliaOptoMotorAdaptiveSleepDepStimulator, OptomotorSleepDepriver, ExperimentalSleepDepStimulator, MiddleCrossingStimulator#, SystematicSleepDepInteractor
 from ethoscope.stimulators.odour_stimulators import DynamicOdourSleepDepriver, MiddleCrossingOdourStimulator #, DynamicOdourDeliverer
 from ethoscope.stimulators.optomotor_stimulators import OptoMidlineCrossStimulator
 
@@ -76,7 +76,8 @@ class ControlThread(Thread):
                         "possible_classes":[DefaultStimulator, 
                                             #SleepDepStimulator,
                                             JaneliaAdaptiveSleepDepStimultor,
-                                            JaneliaShakerSleepDepStimultor
+                                            JaneliaShakerSleepDepStimultor,
+                                            JaneliaOptoMotorAdaptiveSleepDepStimulator
                                             #OptomotorSleepDepriver,
                                             #MiddleCrossingStimulator,
                                             #SystematicSleepDepInteractor,
