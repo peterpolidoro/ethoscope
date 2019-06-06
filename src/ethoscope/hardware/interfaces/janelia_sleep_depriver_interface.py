@@ -23,7 +23,7 @@ class JaneliaAdaptiveSleepDepriverInterface(ModularClientInterface):
         :param velocity: fly velocity in m/s
         :type: duration: float
         """
-
+        print("%d %d %d %d" %(speed, duration, acceleration, deceleration))
         self.move_with_speed(board,
                              channel,
                              speed=speed,
