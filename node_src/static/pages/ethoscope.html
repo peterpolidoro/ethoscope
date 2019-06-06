@@ -213,7 +213,7 @@
                             <input ng-if="arg.type == 'str'" id="input-{{arg.name}}" type=text name={{arg.name}}  ng-model="selected_options.recording[name]['arguments'][arg.name]"  >
 
                             <div ng-if="arg.type == 'date_range'" class="input-group">
-                                <input ng-if="arg.type == 'date_range'" date-range-picker class="form-control date-picker" id="input-{{arg.name}}" type=text name={{arg.name}} ng-model="selected_options.recording[name]['arguments'][arg.name]" options="{timePicker: true, timePicker24Hour : true, timePickerIncrement: 30, drops: up , autoApply : true , autoUpdateInput : False, locale: { format: 'YYYY-MM-DD HH:mm:ss', separator : ' > ' }}" >
+                                <input ng-if="arg.type == 'date_range'" date-range-picker class="form-control date-picker" id="input-{{arg.name}}" type=text name={{arg.name}} ng-model="selected_options.recording[name]['arguments'][arg.name]" options="{timePicker: true, timePicker24Hour : true, timePickerIncrement: 30, drops: up , autoApply : False , autoUpdateInput : False, locale: { format: 'YYYY-MM-DD HH:mm:ss', separator : ' > ' }}" >
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                             </div>
 
