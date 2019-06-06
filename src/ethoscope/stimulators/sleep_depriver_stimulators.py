@@ -576,7 +576,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                                     {"type": "number", "min": 60, "max": 5 * 60, "step": 1, "name": "low_time_threshold", "description": "The minimal time threshold to increase the speed if fly falls asleep again quickly", "default": 120},
                                     {"type": "number", "min": 60, "max": 30 * 60, "step": 1, "name": "high_time_threshold", "description": "The maximal time threshold to decrease the speed if fly does not fall asleep quickly", "default": 60 * 30},
                                     {"type": "date_range", "name": "date_range", "description": "A date and time range in which the device will perform (see http://tinyurl.com/jv7k826)", "default": ""},
-                                    {"type": "date_range2", "name": "date_range2", "description": "A date and time range in which the external backlight controller will operate", "default": ""},
+                                    {"type": "date_range", "name": "date_range2", "description": "A date and time range in which the external backlight controller will operate", "default": ""},
                                     ]}
 
     _HardwareInterfaceClass = JaneliaAdaptiveSleepDepriverInterface
