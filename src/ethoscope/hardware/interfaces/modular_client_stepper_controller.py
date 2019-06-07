@@ -54,7 +54,7 @@ class ModularClientInterface(BaseInterface):
             
             self._dev1.stop_all()
             self._dev1.zero_all()
-            self._dev1.acceleration_max('setAllElementValues', '10000')
+            #self._dev1.acceleration_max('setAllElementValues', '10000')
             #self._dev1.velocity_max('setAllElementValues', '720')
             #self._dev1.velocity_min('setAllElementValues', '-720')
             
@@ -111,7 +111,7 @@ class ModularClientInterface(BaseInterface):
         return
     
 
-    def shake_with_speed(self, board, channel, speed=180, acceleration=10000, deceleration=10000, duration=5000):
+    def shake_with_speed(self, board, channel, speed=180, acceleration=2000, deceleration=2000, duration=5000):
         """
         Move a specified rotation to a speed for a certain time.
 
