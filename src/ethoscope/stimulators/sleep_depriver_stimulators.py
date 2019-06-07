@@ -700,6 +700,8 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         self._motor_dec = motor_deceleration
         self._t0 = None
 
+        self.DEBUG =1
+
         super(JaneliaOptoMotorAdaptiveSleepDepStimulator, self).__init__(hardware_connection, velocity_threshold,
                                                                date_range=date_range, date_range2=date_range2)
 
@@ -732,6 +734,12 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
 
         if self._t0 is None:
             self._t0 = now
+
+        if self.DEBUG:
+            return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': 180,
+                                                 'velocity': 0.005, "acceleration": 10000,
+                                                 "deceleration": self._motor_dec}
+
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -776,6 +784,9 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         :param communicate_signal: an ON and OFF signal to the external stimulator
         :type communicate_signal: bool
         """
+        if self.DEBUG:
+            logging.info('Start to communicate with the backlight server with value '+str(communicate_signal))
+
         server_ip = '192.168.123.2'
         tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
