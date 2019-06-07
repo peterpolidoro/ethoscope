@@ -265,10 +265,10 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
                                     {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken","default":120},
                                     {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "min_motor_speed","description": "The motor speed in degree/sec", "default": 180},
                                     {"type": "number", "min": 10, "max": 720, "step": 1, "name": "delta_motor_speed", "description": "The increase/decrease in motor speed", "default": 90},
-                                    {"type": "number", "min": 100, "max": 10000, "step": 1, "name": "min_motor_acceleration", "description": "The minimal motor acceleration", "default": 100},
-                                    {"type": "number", "min": 100, "max": 10000, "step": 1, "name": "max_motor_acceleration", "description": "The maximal motor acceleration", "default": 10000},
-                                    {"type": "number", "min": 10, "max": 10000, "step": 1, "name": "delta_motor_acceleration", "description": "The increase/decrease in motor acceleration", "default": 10},
-                                    {"type": "number", "min": 10, "max": 10000, "step": 1, "name": "motor_deceleration", "description": "The motor deceleration", "default": 10000},
+                                    {"type": "number", "min": 100, "max": 2000, "step": 1, "name": "min_motor_acceleration", "description": "The minimal motor acceleration", "default": 100},
+                                    {"type": "number", "min": 100, "max": 2000, "step": 1, "name": "max_motor_acceleration", "description": "The maximal motor acceleration", "default": 2000},
+                                    {"type": "number", "min": 10, "max": 100, "step": 1, "name": "delta_motor_acceleration", "description": "The increase/decrease in motor acceleration", "default": 10},
+                                    {"type": "number", "min": 10, "max": 2000, "step": 1, "name": "motor_deceleration", "description": "The motor deceleration", "default": 2000},
                                     {"type": "number", "min": 60, "max": 5*60, "step": 1, "name": "low_time_threshold", "description": "The minimal time threshold to increase the speed if fly falls asleep again quickly", "default": 120},
                                     {"type": "number", "min": 60, "max": 30*60, "step": 1, "name": "high_time_threshold", "description": "The maximal time threshold to decrease the speed if fly does not fall asleep quickly", "default": 60 * 30},
                                     {"type": "date_range", "name": "date_range",
@@ -348,9 +348,9 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
                  min_motor_speed=180,
                  delta_motor_speed=90,
                  min_motor_acceleration=100,
-                 max_motor_acceleration=10000,
+                 max_motor_acceleration=2000,
                  delta_motor_acceleration=10,
-                 motor_deceleration=10000,
+                 motor_deceleration=2000,
                  low_time_threshold=120,
                  high_time_threshold=1800,
                  date_range=""):
@@ -556,7 +556,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
                 reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
-                return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': self._motor_speed, 'velocity':reported_velocity, "acceleration":10000, "deceleration":10000}
+                return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': self._motor_speed, 'velocity':reported_velocity, "acceleration":2000, "deceleration":2000}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
@@ -569,10 +569,10 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                                     {"type": "number", "min": 1, "max": 3600 * 12, "step": 1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken", "default": 120},
                                     {"type": "number", "min": 10, "max": 720, "step": 1, "name": "min_motor_speed", "description": "The motor speed in degree/sec", "default": 180},
                                     {"type": "number", "min": 10, "max": 720, "step": 1, "name": "delta_motor_speed", "description": "The increase/decrease in motor speed", "default": 90},
-                                    {"type": "number", "min": 100, "max": 10000, "step": 1, "name": "min_motor_acceleration", "description": "The minimal motor acceleration", "default": 100},
-                                    {"type": "number", "min": 100, "max": 10000, "step": 1, "name": "max_motor_acceleration", "description": "The maximal motor acceleration", "default": 10000},
-                                    {"type": "number", "min": 10, "max": 10000, "step": 1, "name": "delta_motor_acceleration", "description": "The increase/decrease in motor acceleration", "default": 10},
-                                    {"type": "number", "min": 10, "max": 10000, "step": 1, "name": "motor_deceleration", "description": "The motor deceleration", "default": 10000},
+                                    {"type": "number", "min": 100, "max": 2000, "step": 1, "name": "min_motor_acceleration", "description": "The minimal motor acceleration", "default": 100},
+                                    {"type": "number", "min": 100, "max": 2000, "step": 1, "name": "max_motor_acceleration", "description": "The maximal motor acceleration", "default": 2000},
+                                    {"type": "number", "min": 10, "max": 100, "step": 1, "name": "delta_motor_acceleration", "description": "The increase/decrease in motor acceleration", "default": 10},
+                                    {"type": "number", "min": 10, "max": 2000, "step": 1, "name": "motor_deceleration", "description": "The motor deceleration", "default": 2000},
                                     {"type": "number", "min": 60, "max": 5 * 60, "step": 1, "name": "low_time_threshold", "description": "The minimal time threshold to increase the speed if fly falls asleep again quickly", "default": 120},
                                     {"type": "number", "min": 60, "max": 30 * 60, "step": 1, "name": "high_time_threshold", "description": "The maximal time threshold to decrease the speed if fly does not fall asleep quickly", "default": 60 * 30},
                                     {"type": "date_range", "name": "date_range", "description": "A date and time range in which the device will perform (see http://tinyurl.com/jv7k826)", "default": ""},
@@ -651,9 +651,9 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                  min_motor_speed=180,
                  delta_motor_speed=90,
                  min_motor_acceleration=100,
-                 max_motor_acceleration=10000,
+                 max_motor_acceleration=2000,
                  delta_motor_acceleration=10,
-                 motor_deceleration=10000,
+                 motor_deceleration=2000,
                  low_time_threshold=120,
                  high_time_threshold=1800,
                  date_range="",
@@ -700,7 +700,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         self._motor_dec = motor_deceleration
         self._t0 = None
 
-        self.DEBUG =1
+        self.DEBUG =0
 
         super(JaneliaOptoMotorAdaptiveSleepDepStimulator, self).__init__(hardware_connection, velocity_threshold,
                                                                date_range=date_range, date_range2=date_range2)
@@ -737,7 +737,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
 
         if self.DEBUG:
             return HasInteractedVariable(True), {"board": board, "channel": channel, 'speed': 180,
-                                                 'velocity': 0.005, "acceleration": 10000,
+                                                 'velocity': 0.005, "acceleration": 2000,
                                                  "deceleration": self._motor_dec}
 
 

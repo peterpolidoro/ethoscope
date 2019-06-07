@@ -48,7 +48,7 @@ class ModularClientInterface(BaseInterface):
         if self._dev0 is not None and self._dev1 is not None:
             self._dev0.stop_all()
             self._dev0.zero_all()
-            self._dev0.acceleration_max('setAllElementValues', '10000')
+            #self._dev0.acceleration_max('setAllElementValues', '10000')
             #self._dev0.velocity_max('setAllElementValues', '720')
             #self._dev0.velocity_min('setAllElementValues', '-720')
             

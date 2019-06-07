@@ -33,7 +33,7 @@ class JaneliaAdaptiveSleepDepriverInterface(ModularClientInterface):
 
 
 class JaneliaShakerSleepDepriverInterface(ModularClientInterface):
-    def send(self, board=None, channel=None, speed=180, duration=5000, acceleration=10000, deceleration=10000, velocity=0.5):
+    def send(self, board=None, channel=None, speed=180, duration=5000, acceleration=2000, deceleration=2000, velocity=0.5):
         """
         Sleep deprive an animal by shaking its tube.
 
