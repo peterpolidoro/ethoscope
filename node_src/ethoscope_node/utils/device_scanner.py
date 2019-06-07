@@ -11,6 +11,7 @@ from functools import wraps
 try:
     from scapy.all import srp, Ether, ARP
     import netifaces
+
     raise ImportError("Not using scapy until issue #75 (https://github.com/gilestrolab/ethoscope/issues/75) is fixed")
     _use_scapy = True
 except ImportError:
@@ -28,6 +29,7 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
     http://www.saltycrane.com/blog/2009/11/trying-out-retry-decorator-python/
     original from: http://wiki.python.org/moin/PythonDecoratorLibrary#Retry
     """
+
     def deco_retry(f):
         @wraps(f)
         def f_retry(*args, **kwargs):
@@ -40,18 +42,20 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=None):
                     mtries -= 1
                     mdelay *= backoff
             return f(*args, **kwargs)
-        return f_retry
-    return deco_retry
 
+        return f_retry
+
+    return deco_retry
 
 
 class DeviceScanner(Thread):
     _refresh_period = 1.0
     _filter_device_period = 5
 
-    #def __init__(self, local_ip = "192.169.123.1", ip_range = (6,100),device_refresh_period = 5, results_dir="/ethoscope_results"):
-    def __init__(self, local_ip = "192.168.123.2", ip_range = (3, 100), device_refresh_period = 5, results_dir="/ethoscope_results"):
-    #def __init__(self, local_ip = "10.150.100.157", ip_range = (6,100),device_refresh_period = 5, results_dir="/tmp/ethoscope_results"):
+    # def __init__(self, local_ip = "192.169.123.1", ip_range = (6,100),device_refresh_period = 5, results_dir="/ethoscope_results"):
+    def __init__(self, local_ip="192.168.123.2", ip_range=(3, 100), device_refresh_period=5,
+                 results_dir="/ethoscope_results"):
+        # def __init__(self, local_ip = "10.150.100.157", ip_range = (6,100),device_refresh_period = 5, results_dir="/tmp/ethoscope_results"):
         self._is_active = True
         self._devices = []
         # "id" -> "info", "dev"
@@ -61,29 +65,29 @@ class DeviceScanner(Thread):
         self._ip_range = ip_range
         self._use_scapy = _use_scapy
 
-	#janelia: for debugging use specific ethoscope/comment out the loop for all devices
-	#d = Device("192.168.123.2", device_refresh_period, results_dir= results_dir)
-	#d.start()
-	#self._devices.append(d)
-	#print('device_scanner: '+local_ip)
-        for ip in self._subnet_ips(local_ip, (3,254)):
-            d =  Device(ip, device_refresh_period, results_dir=results_dir)
+        # janelia: for debugging use specific ethoscope/comment out the loop for all devices
+        # d = Device("192.168.123.2", device_refresh_period, results_dir= results_dir)
+        # d.start()
+        # self._devices.append(d)
+        # print('device_scanner: '+local_ip)
+        for ip in self._subnet_ips(local_ip, (3, 254)):
+            d = Device(ip, device_refresh_period, results_dir=results_dir)
             d.start()
             self._devices.append(d)
         super(DeviceScanner, self).__init__()
 
     def _available_ips(self, local_ip, ip_range):
-        if self._use_scapy :
+        if self._use_scapy:
             for c in self._arp_alive(local_ip):
                 yield c
         else:
-	    # comment out the loop and use the ip of the current ethoscope explicitly
+            # comment out the loop and use the ip of the current ethoscope explicitly
             for c in self._subnet_ips(local_ip, ip_range):
                 yield c
-	   # yield "10.8.2.36"
-	    #yield "192.168.123.4"
+        # yield "10.8.2.36"
+        # yield "192.168.123.4"
 
-    def _subnet_ips(self,local_ip, ip_range):
+    def _subnet_ips(self, local_ip, ip_range):
         for i in range(ip_range[0], ip_range[1] + 1):
             subnet_ip = local_ip.split(".")[0:3]
             subnet_ip = ".".join(subnet_ip)
@@ -107,7 +111,8 @@ class DeviceScanner(Thread):
                         break
             subnet_ip = local_ip.split(".")[0:3]
             subnet_address = ".".join(subnet_ip) + ".0/24"
-            ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=subnet_address), timeout=3, verbose=False, iface=interface)
+            ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=subnet_address), timeout=3, verbose=False,
+                             iface=interface)
             collection = [rcv.sprintf(r"%ARP.psrc%") for snd, rcv in ans]
             if len(collection) == 0:
                 raise Exception("Empty ip list")
@@ -118,7 +123,6 @@ class DeviceScanner(Thread):
             logging.error(traceback.format_exc(e))
             self._use_scapy = False
             return []
-
 
     def _get_last_backup_time(self, device):
         try:
@@ -136,25 +140,25 @@ class DeviceScanner(Thread):
     def run(self):
         last_device_filter_time = 0
         valid_ips = [ip for ip in self._available_ips(self._local_ip, self._ip_range)]
-        #print('valid_ips:'+str(valid_ips))
-        while self._is_active :
+        # print('valid_ips:'+str(valid_ips))
+        while self._is_active:
             if time.time() - last_device_filter_time > self._filter_device_period:
                 valid_ips = [ip for ip in self._available_ips(self._local_ip, self._ip_range)]
                 last_device_filter_time = time.time()
             for d in self._devices:
                 if d.ip() in valid_ips:
-		    #print('skip_scan = F')
+                    # print('skip_scan = F')
                     d.skip_scanning(False)
                 else:
-	            #print('skip_scan = T')
+                    # print('skip_scan = T')
                     d.skip_scanning(True)
             for d in self._devices:
                 id = d.id()
-		#print('id: '+str(id))
+                # print('id: '+str(id))
 
-                if id and  (id not in self._device_id_map.keys()):
+                if id and (id not in self._device_id_map.keys()):
                     logging.info("New device detected with id = %s" % id)
-                    self._device_id_map[id]= {}
+                    self._device_id_map[id] = {}
                     self._device_id_map[id]["dev"] = d
                     self._device_id_map[id]["info"] = d.info().copy()
 
@@ -183,7 +187,7 @@ class DeviceScanner(Thread):
     def get_all_devices_info(self):
         out = {}
         for k, v in self._device_id_map.items():
-            out[k] =  v["info"]
+            out[k] = v["info"]
         return out
 
     def get_device(self, id):
@@ -192,28 +196,28 @@ class DeviceScanner(Thread):
         except KeyError:
             raise KeyError("No such device: %s" % id)
 
-
     def stop(self):
         for d in self._devices:
             d.stop()
         self._is_active = False
 
+
 class Device(Thread):
     _ethoscope_db_credentials = {"user": "ethoscope",
-                                "passwd": "ethoscope",
-                                "db":"ethoscope_db"}
+                                 "passwd": "ethoscope",
+                                 "db": "ethoscope_db"}
 
     _id_page = "id"
     _user_options_page = "user_options"
     _static_page = "static"
     _controls_page = "controls"
-    _allowed_instructions_status = { "start": ["stopped"],
-                                     "start_record": ["stopped"],
-                                     "stop": ["running", "recording"],
-                                     "poweroff": ["stopped"],
-                                     "not_in_use": []}
+    _allowed_instructions_status = {"start": ["stopped"],
+                                    "start_record": ["stopped"],
+                                    "stop": ["running", "recording"],
+                                    "poweroff": ["stopped"],
+                                    "not_in_use": []}
 
-    def __init__(self,ip, refresh_period= 2, port = 9000, results_dir="/ethoscope_results"):
+    def __init__(self, ip, refresh_period=2, port=9000, results_dir="/ethoscope_results"):
         self._results_dir = results_dir
         self._ip = ip
         self._port = port
@@ -224,7 +228,7 @@ class Device(Thread):
         self._skip_scanning = False
         self._refresh_period = refresh_period
 
-        super(Device,self).__init__()
+        super(Device, self).__init__()
 
     def run(self):
         last_refresh = 0
@@ -232,15 +236,15 @@ class Device(Thread):
             time.sleep(.2)
             if time.time() - last_refresh > self._refresh_period:
                 if not self._skip_scanning:
-		    #print('not skip scan')	
+                    # print('not skip scan')
                     self._update_info()
                 else:
-                    #print('reset info')
+                    # print('reset info')
                     self._reset_info()
                 last_refresh = time.time()
 
-    def send_instruction(self,instruction,post_data):
-        post_url = "http://%s:%i/%s/%s/%s" % (self._ip, self._port, self._controls_page,self._id, instruction)
+    def send_instruction(self, instruction, post_data):
+        post_url = "http://%s:%i/%s/%s/%s" % (self._ip, self._port, self._controls_page, self._id, instruction)
         self._check_instructions_status(instruction)
 
         # we do not expect any data back when device is powered off.
@@ -264,12 +268,14 @@ class Device(Thread):
             raise KeyError("Instruction %s is not allowed" % instruction)
 
         if status not in allowed_inst:
-            raise Exception("You cannot send the instruction '%s' to a device in status %s" %(instruction, status))
+            raise Exception("You cannot send the instruction '%s' to a device in status %s" % (instruction, status))
 
     def ip(self):
         return self._ip
+
     def id(self):
         return self._id
+
     def info(self):
         return self._info
 
@@ -277,7 +283,7 @@ class Device(Thread):
         self._skip_scanning = value
 
     def user_options(self):
-        user_options_url= "http://%s:%i/%s/%s" % (self._ip, self._port, self._user_options_page, self._id)
+        user_options_url = "http://%s:%i/%s/%s" % (self._ip, self._port, self._user_options_page, self._id)
         out = self._get_json(user_options_url)
         return out
 
@@ -292,7 +298,7 @@ class Device(Thread):
 
         img_url = "http://%s:%i/%s/%s" % (self._ip, self._port, self._static_page, img_path)
         try:
-            return urllib2.urlopen(img_url,timeout=5)
+            return urllib2.urlopen(img_url, timeout=5)
         except  urllib2.HTTPError:
             logging.error("Could not get image for ip = %s (id = %s)" % (self._ip, self._id))
             raise Exception("Could not get image for ip = %s (id = %s)" % (self._ip, self._id))
@@ -310,39 +316,39 @@ class Device(Thread):
         except Exception as e:
             logging.warning(traceback.format_exc(e))
 
-
     @retry(ScanException, tries=3, delay=1, backoff=1)
-    def _get_json(self, url,timeout=5, post_data=None):
+    def _get_json(self, url, timeout=5, post_data=None):
 
         try:
-	    #print('url in _get_json:'+url)
+            # print('url in _get_json:'+url)
             req = urllib2.Request(url, data=post_data, headers={'Content-Type': 'application/json'})
             f = urllib2.urlopen(req, timeout=timeout)
             message = f.read()
             if not message:
-                logging.error("URL error whist scanning url: %s. No message back." % self._id_url) #Janelia: uncomment this 
+                logging.error(
+                    "URL error whist scanning url: %s. No message back." % self._id_url)  # Janelia: uncomment this
                 raise ScanException("No message back")
             try:
                 resp = json.loads(message)
                 return resp
             except ValueError:
-                logging.error("Could not parse response from %s as JSON object" % self._id_url) #Janelia: uncomment this
+                logging.error(
+                    "Could not parse response from %s as JSON object" % self._id_url)  # Janelia: uncomment this
                 raise ScanException("Could not parse Json object")
         except urllib2.URLError as e:
-	    #print('_get_json_url error:'+str(e))
+            # print('_get_json_url error:'+str(e))
             raise ScanException(str(e))
         except Exception as e:
             raise ScanException("Unexpected error" + str(e))
 
-
     def _update_id(self):
-        #print('_update_id')
+        # print('_update_id')
         if self._skip_scanning:
             raise ScanException("Not scanning this ip (%s)." % self._ip)
 
         old_id = self._id
-        #print('old_ip='+old_id)
-        #print('update id._id_url:'+self._id_url)
+        # print('old_ip='+old_id)
+        # print('update id._id_url:'+self._id_url)
         resp = self._get_json(self._id_url)
         self._id = resp['id']
         if self._id != old_id:
@@ -353,22 +359,21 @@ class Device(Thread):
         self._info["ip"] = self._ip
         self._id = resp['id']
 
-
     def _reset_info(self):
         self._info = {"status": "not_in_use"}
         self._id = ""
 
     def _update_info(self):
         try:
-            #print('update info')
+            # print('update info')
             self._update_id()
         except ScanException:
-	    #print('scan exception')
+            # print('scan exception')
             self._reset_info()
             return
         try:
             data_url = "http://%s:%i/data/%s" % (self._ip, self._port, self._id)
-            #print('data_url:'+data_url)
+            # print('data_url:'+data_url)
             resp = self._get_json(data_url)
             self._info.update(resp)
             resp = self._make_backup_path()
@@ -378,26 +383,25 @@ class Device(Thread):
         except ScanException:
             pass
 
-
-    def _make_backup_path(self,  timeout=30):
+    def _make_backup_path(self, timeout=30):
         try:
-            #import MySQLdb
-            #Janelia
-	    import mysql.connector
+            # import MySQLdb
+            # Janelia
+            import mysql.connector
             device_id = self._info["id"]
             device_name = self._info["name"]
             com = "SELECT value from METADATA WHERE field = 'date_time'"
 
-            #mysql_db = MySQLdb.connect(host=self._ip,
+            # mysql_db = MySQLdb.connect(host=self._ip,
             #                          connect_timeout=timeout,
             #                          **self._ethoscope_db_credentials)
-	    mysql_db = mysql.connector.connect(host=self._ip,
-                                       connect_timeout=timeout,
-                                       **self._ethoscope_db_credentials)
-            cur = mysql_db.cursor(buffered = True)
+            mysql_db = mysql.connector.connect(host=self._ip,
+                                               connect_timeout=timeout,
+                                               **self._ethoscope_db_credentials)
+            cur = mysql_db.cursor()  #Janelia:buffered=True
             cur.execute(com)
             query = [c for c in cur]
-	    #print(query)
+            # print(query)
             timestamp = float(query[0][0])
             mysql_db.close()
             date_time = datetime.datetime.fromtimestamp(timestamp)
