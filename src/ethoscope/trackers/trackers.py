@@ -59,6 +59,7 @@ class BaseTracker(DescribedObject):
                 raise Exception("tracking algorithms are expected to return a LIST of DataPoints")
 
             if len(points) ==0:
+                print('points is 0') # debug janelia
                 return []
 
             # point = self.normalise_position(point)
@@ -69,12 +70,14 @@ class BaseTracker(DescribedObject):
 
         except NoPositionError:
             if len(self._positions) == 0:
+                print('points is 0 no position error')  # debug janelia
                 return []
             else:
 
                 points = self._infer_position(t)
 
                 if len(points) ==0:
+                    print('points is 0 infer')
                     return []
                 for p in points:
                     p.append(IsInferredVariable(True))
