@@ -154,7 +154,7 @@ class TargetGridROIBuilder(BaseROIBuilder):
             return 0
         circul =  4 * np.pi * area / perim ** 2
 
-        if circul < 0.6: #.8: # fixme magic number #Janelia change the magic number to lower value
+        if circul < .8: # fixme magic number
             return 0
         return 1
 
