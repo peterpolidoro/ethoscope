@@ -94,6 +94,9 @@ class TrackingUnit(object):
         data_rows = self._tracker.track(t,img)
 
         interact, result = self._stimulator.apply()
+        # Debug
+        if result is not {}:
+            print result
 
         if len(data_rows) == 0:
             return []
