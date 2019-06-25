@@ -98,7 +98,7 @@ class TrackingUnit(object):
         if len(data_rows) == 0:
             return []
 
-        print(result)
+        #print(result)
 
         # TODO data_row should have some result
         for dr in data_rows:
