@@ -35,6 +35,8 @@ class TargetGridROIBuilder(BaseROIBuilder):
     _horizontal_fill = 1
     _vertical_fill = None
 
+    DEBUG = 1
+
     _description = {"overview": "A flexible ROI builder that allows users to select parameters for the ROI layout."
                                "Lengths are relative to the distance between the two bottom targets (width)",
                     "arguments": [
@@ -176,11 +178,12 @@ class TargetGridROIBuilder(BaseROIBuilder):
                 break
 
         target_diams = [cv2.boundingRect(c)[2] for c in contours]
+        if self.DEBUG: print(target_diams)
 
         mean_diam = np.mean(target_diams)
         mean_sd = np.std(target_diams)
 
-        if mean_sd/mean_diam > 0.08:  #0.10: #Janelia: lower the threshold of the variation
+        if mean_sd/mean_diam > 0.10:
             raise EthoscopeException("Too much variation in the diameter of the targets. Something must be wrong since all target should have the same size", img)
 
         src_points = []
