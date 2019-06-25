@@ -455,7 +455,8 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
                 print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
                 reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'velocity':reported_velocity, 'acceleration':acc, 'deceleration':self._motor_dec}
+                #return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'velocity':reported_velocity, 'acceleration':acc, 'deceleration':self._motor_dec}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed} #, 'acceleration': acc, 'deceleration': self._motor_dec}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
@@ -556,7 +557,8 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
                 reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acceleration':2000, 'deceleration':2000}
+               # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acceleration':2000, 'deceleration':2000}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acceleration': 2000, 'deceleration': 2000}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
@@ -700,7 +702,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         self._motor_dec = motor_deceleration
         self._t0 = None
 
-        self.DEBUG = 0
+        # self.DEBUG = 0
 
         super(JaneliaOptoMotorAdaptiveSleepDepStimulator, self).__init__(hardware_connection, velocity_threshold,
                                                                date_range=date_range, date_range2=date_range2)
@@ -733,11 +735,11 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         if self._t0 is None:
             self._t0 = now
 
-        if self.DEBUG:
-            return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
-                                                 'velocity': 0.005, 'acceleration': 2000,
-                                                 'deceleration': self._motor_dec}
-
+        # if self.DEBUG:
+        #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
+        #                                          'velocity': 0.005, 'acceleration': 2000,
+        #                                          'deceleration': self._motor_dec}
+        #
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -752,7 +754,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                     # increase the speed of the motor until max rotation speed
                     if speed < self._max_motor_speed:
                         speed = min(speed + self._motor_speed_delta, self._max_motor_speed)
-                    # increase the acc of the motor untill max acc
+                    # increase the acc of the motor until max acc
                     if acc < self._max_motor_acc:
                         acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
                 elif float(now - self._roi_stimulus_status[roi_id][
@@ -768,9 +770,10 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
                 # print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
                 reported_velocity = round(log10(current_velocity) * 1000) if current_velocity > 0 else 0
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed,
-                                                     'velocity': reported_velocity, 'acceleration': acc,
-                                                     'deceleration': self._motor_dec}
+                # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed,
+                #                                     'velocity': reported_velocity, 'acceleration': acc,
+                #                                     'deceleration': self._motor_dec}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acceleration': acc, 'deceleration': self._motor_dec}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
