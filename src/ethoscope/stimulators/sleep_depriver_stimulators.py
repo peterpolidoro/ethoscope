@@ -700,7 +700,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         self._motor_dec = motor_deceleration
         self._t0 = None
 
-        self.DEBUG =0
+        self.DEBUG = 1
 
         super(JaneliaOptoMotorAdaptiveSleepDepStimulator, self).__init__(hardware_connection, velocity_threshold,
                                                                date_range=date_range, date_range2=date_range2)
@@ -729,8 +729,6 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         # print(current_velocity)
         current_velocity = 1 if current_velocity > 1 else current_velocity
         current_velocity = 0 if current_velocity < 0 else current_velocity
-
-        # speed = 360 - self._motor_speed[int(current_velocity * 10000)]
 
         if self._t0 is None:
             self._t0 = now

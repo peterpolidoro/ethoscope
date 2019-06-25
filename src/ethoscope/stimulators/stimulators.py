@@ -120,17 +120,17 @@ class DoubleBaseStimulator(DescribedObject):
 
         # check the second time range for the second stimulus
         if self._scheduler2.check_time_range() is True and self._communicationflag is False:
-            print('Scheduler 2 is ON now')
+            #print('Scheduler 2 is ON now')
             self._communicate(True) # send an On Signal
             self._communicationflag = True
         elif self._scheduler2.check_time_range() is False and self._communicationflag is True:
-            print('Scheduler 2 is OFF now')
+            #print('Scheduler 2 is OFF now')
             self._communicate(False)  # send an OFF Signal
             self._communicationflag = False
 
         if self._scheduler.check_time_range() is False:
             return HasInteractedVariable(False), {}
-        print('Scheduler 1 is active now')
+        #print('Scheduler 1 is active now')
         interact, result = self._decide()
         if interact > 0:
             self._deliver(**result)
