@@ -61,7 +61,7 @@ class RotationAccelerationVariable(BaseIntVariable):
      Type encoding the speed of a rotation of a tube
      """
      header_name = "acc"
-     functional_type = "acc"
+     functional_type = "acceleration"
 
 class PhiVariable(BaseIntVariable):
     """
