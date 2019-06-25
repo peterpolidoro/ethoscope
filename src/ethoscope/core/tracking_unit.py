@@ -94,8 +94,11 @@ class TrackingUnit(object):
         data_rows = self._tracker.track(t,img)
 
         interact, result = self._stimulator.apply()
+
         if len(data_rows) == 0:
             return []
+
+        print(result)
 
         # TODO data_row should have some result
         for dr in data_rows:
@@ -104,6 +107,8 @@ class TrackingUnit(object):
             #velocity = FlyVelocityVariable(int(result.get('velocity_log10x1000',0.0)))
             velocity = FlyVelocityVariable(int(result.get('velocity', 0.0)))
             acc = RotationAccelerationVariable(int(result.get('acceleration', 0.0)))
+            print('dr: velocity%f, speed%d, acc%d' % (velocity, speed, acc))
+
             dr.append(speed)  # Janelia: add the speed of the rotation to the tracking info
             dr.append(velocity) # Janelia: add the velocity of the fly to the tracking info
             dr.append(acc)
