@@ -183,7 +183,7 @@ class TargetGridROIBuilder(BaseROIBuilder):
         mean_diam = np.mean(target_diams)
         mean_sd = np.std(target_diams)
 
-        if mean_sd/mean_diam > 0.10:
+        if mean_sd/mean_diam > 0.15: #0.10: # Increase the variation threshold
             raise EthoscopeException("Too much variation in the diameter of the targets. Something must be wrong since all target should have the same size", img)
 
         src_points = []
