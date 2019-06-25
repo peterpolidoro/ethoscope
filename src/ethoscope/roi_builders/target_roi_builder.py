@@ -171,14 +171,13 @@ class TargetGridROIBuilder(BaseROIBuilder):
             else:
                 contours, h = cv2.findContours(bin, cv2.RETR_EXTERNAL, CHAIN_APPROX_SIMPLE)
 
-
             if len(contours) <3:
                 raise EthoscopeException("There should be three targets. Only %i objects have been found" % (len(contours)), img)
             if len(contours) == 3:
                 break
 
         target_diams = [cv2.boundingRect(c)[2] for c in contours]
-        if self.DEBUG: print(target_diams)
+        print(target_diams)
 
         mean_diam = np.mean(target_diams)
         mean_sd = np.std(target_diams)
