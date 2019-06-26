@@ -1,8 +1,9 @@
 The original documentation from gilestro lab is located: https://qgeissmann.gitbooks.io/ethoscope-manual/building-and-installation/node.html?q= 
 
-This is a documentation for using the Ubuntu 16.04 instead of ArchLinux and using Janelia SW/HW setup 
+# This is a documentation for using the Ubuntu 16.04 instead of ArchLinux and using Janelia SW/HW setup 
 
-author: Salma Elmalaki  
+# author: Salma Elmalaki 
+ 
 
 Installing extra packages
 --------------------------
@@ -19,7 +20,6 @@ Creating a git bare repo
 ------------------------
 We are using the Janelia version of the ethoscope project which is hosted on SciCompSoft github 
 
-# a few variables
 * UPSTREAM_GIT_REPO=https://github.com/JaneliaSciComp/ethoscope.git
 * LOCAL_BARE_PATH=/srv/git/ethoscope.git
 * sudo mkdir -p /srv/git
@@ -28,20 +28,17 @@ We are using the Janelia version of the ethoscope project which is hosted on Sci
 
 The node software
 ------------------
-# variables
+
 TARGET_UPDATER_DIR=/opt/ethoscope_updater
 TARGET_GIT_INSTALL=/opt/ethoscope-git
 
-#Create a local working copy from the bare repo on node
-* echo 'Installing ethoscope package'
+
 * sudo git clone $LOCAL_BARE_PATH $TARGET_GIT_INSTALL
 
 * cd $TARGET_GIT_INSTALL
-# we install with pip
 * cd $TARGET_GIT_INSTALL/node_src
 * sudo pip2 install -e .
 
-# we create a symbolic link of the updated in the proper location
 * sudo ln -s $TARGET_GIT_INSTALL/scripts/ethoscope_updater $TARGET_UPDATER_DIR
 
 Network
@@ -62,18 +59,18 @@ echo "$NODE_IP node" >> /etc/hosts
 
 System Daemons
 --------------
-# Enable networktime protocol
+
 systemctl start ntp.service
 systemctl enable ntp.service
 
-# Setting up ssh server
+
 systemctl enable ssh.service
 systemctl start ssh.service
 
 
 Our own daemons
 ---------------
-# this is where our custom services are
+
 cd $TARGET_GIT_INSTALL/scripts
 
 cp ./ethoscope_node.service /etc/systemd/system/ethoscope_node.service
