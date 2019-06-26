@@ -29,8 +29,8 @@ We are using the Janelia version of the ethoscope project which is hosted on Sci
 The node software
 ------------------
 
-TARGET_UPDATER_DIR=/opt/ethoscope_updater
-TARGET_GIT_INSTALL=/opt/ethoscope-git
+* TARGET_UPDATER_DIR=/opt/ethoscope_updater
+* TARGET_GIT_INSTALL=/opt/ethoscope-git
 
 
 * sudo git clone $LOCAL_BARE_PATH $TARGET_GIT_INSTALL
@@ -49,68 +49,68 @@ You can get the MAC address of the server node using ifconfig
 
 DNS
 ----
-NODE_IP=192.168.123.2
-Get the interface for the node ip from ifconfig 
-echo "interface=ep0s25">>/etc/dnsmasq.conf
-echo "dhcp-option = 6,$NODE_IP" >> /etc/dnsmasq.conf 
-echo "no-hosts" >> /etc/dnsmasq.conf
-echo "addn-hosts=/etc/hosts" >> /etc/dnsmasq.conf
-echo "$NODE_IP node" >> /etc/hosts
+* NODE_IP=192.168.123.2
+* Get the interface for the node ip from ifconfig 
+* echo "interface=ep0s25">>/etc/dnsmasq.conf
+* echo "dhcp-option = 6,$NODE_IP" >> /etc/dnsmasq.conf 
+* echo "no-hosts" >> /etc/dnsmasq.conf
+* echo "addn-hosts=/etc/hosts" >> /etc/dnsmasq.conf
+* echo "$NODE_IP node" >> /etc/hosts
 
 System Daemons
 --------------
 
-systemctl start ntp.service
-systemctl enable ntp.service
-
-
-systemctl enable ssh.service
-systemctl start ssh.service
+* systemctl start ntp.service
+* systemctl enable ntp.service
+* systemctl enable ssh.service
+* systemctl start ssh.service
 
 
 Our own daemons
 ---------------
 
-cd $TARGET_GIT_INSTALL/scripts
+* cd $TARGET_GIT_INSTALL/scripts
 
-cp ./ethoscope_node.service /etc/systemd/system/ethoscope_node.service
-cp ./ethoscope_backup.service /etc/systemd/system/ethoscope_backup.service
-cp ./ethoscope_video_backup.service /etc/systemd/system/ethoscope_video_backup.service
-cp ./ethoscope_git_daemon.service /etc/systemd/system/ethoscope_git_daemon.service
+* sudo cp ./ethoscope_node.service /etc/systemd/system/ethoscope_node.service
+* sudo cp ./ethoscope_backup.service /etc/systemd/system/ethoscope_backup.service
+* sudo cp ./ethoscope_video_backup.service /etc/systemd/system/ethoscope_video_backup.service
+* sudo cp ./ethoscope_git_daemon.service /etc/systemd/system/ethoscope_git_daemon.service
 
-systemctl daemon-reload
+* sudo systemctl daemon-reload
 
-systemctl enable ethoscope_node.service
-systemctl enable ethoscope_backup.service
-systemctl enable ethoscope_video_backup.service
-systemctl enable ethoscope_git_daemon.service
+* systemctl enable ethoscope_node.service
+* systemctl enable ethoscope_backup.service
+* systemctl enable ethoscope_video_backup.service
+* systemctl enable ethoscope_git_daemon.service
 
-cd $TARGET_UPDATER_DIR
-cp ethoscope_update_node.service /etc/systemd/system/ethoscope_update_node.service
+* cd $TARGET_UPDATER_DIR
+* sudo cp ethoscope_update_node.service /etc/systemd/system/ethoscope_update_node.service
 
-systemctl daemon-reload
-systemctl enable ethoscope_update_node.service
+* sudo systemctl daemon-reload
+* sudo systemctl enable ethoscope_update_node.service
+
 
 Time
 ----
-timedatectl set-timezone GMT
+* timedatectl set-timezone GMT
 
 In order to allow the node to server time regardless, you can add these two lines to /etc/ntp.conf:
 
-server 127.127.1.1
-fudge 127.127.1.1 stratum 12
+* server 127.127.1.1
+* fudge 127.127.1.1 stratum 12
 
 
 What is next
 ------------
 In order to check things:
 
-Reboot the computer
-Open your browser (chrome)
-Test the local server at http://0.0.0.0:8000
+* Reboot the computer
+* Open your browser (chrome)
+* Test the local server at http://0.0.0.0:8000
 
-Test the update server http://192.169.123.2:8888
+* Test the update server http://192.169.123.2:8888
 
+* Troubleshooting:  You can check that the services are running by: sudo systemctl status $name.service 
 
 
 
