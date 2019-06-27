@@ -809,10 +809,12 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         server_ip = '192.168.123.2'
         tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+        print(t)
         name = get_machine_info('/etc/machine-name')
+        print(name)
         # msg: timestamp + machine-name + signal(ON-OFF)
         msg = t + '_' + name + '_' + str(communicate_signal)
-        print(msg)
+        print('communicate:'+msg)
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((server_ip, tcp_port))
@@ -821,6 +823,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
             s.close()
         except:
             logging.warning('Trigger backlight was not successful')
+
 
 
 
