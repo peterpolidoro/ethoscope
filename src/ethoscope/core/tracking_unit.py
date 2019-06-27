@@ -97,7 +97,7 @@ class TrackingUnit(object):
         #debug
         if len(result) > 0:
             print('before len data rows')
-            print result
+            #print result
 
         if len(data_rows) == 0:
             return []
@@ -105,7 +105,7 @@ class TrackingUnit(object):
         #debug
         if any(result):
             print('after len data rows')
-            print result
+            #print result
 
         # TODO data_row should have some result
         for dr in data_rows:
