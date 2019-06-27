@@ -431,11 +431,11 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
             self._t0 = now
 
         #debug
-        if self.DEBUG:
-            has_moved = np.random.randint(2)
+        #if self.DEBUG:
+        #    has_moved = np.random.randint(2)
             #print('has moved: '+str(has_moved))
-            if not has_moved:
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180}
+        #    if not has_moved:
+        #        return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180}
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -450,22 +450,22 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
                     if speed < self._max_motor_speed:
                         speed = min(speed + self._motor_speed_delta, self._max_motor_speed)
                      # increase the acc of the motor until max acc
-                    #if acc < self._max_motor_acc:
-                    #    acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
+                    if acc < self._max_motor_acc:
+                        acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
                 elif float(now - self._roi_stimulus_status[roi_id]['t']) >= self._inactivity_time_threshold_ms + self._time_delta_max:
                     # reduce the speed of the motor until min rotation speed
                     if speed > self._min_motor_speed:
                         speed = max(speed - self._motor_speed_delta, self._min_motor_speed)
                     # reduce the acc of the motor until min acc
-                    #if acc > self._min_motor_acc:
-                    #    acc = max(acc - self._motor_acc_delta, self._min_motor_acc)
+                    if acc > self._min_motor_acc:
+                        acc = max(acc - self._motor_acc_delta, self._min_motor_acc)
 
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
-                print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
-                reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
+                #print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
+                #reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
                 #return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'velocity':reported_velocity, 'acceleration':acc, 'deceleration':self._motor_dec}
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed} #, 'acceleration': acc, 'deceleration': self._motor_dec}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acceleration': acc} #, 'acceleration': acc, 'deceleration': self._motor_dec}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
@@ -544,6 +544,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
         super(JaneliaShakerSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
 
     def _decide(self):
+        start = time.time()
         roi_id = self._tracker._roi.idx
         now = self._tracker.last_time_point
 
@@ -571,8 +572,9 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
-                reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
+               # reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
                # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acceleration':2000, 'deceleration':2000}
+                print('time in shaker stimulus:'+str(time.time()-start))
                 return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acceleration': 2000, 'deceleration': 2000}
         else:
             self._t0 = now
@@ -784,11 +786,11 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
                 # print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
-                reported_velocity = round(log10(current_velocity) * 1000) if current_velocity > 0 else 0
+                # reported_velocity = round(log10(current_velocity) * 1000) if current_velocity > 0 else 0
                 # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed,
                 #                                     'velocity': reported_velocity, 'acceleration': acc,
                 #                                     'deceleration': self._motor_dec}
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acceleration': acc, 'deceleration': self._motor_dec}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acceleration': acc}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}

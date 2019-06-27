@@ -95,7 +95,7 @@ class BaseTracker(DescribedObject):
             print('infer: self._times =0')
             return []
         if t - self._last_non_inferred_time  > max_time:
-            print('infer: pass the max time')
+            print('infer: pass the max time'+str(t - self._last_non_inferred_time))
             return []
 
         return self._positions[-1]
