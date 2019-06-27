@@ -803,18 +803,18 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         :param communicate_signal: an ON and OFF signal to the external stimulator
         :type communicate_signal: bool
         """
-        if self.DEBUG:
-            logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
+        #if self.DEBUG:
+        #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
 
         server_ip = '192.168.123.2'
         tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        print(t)
+        #print(t)
         name = get_machine_info('/etc/machine-name')
-        print(name)
+        #print(name)
         # msg: timestamp + machine-name + signal(ON-OFF)
         msg = t + '_' + name + '_' + str(communicate_signal)
-        print('communicate:'+msg)
+        #print('communicate:'+msg)
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((server_ip, tcp_port))
