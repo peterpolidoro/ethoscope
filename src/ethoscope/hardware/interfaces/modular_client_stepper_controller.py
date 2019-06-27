@@ -151,7 +151,7 @@ class ModularClientInterface(BaseInterface):
                 else: direction_speed = -1 * speed
 
                 motor.move_at_for(channel, direction_speed, duration/5, acceleration, deceleration)
-                time.sleep(1)
+                time.sleep(2)
 
         else:
             raise Exception("Motors are not configured to apply stimulus")
