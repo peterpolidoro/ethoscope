@@ -825,6 +825,146 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
             logging.warning('Trigger backlight was not successful')
 
 
+class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
+    _description = {"overview": "A shaker stimulator to sleep deprive an animal using stepper motors with optostimuly.",
+                    "arguments": [
+                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.0060},
+                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken","default":120},
+                                    {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "motor_speed","description": "The motor speed in degree/sec", "default": 180},
+                                    {"type": "date_range", "name": "date_range",
+                                     "description": "A date and time range in which the device will perform (see http://tinyurl.com/jv7k826)",
+                                     "default": ""},
+                                    {"type": "date_range", "name": "date_range2",
+                                     "description": "A date and time range in which the external backlight controller will operate",
+                                     "default": ""},
+                                   ]}
+
+    _HardwareInterfaceClass = JaneliaShakerSleepDepriverInterface
+    _roi_to_channel = {  # TODO: check if the roi and channel mapping are the same with the second rpi
+        1: 6,
+        2: 5,
+        3: 4,
+        4: 3,
+        5: 2,
+        6: 1,
+        7: 0,
+        8: 6,
+        9: 5,
+        10: 4,
+        11: 3,
+        12: 2,
+        13: 1,
+        14: 0
+    }
+    _roi_to_motor_board = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 1,
+        9: 1,
+        10: 1,
+        11: 1,
+        12: 1,
+        13: 1,
+        14: 1
+    }
+
+    def __init__(self,
+                 hardware_connection,
+                 velocity_threshold=0.0060,
+                 min_inactive_time=120,
+                 motor_speed=180,
+                 date_range="",
+                 date_range2=""):
+
+        """
+        A stimulator to control a sleep depriver module.
+
+        :param hardware_connection: the shaker sleep depriver module hardware interface
+        :type hardware_connection: :class:`~ethoscope.hardware.interfaces.janelia_sleep_depriver_interface.JaneliaShakerSleepDepriverInterface`
+        :param velocity_threshold:
+        :type velocity_threshold: float
+        :param min_inactive_time: the minimal time without motion after which an animal should be disturbed (in seconds)
+        :type min_inactive_time: float
+        :param motor_speed: the motor speed in degree/sec
+        :type motor_speed: int
+        :return:
+        """
+
+        self._inactivity_time_threshold_ms = min_inactive_time * 1000  # so we use ms internally
+        self._motor_speed = motor_speed
+        self._t0 = None
+        self.DEBUG=0
+        super(JaneliaOptoShakerSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range, date_range2=date_range2)
+
+    def _decide(self):
+        #start = time.time()
+        roi_id = self._tracker._roi.idx
+        now = self._tracker.last_time_point
+
+        try:
+            channel = self._roi_to_channel[roi_id]
+            board = self._roi_to_motor_board[roi_id]
+        except KeyError:
+            return HasInteractedVariable(False), {}
+
+        has_moved = self._has_moved()
+        current_velocity = self._get_velocity()
+
+        current_velocity = 1 if current_velocity > 1 else current_velocity
+        current_velocity = 0 if current_velocity < 0 else current_velocity
+
+        if self._t0 is None:
+            self._t0 = now
+
+        if self.DEBUG:
+        #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
+        #                                          'acc': 2000, 'dec': 2000}
+            self._inactivity_time_threshold_ms = 5*1000
+
+        if not has_moved:
+            if float(now - self._t0) > self._inactivity_time_threshold_ms:
+                self._t0 = None
+               # reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
+               # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acc':2000, 'dec':2000}
+                #print('time in shaker stimulus:'+str(time.time()-start))
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000}
+        else:
+            self._t0 = now
+        return HasInteractedVariable(False), {}
+
+
+    def _communicate(self, communicate_signal):
+        """
+        communicate an operating signal to an outside stimulator
+
+        :param communicate_signal: an ON and OFF signal to the external stimulator
+        :type communicate_signal: bool
+        """
+        #if self.DEBUG:
+        #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
+
+        server_ip = '192.168.123.2'
+        tcp_port = 9998
+        t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+        #print(t)
+        name = get_machine_info('/etc/machine-name')
+        #print(name)
+        # msg: timestamp + machine-name + signal(ON-OFF)
+        msg = t + '_' + name + '_' + str(communicate_signal)
+        #print('communicate:'+msg)
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((server_ip, tcp_port))
+            time.sleep(1)
+            s.send(msg)
+            s.close()
+        except:
+            logging.warning('Trigger backlight was not successful')
 
 
 class OptomotorSleepDepriver(SleepDepStimulator):
