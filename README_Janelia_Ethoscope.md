@@ -112,8 +112,7 @@ In order to check things:
 
 * Troubleshooting:  You can check that the services are running by: sudo systemctl status $name.service 
 
-
-
+* For database veiwer: sudo apt install sqlitebrowser
 
 
 

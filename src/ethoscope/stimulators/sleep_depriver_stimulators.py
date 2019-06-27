@@ -433,7 +433,9 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
         #debug
         if self.DEBUG:
             has_moved = np.random.randint(2)
-            print('has moved: '+str(has_moved))
+            #print('has moved: '+str(has_moved))
+            if not has_moved:
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180}
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
