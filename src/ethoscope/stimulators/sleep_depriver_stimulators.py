@@ -752,12 +752,12 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         if self._t0 is None:
             self._t0 = now
 
-        if self.DEBUG:
+        #if self.DEBUG:
         #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
         #                                          'velocity': 0.005, 'acceleration': 2000,
         #                                          'deceleration': self._motor_dec}
         #
-            self._inactivity_time_threshold_ms = 5*1000
+        #    self._inactivity_time_threshold_ms = 5*1000
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
