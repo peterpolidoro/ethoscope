@@ -396,6 +396,8 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
         self._motor_dec = motor_deceleration
         self._t0 = None
 
+        self.DEBUG = 1
+
         super(JaneliaAdaptiveSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
 
     def _decide(self):
@@ -427,6 +429,10 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
 
         if self._t0 is None:
             self._t0 = now
+
+        #debug
+        if self.DEBUG:
+            has_moved = np.random.randint(2)
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -553,9 +559,9 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
         if self._t0 is None:
             self._t0 = now
 
-        if self.DEBUG:
-            return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
-                                                 'acceleration': 2000, 'deceleration': 2000}
+        # if self.DEBUG:
+        #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
+        #                                          'acceleration': 2000, 'deceleration': 2000}
 
 
 
