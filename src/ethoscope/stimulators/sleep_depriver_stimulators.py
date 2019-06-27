@@ -433,6 +433,7 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
         #debug
         if self.DEBUG:
             has_moved = np.random.randint(2)
+            print('has moved: '+str(has_moved))
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -446,16 +447,16 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
                     # increase the speed of the motor until max rotation speed
                     if speed < self._max_motor_speed:
                         speed = min(speed + self._motor_speed_delta, self._max_motor_speed)
-                     # increase the acc of the motor untill max acc
-                    if acc < self._max_motor_acc:
-                        acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
+                     # increase the acc of the motor until max acc
+                    #if acc < self._max_motor_acc:
+                    #    acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
                 elif float(now - self._roi_stimulus_status[roi_id]['t']) >= self._inactivity_time_threshold_ms + self._time_delta_max:
                     # reduce the speed of the motor until min rotation speed
                     if speed > self._min_motor_speed:
                         speed = max(speed - self._motor_speed_delta, self._min_motor_speed)
                     # reduce the acc of the motor until min acc
-                    if acc > self._min_motor_acc:
-                        acc = max(acc - self._motor_acc_delta, self._min_motor_acc)
+                    #if acc > self._min_motor_acc:
+                    #    acc = max(acc - self._motor_acc_delta, self._min_motor_acc)
 
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}

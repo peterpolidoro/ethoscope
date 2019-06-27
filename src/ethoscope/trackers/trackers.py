@@ -76,7 +76,7 @@ class BaseTracker(DescribedObject):
                 points = self._infer_position(t)
 
                 if len(points) ==0:
-                    print('points is 0 infer')
+                    #print('points is 0 infer')
                     return []
                 for p in points:
                     p.append(IsInferredVariable(True))
