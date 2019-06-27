@@ -4,7 +4,7 @@ from ethoscope.hardware.interfaces.modular_client_stepper_controller import Modu
 
 
 class JaneliaAdaptiveSleepDepriverInterface(ModularClientInterface):
-    def send(self, board=None, channel=None, speed=180, duration=5000, acceleration=100, deceleration=100, velocity=0.5):
+    def send(self, board=None, channel=None, speed=180, duration=5000, acc=100, dec=100, velocity=0.5):
         """
         Sleep deprive an animal by rotating its tube.
 
@@ -16,24 +16,24 @@ class JaneliaAdaptiveSleepDepriverInterface(ModularClientInterface):
         :type speed: int
         :param duration: the duration of time to rotate the tube in ms (max is 6s. The masking duration in ethomics is 6s)
         :type: duration: int
-        :param acceleration: the acceleration, between 100 and 10000 (degree/sec^2)
-        :type: acceleration: int
-        :param deceleration: the deceleration, between 100 and 10000 (degree/sec^2)
-        :type: deceleration: int
+        :param acc: the acceleration, between 100 and 10000 (degree/sec^2)
+        :type: acc: int
+        :param dec: the deceleration, between 100 and 10000 (degree/sec^2)
+        :type: dec: int
         :param velocity: fly velocity in m/s
         :type: duration: float
         """
-        print("send: %d %d %d %d" %(speed, duration, acceleration, deceleration))
+        print("send: %d %d %d %d" %(speed, duration, acc, dec))
         self.move_with_speed(board,
                              channel,
                              speed=speed,
                              duration=duration,
-                             acceleration=acceleration,
-                             deceleration=deceleration)
+                             acceleration=acc,
+                             deceleration=dec)
 
 
 class JaneliaShakerSleepDepriverInterface(ModularClientInterface):
-    def send(self, board=None, channel=None, speed=180, duration=5000, acceleration=2000, deceleration=2000, velocity=0.5):
+    def send(self, board=None, channel=None, speed=180, duration=5000, acc=2000, dec=2000, velocity=0.5):
         """
         Sleep deprive an animal by shaking its tube.
 
@@ -45,17 +45,17 @@ class JaneliaShakerSleepDepriverInterface(ModularClientInterface):
         :type speed: int
         :param duration: the duration of time to rotate the tube in ms (max is 6s. The masking duration in ethomics is 6s)
         :type: duration: int
-        :param acceleration: the acceleration, between 100 and 10000 (degree/sec^2)
-        :type: acceleration: int
-        :param deceleration: the deceleration, between 100 and 10000 (degree/sec^2)
-        :type: deceleration: int
+        :param acc: the acceleration, between 100 and 10000 (degree/sec^2)
+        :type: acc: int
+        :param dec: the deceleration, between 100 and 10000 (degree/sec^2)
+        :type: dec: int
         :param velocity: fly velocity in m/s
         :type: duration: float
         """
-        print("send: %d %d %d %d" % (speed, duration, acceleration, deceleration))
+        print("send: %d %d %d %d" % (speed, duration, acc, dec))
         self.shake_with_speed(board,
                               channel,
                               speed=speed,
                               duration=duration,
-                              acceleration=acceleration,
-                              deceleration=deceleration)
+                              acceleration=acc,
+                              deceleration=dec)

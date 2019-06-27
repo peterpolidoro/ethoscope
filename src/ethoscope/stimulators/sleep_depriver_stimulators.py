@@ -544,7 +544,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
         super(JaneliaShakerSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
 
     def _decide(self):
-        start = time.time()
+        #start = time.time()
         roi_id = self._tracker._roi.idx
         now = self._tracker.last_time_point
 
@@ -565,7 +565,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
 
         # if self.DEBUG:
         #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
-        #                                          'acceleration': 2000, 'deceleration': 2000}
+        #                                          'acc': 2000, 'dec': 2000}
 
 
 
@@ -573,9 +573,9 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
                # reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
-               # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acceleration':2000, 'deceleration':2000}
-                print('time in shaker stimulus:'+str(time.time()-start))
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acceleration': 2000, 'deceleration': 2000}
+               # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acc':2000, 'dec':2000}
+                #print('time in shaker stimulus:'+str(time.time()-start))
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
@@ -788,9 +788,9 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                 # print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
                 # reported_velocity = round(log10(current_velocity) * 1000) if current_velocity > 0 else 0
                 # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed,
-                #                                     'velocity': reported_velocity, 'acceleration': acc,
-                #                                     'deceleration': self._motor_dec}
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acceleration': acc}
+                #                                     'velocity': reported_velocity, 'acc': acc,
+                #                                     'dec': self._motor_dec}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acc': acc}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}

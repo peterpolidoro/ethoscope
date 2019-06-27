@@ -58,7 +58,7 @@ class BaseTracker(DescribedObject):
                 raise Exception("tracking algorithms are expected to return a LIST of DataPoints")
 
             if len(points) ==0:
-                print('points is 0') # debug janelia
+                #print('points is 0') # debug janelia
                 return []
 
             # point = self.normalise_position(point)
@@ -69,7 +69,7 @@ class BaseTracker(DescribedObject):
 
         except NoPositionError:
             if len(self._positions) == 0:
-                print('points is 0 no position error')  # debug janelia
+                #print('points is 0 no position error')  # debug janelia
                 return []
             else:
 
@@ -90,7 +90,7 @@ class BaseTracker(DescribedObject):
             self._times.popleft()
         return points
 
-    def _infer_position(self, t, max_time=30 * 1000):
+    def _infer_position(self, t, max_time=50 * 1000):  # Janelia: increase the max time due to the stimulus delay from 30 to 50
         if len(self._times) == 0:
             print('infer: self._times =0')
             return []
