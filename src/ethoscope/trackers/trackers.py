@@ -53,7 +53,6 @@ class BaseTracker(DescribedObject):
         sub_img, mask = self._roi.apply(img)
         self._last_time_point = t
         try:
-
             points = self._find_position(sub_img,mask,t)
             if not isinstance(points, list):
                 raise Exception("tracking algorithms are expected to return a LIST of DataPoints")
@@ -93,8 +92,10 @@ class BaseTracker(DescribedObject):
 
     def _infer_position(self, t, max_time=30 * 1000):
         if len(self._times) == 0:
+            print('infer: self._times =0')
             return []
         if t - self._last_non_inferred_time  > max_time:
+            print('infer: pass the max time')
             return []
 
         return self._positions[-1]

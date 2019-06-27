@@ -52,7 +52,7 @@ class JaneliaShakerSleepDepriverInterface(ModularClientInterface):
         :param velocity: fly velocity in m/s
         :type: duration: float
         """
-
+        print("send: %d %d %d %d" % (speed, duration, acceleration, deceleration))
         self.shake_with_speed(board,
                               channel,
                               speed=speed,
