@@ -11,16 +11,18 @@
 
 while 1
     try 
-        disp('started')
-        t = tcpip('0.0.0.0', 9998, 'NetworkRole', 'Server');
+        disp('Connecting ... ')
+        t = tcpip('localhost', 9998, 'NetworkRole', 'Server');
         fopen(t);
+        disp('started')
         while t.BytesAvailable  == 0
             pause(1) 
             disp('wait');
         end
         data = char(fread(t,t.BytesAvailable));
         data = strjoin(string(data), '')
-    catch 
+    catch ex
+        disp(ex.message)
         disp('Exception - Light Controller Server is Down!')
         fclose(t);
     end     

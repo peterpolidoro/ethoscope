@@ -806,15 +806,13 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         #if self.DEBUG:
         #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
 
-        server_ip = '192.168.123.2'
+        server_ip = '192.168.123.2' # node ip
         tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        #print(t)
         name = get_machine_info('/etc/machine-name')
-        #print(name)
         # msg: timestamp + machine-name + signal(ON-OFF)
         msg = t + '_' + name + '_' + str(communicate_signal)
-        #print('communicate:'+msg)
+
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((server_ip, tcp_port))
@@ -948,15 +946,13 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         #if self.DEBUG:
         #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
 
-        server_ip = '192.168.123.2'
+        server_ip = '192.168.123.2' # node ip
         tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        #print(t)
         name = get_machine_info('/etc/machine-name')
-        #print(name)
         # msg: timestamp + machine-name + signal(ON-OFF)
         msg = t + '_' + name + '_' + str(communicate_signal)
-        #print('communicate:'+msg)
+
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((server_ip, tcp_port))

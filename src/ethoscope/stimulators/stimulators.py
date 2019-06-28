@@ -75,6 +75,9 @@ class BaseStimulator(DescribedObject):
         if self._hardware_connection is not None:
             self._hardware_connection.send_instruction(kwargs)
 
+    # Janelia returns type of stimulator
+    def stimulator_type(self):
+        return 'Base'
 
 
 class DoubleBaseStimulator(DescribedObject):
@@ -164,6 +167,10 @@ class DoubleBaseStimulator(DescribedObject):
         """
         raise NotImplementedError
 
+    # Janelia returns type of stimulator
+    def stimulator_type(self):
+        return 'Double'
+
 
 class DefaultStimulator(BaseStimulator):
     """
@@ -176,5 +183,9 @@ class DefaultStimulator(BaseStimulator):
     def _decide(self):
         out = HasInteractedVariable(False)
         return out, {}
+
+    # Janelia returns type of stimulator
+    def stimulator_type(self):
+        return 'Base'
 
 
