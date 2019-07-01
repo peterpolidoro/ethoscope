@@ -8,25 +8,28 @@
 
 %  author: Salma Elmalaki
 
-
 while 1
-    try 
-        disp('Connecting ... ')
-        t = tcpip('localhost', 9998, 'NetworkRole', 'Server');
-        fopen(t);
-        disp('started')
-        while t.BytesAvailable  == 0
-            pause(1) 
-            disp('wait');
-        end
-        data = char(fread(t,t.BytesAvailable));
-        data = strjoin(string(data), '')
+    try
+            disp('Connecting ... ')
+            t = tcpip('0.0.0.0', 9998, 'NetworkRole', 'Server');
+            fopen(t);
+            disp('started')
+            while t.BytesAvailable  == 0
+                pause(1)
+                disp('wait');
+            end
+            data = fread(t,t.BytesAvailable, 'char');
+            %data = strjoin(string(data), '')
+            data = convertCharstoStrings(char(data))
     catch ex
-        disp(ex.message)
-        disp('Exception - Light Controller Server is Down!')
-        fclose(t);
-    end     
+            disp(ex.message)
+            disp('Exception - Light Controller Server is Down!')
+            fclose(t);
+            delete(t)
+            clear t
+    end
 end
+
 
 
 
