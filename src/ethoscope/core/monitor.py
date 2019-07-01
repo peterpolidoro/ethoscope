@@ -107,9 +107,8 @@ class Monitor(object):
 
                     # send a stop signal to the light controller as well if present
                     for track_u in self._unit_trackers:
-                        logging.warning('Closing the backlight controller as well: '+track_u.stimulator.stimulator_type())
-
                         if track_u.stimulator.stimulator_type() == 'Double':
+                            logging.warning('Closing the backlight controller as well')
                             track_u.stimulator._communicate('False')
                     break
 
