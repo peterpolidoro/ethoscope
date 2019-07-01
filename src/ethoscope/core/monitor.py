@@ -104,6 +104,7 @@ class Monitor(object):
                 #start = time.clock()
                 if self._force_stop:
                     logging.info("Monitor object stopped from external request")
+                    break
                     # send a stop signal to the light controller as well if present
                     # for track_u in self._unit_trackers:
                     #     if track_u.stimulator.stimulator_type() is 'Double':
