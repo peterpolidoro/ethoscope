@@ -812,7 +812,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         name = get_machine_info('/etc/machine-name')
         # msg: timestamp + machine-name + signal(ON-OFF)
         msg = t + '_' + name + '_' + str(communicate_signal)
-        print('prepare msg: '+msg)
+        #print('prepare msg: '+msg)
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((server_ip, tcp_port))
