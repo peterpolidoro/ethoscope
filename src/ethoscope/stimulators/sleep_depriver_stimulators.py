@@ -145,14 +145,14 @@ class IsMovingStimulatorDouble(DoubleBaseStimulator):
             return HasInteractedVariable(False), {}
         return HasInteractedVariable(True), {}
 
-    def _communicate(self, communicate_signal):
-        """
-        communicate an operating signal to an outside stimulator
-
-        :param communicate_signal: an ON and OFF signal to the external stimulator
-        :type communicate_signal: bool
-        """
-        raise NotImplementedError
+    # def _communicate(self, communicate_signal):
+    #     """
+    #     communicate an operating signal to an outside stimulator
+    #
+    #     :param communicate_signal: an ON and OFF signal to the external stimulator
+    #     :type communicate_signal: bool
+    #     """
+    #     raise NotImplementedError
 
 class SleepDepStimulator(IsMovingStimulator):
     _description = {"overview": "A stimulator to sleep deprive an animal using servo motor. See http://todo/fixme.html",
@@ -796,36 +796,36 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
             self._t0 = now
         return HasInteractedVariable(False), {}
 
-    def _communicate(self, communicate_signal):
-        """
-        communicate an operating signal to an outside stimulator
-
-        :param communicate_signal: an ON and OFF signal to the external stimulator
-        :type communicate_signal: bool
-        """
-        #if self.DEBUG:
-        #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
-
-        #server_ip = '192.168.123.2' # node ip
-        #tcp_port = 9998
-        t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        name = get_machine_info('/etc/machine-name')
-        # msg: timestamp + machine-name + signal(ON-OFF)
-        msg = t + '_' + name + '_' + str(communicate_signal)
-        #print('prepare msg: '+msg)
-        try:
-            #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            #s.connect((server_ip, tcp_port))
-            #time.sleep(1)
-            socket_handler = self.get_socket_handler()
-            socket_handler.send(msg)
-            #print('send:'+msg)
-            logging.warning('Trigger success: ' + msg)
-            #s.close()
-        except socket.error, exc:
-            #print('not successful send:' + msg)
-            logging.warning('Trigger backlight was not successful %s: ' % exc)
-
+    # def _communicate(self, communicate_signal):
+    #     """
+    #     communicate an operating signal to an outside stimulator
+    #
+    #     :param communicate_signal: an ON and OFF signal to the external stimulator
+    #     :type communicate_signal: bool
+    #     """
+    #     #if self.DEBUG:
+    #     #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
+    #
+    #     #server_ip = '192.168.123.2' # node ip
+    #     #tcp_port = 9998
+    #     t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+    #     name = get_machine_info('/etc/machine-name')
+    #     # msg: timestamp + machine-name + signal(ON-OFF)
+    #     msg = t + '_' + name + '_' + str(communicate_signal)
+    #     #print('prepare msg: '+msg)
+    #     try:
+    #         #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #         #s.connect((server_ip, tcp_port))
+    #         #time.sleep(1)
+    #         socket_handler = self.get_socket_handler()
+    #         socket_handler.send(msg)
+    #         #print('send:'+msg)
+    #         logging.warning('Trigger success: ' + msg)
+    #         #s.close()
+    #     except socket.error, exc:
+    #         #print('not successful send:' + msg)
+    #         logging.warning('Trigger backlight was not successful %s: ' % exc)
+    #
 
 class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
     _description = {"overview": "A shaker stimulator to sleep deprive an animal using stepper motors with optostimuly.",
@@ -940,33 +940,33 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         return HasInteractedVariable(False), {}
 
 
-    def _communicate(self, communicate_signal):
-        """
-        communicate an operating signal to an outside stimulator
-
-        :param communicate_signal: an ON and OFF signal to the external stimulator
-        :type communicate_signal: bool
-        """
-        #if self.DEBUG:
-        #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
-
-        #server_ip = '192.168.123.2' # node ip
-        #tcp_port = 9998
-        t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        name = get_machine_info('/etc/machine-name')
-        # msg: timestamp + machine-name + signal(ON-OFF)
-        msg = t + '_' + name + '_' + str(communicate_signal)
-
-        try:
-            #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            #s.connect((server_ip, tcp_port))
-            #time.sleep(1)
-            socket_handler = self.get_socket_handler()
-            socket_handler.send(msg)
-            #s.close()
-        except socket.error, exc:
-            # print('not successful send:' + msg)
-            logging.warning('Trigger backlight was not successful %s: ' % exc)
+    # def _communicate(self, communicate_signal):
+    #     """
+    #     communicate an operating signal to an outside stimulator
+    #
+    #     :param communicate_signal: an ON and OFF signal to the external stimulator
+    #     :type communicate_signal: bool
+    #     """
+    #     #if self.DEBUG:
+    #     #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
+    #
+    #     #server_ip = '192.168.123.2' # node ip
+    #     #tcp_port = 9998
+    #     t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+    #     name = get_machine_info('/etc/machine-name')
+    #     # msg: timestamp + machine-name + signal(ON-OFF)
+    #     msg = t + '_' + name + '_' + str(communicate_signal)
+    #
+    #     try:
+    #         #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #         #s.connect((server_ip, tcp_port))
+    #         #time.sleep(1)
+    #         socket_handler = self.get_socket_handler()
+    #         socket_handler.send(msg)
+    #         #s.close()
+    #     except socket.error, exc:
+    #         # print('not successful send:' + msg)
+    #         logging.warning('Trigger backlight was not successful %s: ' % exc)
 
 
 class OptomotorSleepDepriver(SleepDepStimulator):

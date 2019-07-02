@@ -110,7 +110,7 @@ class Monitor(object):
                     for track_u in self._unit_trackers:
                         if track_u.stimulator.stimulator_type() == 'Double':
                             logging.warning('Closing the backlight controller as well')
-                            track_u.stimulator._communicate('False')
+                            track_u.stimulator._communicate('Stop')
                             socket_handler = track_u.stimulator.get_socket_handler()
                             try:
                                 socket_handler.close()

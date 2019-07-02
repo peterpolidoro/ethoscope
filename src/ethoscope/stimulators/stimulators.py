@@ -9,6 +9,10 @@ import datetime
 import socket
 import sys
 
+
+from ethoscope.web_utils.helpers import get_machine_info
+import logging
+
 class HasInteractedVariable(BaseIntVariable):
     """
     Custom variable to save whether the stimulator has sent instruction to its hardware interface. 0 means
@@ -177,7 +181,23 @@ class DoubleBaseStimulator(DescribedObject):
         :param communicate_signal: an ON and OFF signal to the external stimulator
         :type communicate_signal: bool
         """
-        raise NotImplementedError
+
+        #if self.DEBUG:
+        #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
+
+        #server_ip = '192.168.123.2' # node ip
+        #tcp_port = 9998
+        t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+        name = get_machine_info('/etc/machine-name')
+        # msg: timestamp + machine-name + signal(ON-OFF)
+        msg = t + '_' + name + '_' + str(communicate_signal)
+        try:
+            self._socket_handler.send(msg)
+        except socket.error, exc:
+            # print('not successful send:' + msg)
+            logging.warning('Trigger backlight was not successful %s: ' % exc)
+
+        #raise NotImplementedError
 
 
     def get_socket_handler(self):
