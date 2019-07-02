@@ -820,7 +820,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
             s.send(msg)
             #print('send:'+msg)
             #logging.warning('Trigger backlight was successful: ' + msg)
-            s.close()
+            #s.close()
         except:
             #print('not successful send:' + msg)
             logging.warning('Trigger backlight was not successful: '+msg)
