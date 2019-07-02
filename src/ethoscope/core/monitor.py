@@ -3,8 +3,9 @@ __author__ = 'quentin'
 from tracking_unit import TrackingUnit
 import logging
 import traceback
-import time  # Janelia
+import time
 import csv
+import socket
 
 class Monitor(object):
 
@@ -110,6 +111,11 @@ class Monitor(object):
                         if track_u.stimulator.stimulator_type() == 'Double':
                             logging.warning('Closing the backlight controller as well')
                             track_u.stimulator._communicate('False')
+                            socket_handler = track_u.stimulator.get_socket_handler()
+                            try:
+                                socket_handler.close()
+                            except socket.err, exc:
+                                logging.warning('closing socket was not successful %s: ' % exc)
                     break
 
 

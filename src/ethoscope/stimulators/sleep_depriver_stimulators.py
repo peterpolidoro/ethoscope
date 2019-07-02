@@ -806,24 +806,25 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         #if self.DEBUG:
         #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
 
-        server_ip = '192.168.123.2' # node ip
-        tcp_port = 9998
+        #server_ip = '192.168.123.2' # node ip
+        #tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
         name = get_machine_info('/etc/machine-name')
         # msg: timestamp + machine-name + signal(ON-OFF)
         msg = t + '_' + name + '_' + str(communicate_signal)
         #print('prepare msg: '+msg)
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((server_ip, tcp_port))
+            #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            #s.connect((server_ip, tcp_port))
             #time.sleep(1)
-            s.send(msg)
+            socket_handler = self.get_socket_handler()
+            socket_handler.send(msg)
             #print('send:'+msg)
             logging.warning('Trigger success: ' + msg)
             #s.close()
-        except:
+        except socket.error, exc:
             #print('not successful send:' + msg)
-            logging.warning('Trigger backlight was not successful: '+msg)
+            logging.warning('Trigger backlight was not successful %s: ' % exc)
 
 
 class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
@@ -949,21 +950,23 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         #if self.DEBUG:
         #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
 
-        server_ip = '192.168.123.2' # node ip
-        tcp_port = 9998
+        #server_ip = '192.168.123.2' # node ip
+        #tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
         name = get_machine_info('/etc/machine-name')
         # msg: timestamp + machine-name + signal(ON-OFF)
         msg = t + '_' + name + '_' + str(communicate_signal)
 
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((server_ip, tcp_port))
-            time.sleep(1)
-            s.send(msg)
-            s.close()
-        except:
-            logging.warning('Trigger backlight was not successful')
+            #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            #s.connect((server_ip, tcp_port))
+            #time.sleep(1)
+            socket_handler = self.get_socket_handler()
+            socket_handler.send(msg)
+            #s.close()
+        except socket.error, exc:
+            # print('not successful send:' + msg)
+            logging.warning('Trigger backlight was not successful %s: ' % exc)
 
 
 class OptomotorSleepDepriver(SleepDepStimulator):

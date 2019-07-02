@@ -6,6 +6,8 @@ from ethoscope.hardware.interfaces.interfaces import DefaultInterface
 from ethoscope.utils.scheduler import Scheduler
 
 import datetime
+import socket
+import sys
 
 class HasInteractedVariable(BaseIntVariable):
     """
@@ -83,6 +85,7 @@ class BaseStimulator(DescribedObject):
 class DoubleBaseStimulator(DescribedObject):
     _tracker = None
     _HardwareInterfaceClass = None
+    _socket_handler = None
 
     def __init__(self, hardware_connection, date_range="", date_range2=""):
         """
@@ -106,6 +109,15 @@ class DoubleBaseStimulator(DescribedObject):
         self._scheduler2 = Scheduler(date_range2)
         self._hardware_connection = hardware_connection
         self._communicationflag=False
+
+        _server_ip = '192.168.123.2'  # node ip
+        _tcp_port = 9998
+
+        try:
+            _socket_handler = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            _socket_handler.connect((_server_ip, _tcp_port))
+        except socket.error, exc:
+            print "Caught exception socket.error : %s" % exc
 
 
     def apply(self):
@@ -166,6 +178,14 @@ class DoubleBaseStimulator(DescribedObject):
         :type communicate_signal: bool
         """
         raise NotImplementedError
+
+
+    def get_socket_handler(self):
+        """
+            get the socket handler for the second stimulator
+        """
+        return self._socket_handler
+
 
     # Janelia returns type of stimulator
     def stimulator_type(self):
