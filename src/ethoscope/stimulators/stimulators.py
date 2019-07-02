@@ -114,8 +114,8 @@ class DoubleBaseStimulator(DescribedObject):
         _tcp_port = 9998
 
         try:
-            _socket_handler = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            _socket_handler.connect((_server_ip, _tcp_port))
+            self._socket_handler = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self._socket_handler.connect((_server_ip, _tcp_port))
         except socket.error, exc:
             print "Caught exception socket.error : %s" % exc
 
