@@ -564,10 +564,10 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
         if self._t0 is None:
             self._t0 = now
 
-        if self.DEBUG:
+        #if self.DEBUG:
         #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
         #                                          'acc': 2000, 'dec': 2000}
-            self._inactivity_time_threshold_ms = 5*1000
+        #    self._inactivity_time_threshold_ms = 5*1000
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -719,7 +719,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         self._motor_dec = motor_deceleration
         self._t0 = None
 
-        self.DEBUG = 1
+        #self.DEBUG = 1
 
         super(JaneliaOptoMotorAdaptiveSleepDepStimulator, self).__init__(hardware_connection, velocity_threshold,
                                                                date_range=date_range, date_range2=date_range2)
@@ -900,7 +900,7 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         self._inactivity_time_threshold_ms = min_inactive_time * 1000  # so we use ms internally
         self._motor_speed = motor_speed
         self._t0 = None
-        self.DEBUG=0
+        #self.DEBUG=0
         super(JaneliaOptoShakerSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range, date_range2=date_range2)
 
     def _decide(self):
@@ -923,10 +923,10 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         if self._t0 is None:
             self._t0 = now
 
-        if self.DEBUG:
+        #if self.DEBUG:
         #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
         #                                          'acc': 2000, 'dec': 2000}
-            self._inactivity_time_threshold_ms = 5*1000
+        #    self._inactivity_time_threshold_ms = 5*1000
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
