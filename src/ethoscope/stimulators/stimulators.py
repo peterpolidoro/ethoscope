@@ -10,7 +10,7 @@ import socket
 import sys
 
 
-from ethoscope.web_utils.helpers import get_machine_info
+#from ethoscope.web_utils.helpers import get_machine_info
 import logging
 
 class HasInteractedVariable(BaseIntVariable):
@@ -188,9 +188,10 @@ class DoubleBaseStimulator(DescribedObject):
         #server_ip = '192.168.123.2' # node ip
         #tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        name = get_machine_info('/etc/machine-name')
+        #name = get_machine_info('/etc/machine-name')
         # msg: timestamp + machine-name + signal(ON-OFF)
-        msg = t + '_' + name + '_' + str(communicate_signal)
+        #msg = t + '_' + name + '_' + str(communicate_signal)
+        msg = t + '_'+str(communicate_signal)
         try:
             self._socket_handler.send(msg)
         except socket.error, exc:
