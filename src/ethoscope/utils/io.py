@@ -78,8 +78,9 @@ class AsyncMySQLWriter(multiprocessing.Process):
 
         cmd = "SET GLOBAL innodb_file_per_table=1"
         c.execute(cmd)
-        cmd = "SET GLOBAL innodb_file_format=Barracuda"
-        c.execute(cmd)
+        # for new MySQL MariaDB 10.3 this option is deprecated
+        #cmd = "SET GLOBAL innodb_file_format=Barracuda"
+        #c.execute(cmd)
         cmd = "SET GLOBAL autocommit=0"
         c.execute(cmd)
         db.close()
