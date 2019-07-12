@@ -285,8 +285,8 @@ class ControlThread(Thread):
 
         frame = self._drawer.last_drawn_frame
         if frame is not None:
-            cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
-
+            #cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 30]) # Janelia reduces the quality
 
         self._last_info_t_stamp = wall_time
         self._last_info_frame_idx = frame_idx
