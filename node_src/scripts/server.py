@@ -56,7 +56,7 @@ def enable_cors():
     response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
     # Janelia
-    print(int(response.getheader['Content-Length']))
+    print(int(response.headers['Content-Length']))
 
 #################################
 # API to connect with ethoscopes
