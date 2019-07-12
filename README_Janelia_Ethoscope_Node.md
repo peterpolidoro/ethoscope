@@ -16,6 +16,7 @@ Installing extra packages
 * sudo apt install mariadb-server mariadb-client
 * sudo apt install libev-dev 
 
+
 Creating a git bare repo
 ------------------------
 We are using the Janelia version of the ethoscope project which is hosted on SciCompSoft github 
@@ -108,7 +109,7 @@ In order to check things:
 * Open your browser (chrome)
 * Test the local server at http://0.0.0.0:8000
 
-* Test the update server http://192.169.123.2:8888
+* Test the update server http://0.0.0.0:8888
 
 * Troubleshooting:  You can check that the services are running by: sudo systemctl status $name.service 
 

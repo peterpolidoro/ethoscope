@@ -24,6 +24,7 @@ Most of the python packages are already included in raspbian OS but just double 
 * sudo apt install python-pip python-numpy python-botttle python-serial python cherrypy python-pillow python-mysqldb python-mysql.connector python-scipy 
 * sudo apt install modular_client
 
+
 Install opencv
 --------------
 Recommending following this tutorial to install opencv (It takes several hours to finish installing opencv)
@@ -109,7 +110,8 @@ MySQL
 * sudo mysql -u root -e "CREATE USER \"$USER_NAME\"@'%' IDENTIFIED BY \"$PASSWORD\""
 * sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO \"$USER_NAME\"@'localhost' WITH GRANT OPTION";
 * sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO \"$USER_NAME\"@'%' WITH GRANT OPTION";
-* sudo mysql -u root -e "flush privileges";
+* sudo mysql -u root -e "FLUSH PRIVILEGES";
+
 Add the following lines in  /etc/mysql/my.cnf 
 
 [mysqld]
@@ -125,8 +127,8 @@ innodb_file_per_table=1
 In file /etc/mysql/mariadb.conf.d/50-server.conf comment the line "bind-address  127.0.0.1" and uncomment the line "log_bin = /var/log/mysql/mysql-bin.log"
 
 Restart the services:
-* sudo systemctl restart mysql.service
-* sudo systemctl restart mariadb.service 
+* sudo systemctl restart mariadb.service
+* sudo systemctl restart mysql.service 
 
 Getting the ethoscope software
 -------------------------------
@@ -149,10 +151,10 @@ Ethoscope services
 
 Boot config file
 -----------------
-echo 'gpu_mem=256' >> /boot/config.txt
-echo 'start_x=1' >> /boot/config.txt
+* echo 'gpu_mem=256' >> /boot/config.txt
+* echo 'start_x=1' >> /boot/config.txt
 
-
+Make sure the camera is enabled: Go into the Raspberry Pi Configuration tool (sudo raspi-config), click Interfaces, and select Enabled beside the Camera option.
 
 Last touches
 ------------- 
