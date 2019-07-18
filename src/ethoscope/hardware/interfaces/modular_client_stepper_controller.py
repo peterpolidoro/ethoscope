@@ -111,7 +111,7 @@ class ModularClientInterface(BaseInterface):
         return
     
 
-    def shake_with_speed(self, board, channel, speed=180, acceleration=2000, deceleration=2000, duration=5000):
+    def shake_with_speed(self, board, channel, speed=180, acceleration=2000, deceleration=2000, duration=5000, ncycles=10):
         """
         Move a specified rotation to a speed for a certain time.
 
@@ -127,6 +127,8 @@ class ModularClientInterface(BaseInterface):
         :type deceleration: int
         :param duration: the time (ms) the stimulus should last
         :type duration: int
+        :param ncycles: the number of oscillation
+        :type ncycles: int
         :return:
         """
 
@@ -145,13 +147,14 @@ class ModularClientInterface(BaseInterface):
             motor = self._dev1
 
         if motor is not None:
-            for i in range(5):
-                # Change the rotation direction every iteration
-                if i%2 == 0: direction_speed = speed
-                else: direction_speed = -1 * speed
-
-                motor.move_at_for(channel, direction_speed, duration/5, acceleration, deceleration)
-                time.sleep(2)
+            # for i in range(5):
+            #     # Change the rotation direction every iteration
+            #     if i%2 == 0: direction_speed = speed
+            #     else: direction_speed = -1 * speed
+            #
+            #     motor.move_at_for(channel, direction_speed, duration/5, acceleration, deceleration)
+            #     time.sleep(2)
+            motor.oscillate(channel, speed, duration, acceleration, deceleration, ncycles)
 
         else:
             raise Exception("Motors are not configured to apply stimulus")

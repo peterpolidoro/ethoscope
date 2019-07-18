@@ -478,6 +478,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
                                     {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.0060},
                                     {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken","default":120},
                                     {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "motor_speed","description": "The motor speed in degree/sec", "default": 180},
+                                    {"type": "number",  "min": 1,  "max":10, "step":1,  "name": "ncycles", "description": "The number of oscillation", "default":5},
                                     {"type": "date_range", "name": "date_range",
                                      "description": "A date and time range in which the device will perform (see http://tinyurl.com/jv7k826)",
                                      "default": ""},
@@ -522,6 +523,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
                  velocity_threshold=0.0060,
                  min_inactive_time=120,
                  motor_speed=180,
+                 ncycles=5,
                  date_range=""):
 
         """
@@ -535,11 +537,14 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
         :type min_inactive_time: float
         :param motor_speed: the motor speed in degree/sec
         :type motor_speed: int
+        :param ncycles: the number of oscillations
+        :type: ncycles: int
         :return:
         """
 
         self._inactivity_time_threshold_ms = min_inactive_time * 1000  # so we use ms internally
         self._motor_speed = motor_speed
+        self._ncycles = ncycles
         self._t0 = None
         self.DEBUG=0
         super(JaneliaShakerSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range)
@@ -575,7 +580,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
                # reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
                # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acc':2000, 'dec':2000}
                 #print('time in shaker stimulus:'+str(time.time()-start))
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000, 'ncycles':self._ncycles}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
@@ -699,7 +704,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
 
         self._motor_speed_delta = delta_motor_speed  # 90 degree step for each increase/decrease in velocity
         self._min_motor_speed = min_motor_speed
-        self._max_motor_speed = 720  # based on modular_client max motor speed
+        self._max_motor_speed = 720  # based on modular_client max motor speed (2 rev/sec)
         self._min_motor_acc = min_motor_acceleration
         self._max_motor_acc = max_motor_acceleration
         self._motor_acc_delta = delta_motor_acceleration
@@ -809,6 +814,7 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
                                     {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.0060},
                                     {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken","default":120},
                                     {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "motor_speed","description": "The motor speed in degree/sec", "default": 180},
+                                    {"type": "number", "min": 1, "max": 10, "step": 1, "name": "ncycles", "description": "The number of oscillation", "default": 5},
                                     {"type": "date_range", "name": "date_range",
                                      "description": "A date and time range in which the device will perform (see http://tinyurl.com/jv7k826)",
                                      "default": ""},
@@ -856,6 +862,7 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
                  velocity_threshold=0.0060,
                  min_inactive_time=120,
                  motor_speed=180,
+                 ncycles=5,
                  date_range="",
                  date_range2=""):
 
@@ -870,11 +877,14 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         :type min_inactive_time: float
         :param motor_speed: the motor speed in degree/sec
         :type motor_speed: int
+        :param ncycles: number of oscillation
+        :type  ncycles:int
         :return:
         """
 
         self._inactivity_time_threshold_ms = min_inactive_time * 1000  # so we use ms internally
         self._motor_speed = motor_speed
+        self._ncycles = ncycles
         self._t0 = None
         #self.DEBUG=0
         super(JaneliaOptoShakerSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range, date_range2=date_range2)
@@ -907,7 +917,7 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000, 'ncycles':self._ncycles}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
