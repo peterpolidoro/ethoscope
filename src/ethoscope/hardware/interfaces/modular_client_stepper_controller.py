@@ -111,7 +111,7 @@ class ModularClientInterface(BaseInterface):
         return
     
 
-    def shake_with_speed(self, board, channel, speed=180, acceleration=2000, deceleration=2000, duration=5000, ncycles=10):
+    def shake_with_speed(self, board, channel, speed=180, acceleration=10000, deceleration=10000, duration=1000, ncycles=4):
         """
         Move a specified rotation to a speed for a certain time.
 

@@ -917,7 +917,7 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000, 'ncycles':self._ncycles}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':10000, 'ncycles':self._ncycles}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
