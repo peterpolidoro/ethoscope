@@ -76,7 +76,7 @@ class Scheduler(object):
             d1, d2 = date_strs
             if d1 is None:
                 if d2 is None:
-                    raise DateRangeError("Data range cannot inclue two None dates")
+                    raise DateRangeError("Data range cannot include two None dates")
                 out =  (0, d2)
             elif d2 is None:
                 out =  (d1, float("inf"))

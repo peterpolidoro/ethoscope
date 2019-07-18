@@ -79,10 +79,10 @@ Our own daemons
 
 * sudo systemctl daemon-reload
 
-* systemctl enable ethoscope_node.service
-* systemctl enable ethoscope_backup.service
-* systemctl enable ethoscope_video_backup.service
-* systemctl enable ethoscope_git_daemon.service
+* sudo systemctl enable ethoscope_node.service
+* sudo systemctl enable ethoscope_backup.service
+* sudo systemctl enable ethoscope_video_backup.service
+* sudo systemctl enable ethoscope_git_daemon.service
 
 * cd $TARGET_UPDATER_DIR
 * sudo cp ethoscope_update_node.service /etc/systemd/system/ethoscope_update_node.service

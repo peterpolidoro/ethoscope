@@ -136,10 +136,7 @@ class Monitor(object):
 
                     if result_writer is not None:
                         result_writer.write(t,track_u.roi, data_rows)
-                        
-#                    with open ('ethoscope.csv', 'a+') as fd:
-#                         writer = csv.writer(fd)
-#                         writer.writerow([t,track_u.roi, data_rows])
+
 
                 if not result_writer is None:
                     result_writer.flush(t, frame)

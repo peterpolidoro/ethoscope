@@ -357,10 +357,6 @@ class PiFrameGrabber(multiprocessing.Process):
                 #janelia configurations
                 capture.exposure_mode = 'sports'
                 capture.shutter_speed = 5000
-                #capture.zoom = (0.0, 0.15, 1.0, 0.8)
-                #capture.awb_mode = 'fluorescent'
-                #capture.exposure_mode = 'backlight'
-                #Janelia add the start time
                 self._start_time = time.time()
                 # end of janelia configs
 
@@ -374,7 +370,6 @@ class PiFrameGrabber(multiprocessing.Process):
 
                 #janelia adds enumerate for performance measurements
                 for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
-                    # now = time.clock();
                 #for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
                     if not self._stop_queue.empty():
                         logging.warning("The stop queue is not empty. Stop acquiring frames")
@@ -395,7 +390,6 @@ class PiFrameGrabber(multiprocessing.Process):
                          now = time.time()
                          #print i, i/(now - self._start_time)
                          logging.info('%d, %d', i, i/(now - self._start_time) )
-                    #print i, now, self._queue.qsize(), self._stop_queue.qsize()
         finally:
             logging.warning("Closing frame grabber process")
             self._stop_queue.close()
@@ -537,6 +531,7 @@ class DummyFrameGrabber(multiprocessing.Process):
         self._target_resolution = target_resolution
         self._video_file = path
         super(DummyFrameGrabber, self).__init__()
+
     def run(self):
         try:
 

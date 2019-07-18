@@ -5,9 +5,9 @@ from optparse import OptionParser
 import updater
 from helpers import *
 
-
 app = Bottle()
 STATIC_DIR = "./static"
+
 
 ##################
 # Bottle framework
@@ -16,12 +16,14 @@ STATIC_DIR = "./static"
 @app.get('/favicon.ico')
 def get_favicon():
     assert_node(is_node)
-    return server_static(STATIC_DIR+'/img/favicon.ico')
+    return server_static(STATIC_DIR + '/img/favicon.ico')
+
 
 @app.route('/static/<filepath:path>')
 def server_static(filepath):
     assert_node(is_node)
     return static_file(filepath, root=STATIC_DIR)
+
 
 @app.route('/')
 def index():
@@ -35,7 +37,7 @@ def index():
 ###########################
 
 @app.get('/device/<action>/<id>')
-def device(action,id):
+def device(action, id):
     """
     Control update state/ get info about a node or device
 
@@ -47,27 +49,25 @@ def device(action,id):
             local_commit, origin_commit = ethoscope_updater.get_local_and_origin_commits()
             up_to_date = local_commit == origin_commit
 
-
             # @pepelisu you can get
-            #data["local_commit"]["id"] -> a34fac...
-            #data["local_commit"]["date"] -> 2015-01-24 12:23:00
-            return {"up_to_date":up_to_date,
-                    "local_commit":get_commit_version(local_commit),
-                    "origin_commit":get_commit_version(origin_commit)
+            # data["local_commit"]["id"] -> a34fac...
+            # data["local_commit"]["date"] -> 2015-01-24 12:23:00
+            return {"up_to_date": up_to_date,
+                    "local_commit": get_commit_version(local_commit),
+                    "origin_commit": get_commit_version(origin_commit)
                     }
         if action == 'active_branch':
             return {"active_branch": str(ethoscope_updater.active_branch())}
         if action == 'available_branches':
             return {"available_branches": str(ethoscope_updater.available_branches())}
 
-
         if action == 'update':
-            old_commit, _= ethoscope_updater.get_local_and_origin_commits()
+            old_commit, _ = ethoscope_updater.get_local_and_origin_commits()
             ethoscope_updater.update_active_branch()
-            new_commit, _= ethoscope_updater.get_local_and_origin_commits()
+            new_commit, _ = ethoscope_updater.get_local_and_origin_commits()
 
-            return {"old_commit":get_commit_version(old_commit),
-                    "new_commit":get_commit_version(new_commit)
+            return {"old_commit": get_commit_version(old_commit),
+                    "new_commit": get_commit_version(new_commit)
                     }
         if action == "restart_daemon":
             if is_node:
@@ -84,7 +84,7 @@ def device(action,id):
 
 @app.post('/device/<action>/<id>')
 def change_branch(action, id):
-    #todo
+    # todo
     try:
         data = request.json
         branch = data['new_branch']
@@ -96,12 +96,14 @@ def change_branch(action, id):
     except Exception as e:
         logging.error(traceback.format_exc(e))
         return {'error': traceback.format_exc(e)}
+
+
 @app.get('/id')
 def name():
     try:
         return {"id": device_id}
     except Exception as e:
-        return {'error':traceback.format_exc(e)}
+        return {'error': traceback.format_exc(e)}
 
 
 ###############################
@@ -115,7 +117,7 @@ def bare(action):
     try:
         assert_node(is_node)
         if action == 'update':
-            #out format looks like  {branch:up_to_date}. e.g. out["dev"]=True
+            # out format looks like  {branch:up_to_date}. e.g. out["dev"]=True
             out = bare_repo_updater.update_all_visible_branches()
             return out
         elif action == 'discover_branches':
@@ -129,9 +131,8 @@ def bare(action):
         return {'error': traceback.format_exc(e)}
 
 
-
 @app.get('/node_info')
-def node_info():#, device):
+def node_info():  # , device):
     try:
         assert_node(is_node)
         return {'ip': "http://" + LOCAL_IP,
@@ -142,8 +143,9 @@ def node_info():#, device):
         logging.error(e)
         return {'error': traceback.format_exc(e)}
 
+
 @app.get('/devices')
-def scan_subnet(ip_range=(3,253)):
+def scan_subnet(ip_range=(3, 253)):
     try:
         assert_node(is_node)
         devices_map = generate_new_device_map(LOCAL_IP, ip_range)
@@ -152,7 +154,6 @@ def scan_subnet(ip_range=(3,253)):
         logging.error("Unexpected exception when scanning for devices:")
         logging.error(traceback.format_exc(e))
         return {'error': traceback.format_exc(e)}
-
 
 
 @app.post('/group/<what>')
@@ -180,23 +181,24 @@ def group(what):
             for device in data["devices"]:
                 response = updates_api_wrapper(device['ip'], device['id'], what='device/restart_daemon')
                 responses.append(response)
-        return {'response':responses}
+        return {'response': responses}
     except Exception as e:
         logging.error("Unexpected exception when updating devices:")
         logging.error(traceback.format_exc(e))
         return {'error': traceback.format_exc(e)}
+
 
 def close(exit_status=0):
     logging.info("Closing server")
     os._exit(exit_status)
 
 
-#======================================================================================================================#
+# ======================================================================================================================#
 ############# Janelia: Added this class from server.py
 ### CLASSS TO BE REMOVED IF BOTTLE CHANGES TO 0.13
 ############
 class CherootServer(ServerAdapter):
-    def run(self, handler): # pragma: no cover
+    def run(self, handler):  # pragma: no cover
         from cheroot import wsgi
         from cheroot.ssl import builtin
         self.options['bind_addr'] = (self.host, self.port)
@@ -207,14 +209,14 @@ class CherootServer(ServerAdapter):
         server = wsgi.Server(**self.options)
         if certfile and keyfile:
             server.ssl_adapter = builtin.BuiltinSSLAdapter(
-                    certfile, keyfile, chainfile)
+                certfile, keyfile, chainfile)
         try:
             server.start()
         finally:
             server.stop()
+
+
 #############
-
-
 
 
 if __name__ == '__main__':
@@ -225,12 +227,8 @@ if __name__ == '__main__':
     parser.add_option("-g", "--git-local-repo", dest="local_repo", help="route to local repository to update")
     # when no bare repo path is declares. we are in a device else, we are on a node
     parser.add_option("-b", "--bare-repo", dest="bare_repo", default=None, help="route to bare repository")
-    #parser.add_option("-i", "--node-ip", dest="node_ip", help="Ip of the node in the local network")
     parser.add_option("-r", "--router-ip", dest="router_ip", default="192.168.123.254",
                       help="the ip of the router in your setup")
-    # parser.add_option("-r", "--router-ip", dest="router_ip", default="10.150.0.1",
-    #                  help="the ip of the router in your setup")
-
     parser.add_option("-p", "--port", default=8888, dest="port", help="the port to run the server on")
     parser.add_option("-D", "--debug", dest="debug", default=False, help="Set DEBUG mode ON", action="store_true")
 
@@ -246,7 +244,6 @@ if __name__ == '__main__':
 
     MACHINE_ID_FILE = '/etc/machine-id'
     DEBUG = option_dict["debug"]
-
 
     ethoscope_updater = updater.DeviceUpdater(local_repo)
 
@@ -269,18 +266,17 @@ if __name__ == '__main__':
             logging.warning(traceback.format_exc(e))
         WWW_IP = None
 
-
     try:
-	#Janelia added the handle to import --> taken from server.py
-	try:
-	  from cherrypy import wsgiserver
-	except: 
-	  #Trick bottle to think that cheroot is actulay cherrypy server adds the pacth to BOTTLE
-            server_names["cherrypy"]=CherootServer(host='0.0.0.0', port=port)
+        # Janelia added the handle to import --> taken from server.py
+        try:
+            from cherrypy import wsgiserver
+        except:
+            # Trick bottle to think that cheroot is actulay cherrypy server adds the pacth to BOTTLE
+            server_names["cherrypy"] = CherootServer(host='0.0.0.0', port=port)
             logging.warning("Cherrypy version is bigger than 9, we have to change to cheroot server")
-            pass  
-	#end janelia
-	
+            pass
+        # end janelia
+
         run(app, host='0.0.0.0', port=port, debug=debug, server='cherrypy')
 
     except KeyboardInterrupt:

@@ -632,9 +632,6 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         14: 1
     }
 
-    # Linearly space the motor speed from 0 to 360 into 10000 steps to match the fly velocity
-    # _motor_speed = [round(x) for x in np.linspace(0, 360, 10000+1)]
-
     # Create dictionary of current fly_velocity/motor_speed status for each roi
     _stimulus_info = {'t': 0, 'v': 0.006, 's': 90, 'a': 100}  # initialize the stimulus info for each roi
     _roi_stimulus_status = {1: _stimulus_info,
@@ -652,16 +649,6 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
                             13: _stimulus_info,
                             14: _stimulus_info
                             }
-
-    # _time_delta_min = 1000 * 60 * 2       # 2 min for time delta (min time thresh in hysteresis)
-    # _time_delta_max = 1000 * 60 * 30      # 30 min for time delta (max time thresh in hysteresis)
-    #
-    # _motor_speed_delta = 90      # 360 degree step for each increase/decrease in velocity
-    # _min_motor_speed = 90
-    # _max_motor_speed = 720      # based on modular_client max motor speed
-    # _min_motor_acc = 100
-    # _max_motor_acc = 10000
-    #
 
     def __init__(self,
                  hardware_connection,
@@ -739,13 +726,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         # # fly velocity range: 0.0 ->  1.0 with 0.0001 step
         # # rotation speed range: 0.0 -> 100 with 0.01 step
         # # the lower the speed the more velocity
-        # speed = round(100.0-(current_velocity * 100.0))
 
-        # Use degree/s for speed instead of steps
-        # fly velocity range: 0.0 ->  1.0 with 0.0001 step
-        # rotation speed range: 0.0 -> 360 with 1 step
-        # the lower the speed the more velocity
-        # print(current_velocity)
         current_velocity = 1 if current_velocity > 1 else current_velocity
         current_velocity = 0 if current_velocity < 0 else current_velocity
 
@@ -786,11 +767,6 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
 
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
-                # print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
-                # reported_velocity = round(log10(current_velocity) * 1000) if current_velocity > 0 else 0
-                # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed,
-                #                                     'velocity': reported_velocity, 'acc': acc,
-                #                                     'dec': self._motor_dec}
                 return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acc': acc}
         else:
             self._t0 = now
@@ -904,7 +880,7 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         super(JaneliaOptoShakerSleepDepStimultor, self).__init__(hardware_connection, velocity_threshold, date_range=date_range, date_range2=date_range2)
 
     def _decide(self):
-        #start = time.time()
+
         roi_id = self._tracker._roi.idx
         now = self._tracker.last_time_point
 
@@ -931,9 +907,6 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
-               # reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
-               # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acc':2000, 'dec':2000}
-                #print('time in shaker stimulus:'+str(time.time()-start))
                 return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000}
         else:
             self._t0 = now

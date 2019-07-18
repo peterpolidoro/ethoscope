@@ -331,8 +331,6 @@ if __name__ == '__main__':
     parser.add_option("-l", "--local", dest="local", default=False, help="Run on localhost (run a node and device on the same machine, for development)", action="store_true")
     parser.add_option("-e", "--results-dir", dest="results_dir", default="/ethoscope_results",help="Where temporary result files are stored")
     parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="192.168.123.254", help="the ip of the router in your setup")
-    #parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="10.150.0.1", help="the ip of the router in your setup")
-
 
     (options, args) = parser.parse_args()
 
@@ -342,7 +340,6 @@ if __name__ == '__main__':
     RESULTS_DIR = option_dict["results_dir"]
     max_address = 255 if DEBUG else 5
     LOCAL_IP = get_local_ip(option_dict["subnet_ip"], max_node_subnet_address=max_address, localhost=option_dict["local"])
-    #print("server: "+LOCAL_IP)
     try:
         WWW_IP = get_internet_ip()
     except Exception as e:
@@ -354,7 +351,6 @@ if __name__ == '__main__':
     device_scanner = None
     try:
         device_scanner = DeviceScanner(LOCAL_IP, results_dir=RESULTS_DIR)
-        #device_scanner = DeviceScanner( results_dir=RESULTS_DIR)
         device_scanner.start()
         #######TO be remove when bottle changes to version 0.13
         server = "cherrypy"

@@ -52,10 +52,8 @@ class DeviceScanner(Thread):
     _refresh_period = 1.0
     _filter_device_period = 5
 
-    # def __init__(self, local_ip = "192.169.123.1", ip_range = (6,100),device_refresh_period = 5, results_dir="/ethoscope_results"):
     def __init__(self, local_ip="192.168.123.2", ip_range=(3, 100), device_refresh_period=5,
                  results_dir="/ethoscope_results"):
-        # def __init__(self, local_ip = "10.150.100.157", ip_range = (6,100),device_refresh_period = 5, results_dir="/tmp/ethoscope_results"):
         self._is_active = True
         self._devices = []
         # "id" -> "info", "dev"
@@ -65,11 +63,6 @@ class DeviceScanner(Thread):
         self._ip_range = ip_range
         self._use_scapy = _use_scapy
 
-        # janelia: for debugging use specific ethoscope/comment out the loop for all devices
-        # d = Device("192.168.123.2", device_refresh_period, results_dir= results_dir)
-        # d.start()
-        # self._devices.append(d)
-        # print('device_scanner: '+local_ip)
         for ip in self._subnet_ips(local_ip, (3, 254)):
             d = Device(ip, device_refresh_period, results_dir=results_dir)
             d.start()
@@ -81,11 +74,9 @@ class DeviceScanner(Thread):
             for c in self._arp_alive(local_ip):
                 yield c
         else:
-            # comment out the loop and use the ip of the current ethoscope explicitly
             for c in self._subnet_ips(local_ip, ip_range):
                 yield c
-        # yield "10.8.2.36"
-        # yield "192.168.123.4"
+
 
     def _subnet_ips(self, local_ip, ip_range):
         for i in range(ip_range[0], ip_range[1] + 1):
@@ -140,21 +131,18 @@ class DeviceScanner(Thread):
     def run(self):
         last_device_filter_time = 0
         valid_ips = [ip for ip in self._available_ips(self._local_ip, self._ip_range)]
-        # print('valid_ips:'+str(valid_ips))
+
         while self._is_active:
             if time.time() - last_device_filter_time > self._filter_device_period:
                 valid_ips = [ip for ip in self._available_ips(self._local_ip, self._ip_range)]
                 last_device_filter_time = time.time()
             for d in self._devices:
                 if d.ip() in valid_ips:
-                    # print('skip_scan = F')
                     d.skip_scanning(False)
                 else:
-                    # print('skip_scan = T')
                     d.skip_scanning(True)
             for d in self._devices:
                 id = d.id()
-                # print('id: '+str(id))
 
                 if id and (id not in self._device_id_map.keys()):
                     logging.info("New device detected with id = %s" % id)
@@ -236,10 +224,8 @@ class Device(Thread):
             time.sleep(.2)
             if time.time() - last_refresh > self._refresh_period:
                 if not self._skip_scanning:
-                    # print('not skip scan')
                     self._update_info()
                 else:
-                    # print('reset info')
                     self._reset_info()
                 last_refresh = time.time()
 
@@ -302,7 +288,6 @@ class Device(Thread):
         except  urllib2.HTTPError as e: # Janelia captures the error
             # Debug
             error_message = e.read()
-            #logging.error("Could not get image for ip = %s (id = %s)" % (self._ip, self._id))
             logging.error("Could not get image for ip = %s (id = %s) with error %s" % (self._ip, self._id, error_message))
             raise Exception("Could not get image for ip = %s (id = %s)" % (self._ip, self._id))
 
@@ -323,7 +308,6 @@ class Device(Thread):
     def _get_json(self, url, timeout=5, post_data=None):
 
         try:
-            # print('url in _get_json:'+url)
             req = urllib2.Request(url, data=post_data, headers={'Content-Type': 'application/json'})
             f = urllib2.urlopen(req, timeout=timeout)
             message = f.read()
@@ -339,19 +323,16 @@ class Device(Thread):
                     "Could not parse response from %s as JSON object" % self._id_url)  # Janelia: uncomment this
                 raise ScanException("Could not parse Json object")
         except urllib2.URLError as e:
-            # print('_get_json_url error:'+str(e))
             raise ScanException(str(e))
         except Exception as e:
             raise ScanException("Unexpected error" + str(e))
 
     def _update_id(self):
-        # print('_update_id')
         if self._skip_scanning:
             raise ScanException("Not scanning this ip (%s)." % self._ip)
 
         old_id = self._id
-        # print('old_ip='+old_id)
-        # print('update id._id_url:'+self._id_url)
+
         resp = self._get_json(self._id_url)
         self._id = resp['id']
         if self._id != old_id:
@@ -368,15 +349,12 @@ class Device(Thread):
 
     def _update_info(self):
         try:
-            # print('update info')
             self._update_id()
         except ScanException:
-            # print('scan exception')
             self._reset_info()
             return
         try:
             data_url = "http://%s:%i/data/%s" % (self._ip, self._port, self._id)
-            # print('data_url:'+data_url)
             resp = self._get_json(data_url)
             self._info.update(resp)
             resp = self._make_backup_path()
