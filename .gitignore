@@ -1,6 +1,5 @@
 .idea
 *.pdf
-*.png
 *.txt
 *.pickle
 *.pkl
