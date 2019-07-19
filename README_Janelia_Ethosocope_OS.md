@@ -123,6 +123,7 @@ innodb_log_buffer_size = 50M
 innodb_flush_log_at_trx_commit = 1
 innodb_lock_wait_timeout = 50
 innodb_file_per_table=1
+innodb_file_format=Barracuda
 
 In file /etc/mysql/mariadb.conf.d/50-server.conf comment the line "bind-address  127.0.0.1" and uncomment the line "log_bin = /var/log/mysql/mysql-bin.log"
 
