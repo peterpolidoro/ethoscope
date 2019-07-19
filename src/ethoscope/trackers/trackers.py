@@ -69,7 +69,7 @@ class BaseTracker(DescribedObject):
 
         except NoPositionError:
             if len(self._positions) == 0:
-                print('no position error')  # debug janelia
+                #print('no position error')  # debug janelia
                 return []
             else:
 

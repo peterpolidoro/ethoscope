@@ -372,7 +372,7 @@ class AdaptiveBGModel(BaseTracker):
   #          self._buff_fg_diff = np.empty_like(grey)
             self._old_pos = 0.0 +0.0j
    #         self._old_sum_fg = 0
-            print('bg_mode is None')
+            print('bg_model is None')
             raise NoPositionError
 
         bg = self._bg_model.bg_img.astype(np.uint8)
