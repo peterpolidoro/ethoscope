@@ -369,8 +369,8 @@ class PiFrameGrabber(multiprocessing.Process):
                 # capture.rotation = 0
 
                 #janelia adds enumerate for performance measurements
-                for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
-                #for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+                #for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
+                for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
                     if not self._stop_queue.empty():
                         logging.warning("The stop queue is not empty. Stop acquiring frames")
 
@@ -386,10 +386,10 @@ class PiFrameGrabber(multiprocessing.Process):
                     self._queue.put(out)
                     #janelia debugging
                     # Check the framerate every 5000 frames
-                    if i % 100 == 0:
-                         now = time.time()
+                    #if i % 100 == 0:
+                    #     now = time.time()
                          #print i, i/(now - self._start_time)
-                         logging.info('%d, %d', i, i/(now - self._start_time) )
+                    #     logging.info('%d, %d', i, i/(now - self._start_time) )
         finally:
             logging.warning("Closing frame grabber process")
             self._stop_queue.close()
