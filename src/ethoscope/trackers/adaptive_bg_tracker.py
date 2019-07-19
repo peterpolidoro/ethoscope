@@ -413,7 +413,7 @@ class AdaptiveBGModel(BaseTracker):
 
         elif len(contours) > 1:
             if not self.fg_model.is_ready:
-                print('fg not ready')
+                #print('fg not ready')
                 raise NoPositionError
             # hulls = [cv2.convexHull( c) for c in contours]
             hulls = contours
