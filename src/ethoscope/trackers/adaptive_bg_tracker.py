@@ -372,7 +372,7 @@ class AdaptiveBGModel(BaseTracker):
   #          self._buff_fg_diff = np.empty_like(grey)
             self._old_pos = 0.0 +0.0j
    #         self._old_sum_fg = 0
-            #print('bg_mode is None')
+            print('bg_mode is None')
             raise NoPositionError
 
         bg = self._bg_model.bg_img.astype(np.uint8)
@@ -403,9 +403,6 @@ class AdaptiveBGModel(BaseTracker):
             _, contours,hierarchy = cv2.findContours(self._buff_fg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         else:
             contours,hierarchy = cv2.findContours(self._buff_fg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-
-
 
         contours = [cv2.approxPolyDP(c,1.2,True) for c in contours]
 
