@@ -356,7 +356,7 @@ class PiFrameGrabber(multiprocessing.Process):
 
                 #janelia configurations
                 #capture.exposure_mode = 'sports'
-                capture.shutter_speed = 5000
+                #capture.shutter_speed = 5000
                 self._start_time = time.time()
                 # end of janelia configs
 
