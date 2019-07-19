@@ -580,7 +580,7 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
                # reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
                # return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'velocity':reported_velocity, 'acc':2000, 'dec':2000}
                 #print('time in shaker stimulus:'+str(time.time()-start))
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':2000, 'ncycles':self._ncycles}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':10000, 'ncycles':self._ncycles}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
@@ -915,7 +915,10 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         #    self._inactivity_time_threshold_ms = 5*1000
 
         if not has_moved:
+            #debug
+            print('not moved %d' %(roi_id) )
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
+                print('%d for %d' %(roi_id, (now - self._t0)))
                 self._t0 = None
                 return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': self._motor_speed, 'acc':10000, 'ncycles':self._ncycles}
         else:
