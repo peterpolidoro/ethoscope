@@ -286,7 +286,9 @@ class ControlThread(Thread):
         frame = self._drawer.last_drawn_frame
         if frame is not None:
             #cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
-            cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 30]) # Janelia reduces the quality
+            # Janelia: resize the image into half and reduce the quality
+            small = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+            cv2.imwrite(self._info["last_drawn_img"], small, [int(cv2.IMWRITE_JPEG_QUALITY), 30])
 
         self._last_info_t_stamp = wall_time
         self._last_info_frame_idx = frame_idx
