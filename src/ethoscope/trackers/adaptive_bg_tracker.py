@@ -396,7 +396,7 @@ class AdaptiveBGModel(BaseTracker):
 
         if  prop_fg_pix == 0:
             self._bg_model.increase_learning_rate()
-            print('prop_fg_pix == 0')
+            #print('prop_fg_pix == 0')
             raise NoPositionError
 
         if CV_VERSION == 3:
