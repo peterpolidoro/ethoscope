@@ -391,12 +391,12 @@ class AdaptiveBGModel(BaseTracker):
 
         if  prop_fg_pix > self._max_area:
             self._bg_model.increase_learning_rate()
-            #print('prop_fg_pix > self._max_area')
+            print('prop_fg_pix > self._max_area')
             raise NoPositionError
 
         if  prop_fg_pix == 0:
             self._bg_model.increase_learning_rate()
-            #print('prop_fg_pix == 0')
+            print('prop_fg_pix == 0')
             raise NoPositionError
 
         if CV_VERSION == 3:
@@ -408,10 +408,12 @@ class AdaptiveBGModel(BaseTracker):
 
         if len(contours) == 0:
             self._bg_model.increase_learning_rate()
+            print('len contours == 0')
             raise NoPositionError
 
         elif len(contours) > 1:
             if not self.fg_model.is_ready:
+                print('fg not ready')
                 raise NoPositionError
             # hulls = [cv2.convexHull( c) for c in contours]
             hulls = contours
@@ -420,6 +422,7 @@ class AdaptiveBGModel(BaseTracker):
             hulls = [h for h in hulls if h.shape[0] >= 3]
 
             if len(hulls) < 1:
+                print('hulls<1')
                 raise NoPositionError
 
             elif len(hulls) > 1:
@@ -434,6 +437,7 @@ class AdaptiveBGModel(BaseTracker):
             hull = contours[0]
             if hull.shape[0] < 3:
                 self._bg_model.increase_learning_rate()
+                print('hull shape <3')
                 raise NoPositionError
 
             features = self.fg_model.compute_features(img, hull)
@@ -441,6 +445,7 @@ class AdaptiveBGModel(BaseTracker):
 
         if distance > self._max_m_log_lik:
             self._bg_model.increase_learning_rate()
+            print('distance > self._max_m_log_lik')
             raise NoPositionError
 
 
@@ -455,6 +460,7 @@ class AdaptiveBGModel(BaseTracker):
         w_im = max(grey.shape)
         max_h = 2*h_im
         if w>max_h or h>max_h:
+            print('w>max_h or h>max_h')
             raise NoPositionError
 
         cv2.ellipse(self._buff_fg ,((x,y), (int(w*1.5),int(h*1.5)),angle),255,-1)
