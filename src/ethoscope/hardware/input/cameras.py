@@ -361,7 +361,7 @@ class PiFrameGrabber(multiprocessing.Process):
                 # janelia:
                 # allow the camera to warm up and janelia configurations
                 time.sleep(0.1)
-                capture.exposure_mode = 'off'
+                #capture.exposure_mode = 'off'
                 capture.shutter_speed = 5000
                 # capture.rotation = 0
 
@@ -400,7 +400,7 @@ class OurPiCameraAsync(BaseCamera):
                                    
 
     _frame_grabber_class = PiFrameGrabber
-    def __init__(self, target_fps=5, target_resolution=(1280, 960), *args, **kwargs):
+    def __init__(self, target_fps=20, target_resolution=(1280, 960), *args, **kwargs):
         """
         Class to acquire frames from the raspberry pi camera asynchronously.
         At the moment, frames are only greyscale images.
