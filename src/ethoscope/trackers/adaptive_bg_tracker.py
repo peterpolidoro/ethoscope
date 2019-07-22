@@ -422,7 +422,7 @@ class AdaptiveBGModel(BaseTracker):
             hulls = [h for h in hulls if h.shape[0] >= 3]
 
             if len(hulls) < 1:
-                #print('hulls<1')
+                print('hulls<1')
                 raise NoPositionError
 
             elif len(hulls) > 1:
@@ -437,7 +437,7 @@ class AdaptiveBGModel(BaseTracker):
             hull = contours[0]
             if hull.shape[0] < 3:
                 self._bg_model.increase_learning_rate()
-                #print('hull shape <3 %d' %(hull.shape[0]))
+                print('hull shape <3 %d' %(hull.shape[0]))
                 raise NoPositionError
 
             features = self.fg_model.compute_features(img, hull)
