@@ -92,7 +92,7 @@ class BaseTracker(DescribedObject):
 
     def _infer_position(self, t, max_time=80 * 1000):  # Janelia: increase the max time due to the stimulus delay from 30 to 80
         if len(self._times) == 0:
-            print('infer: self._times =0')
+           #print('infer: self._times =0')
             return []
         if t - self._last_non_inferred_time  > max_time:
             print('infer: pass the max time'+str(t - self._last_non_inferred_time))
