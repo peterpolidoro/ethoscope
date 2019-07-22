@@ -103,7 +103,7 @@ class TrackingUnit(object):
 
         #  Janelia
         num_trials = 0
-        while len(data_rows == 0):
+        while len(data_rows) == 0:
             data_rows = self._tracker.track(t, img)
             num_trials += 1
             if num_trials  > 3:
