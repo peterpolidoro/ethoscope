@@ -419,8 +419,8 @@ class AdaptiveBGModel(BaseTracker):
             # hulls = [cv2.convexHull( c) for c in contours]
             hulls = contours
             #hulls = merge_blobs(hulls)
-            print('contour>1 hulls:')
-            print(hulls)
+            #print('contour>1 hulls:')
+            #print(hulls)
             hulls = [h for h in hulls if h.shape[0] >= 3]
 
             if len(hulls) < 1:
@@ -437,11 +437,10 @@ class AdaptiveBGModel(BaseTracker):
             distance = all_distances[good_clust]
         else:
             hull = contours[0]
-            print('one hull:')
-            print(hull)
             if hull.shape[0] < 3:
                 self._bg_model.increase_learning_rate()
-                print('hull.shape <3 %d' %(hull.shape[0]))
+                print('one hull.shape <3 %d' %(hull.shape[0]))
+                print(hull)
                 raise NoPositionError
 
             features = self.fg_model.compute_features(img, hull)
