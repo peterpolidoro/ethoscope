@@ -353,19 +353,16 @@ class PiFrameGrabber(multiprocessing.Process):
             with  PiCamera() as capture:
                 logging.warning(capture)
                 capture.resolution = self._target_resolution
-
-                #janelia configurations
-                #capture.exposure_mode = 'sports'
-                capture.shutter_speed = 5000
                 #self._start_time = time.time()
-                # end of janelia configs
 
                 capture.framerate = self._target_fps
                 raw_capture = PiRGBArray(capture, size=self._target_resolution)
 
                 # janelia:
-                # allow the camera to warm up
-                # time.sleep(0.1)
+                # allow the camera to warm up and janelia configurations
+                time.sleep(0.1)
+                capture.exposure_mode = 'off'
+                capture.shutter_speed = 5000
                 # capture.rotation = 0
 
                 #janelia adds enumerate for performance measurements
