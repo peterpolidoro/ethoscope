@@ -7,8 +7,8 @@ from scipy.interpolate import splrep, splev
 devs = ModularClients()  # Might automatically find device if one available
 
 channel = 0
-velocity = 1800
-duration = 10000
+velocity = 1
+duration = 360000
 acceleration = 10000
 deceleration = 10000
 
@@ -18,10 +18,11 @@ encoder_interface = devs['encoder_interface_magnetic']['5x3'][0]
 degrees_per_revolution = 360
 positions_per_revolution = encoder_interface.get_positions_per_revolution()
 milliseconds_per_second = 1000
+encoder_interface.sample_period('setValue',1000)
 sample_period = encoder_interface.sample_period()
 spline_k = 5
 spline_smoothing = 600
-velocity_max = 2000
+velocity_max = velocity*1.1
 
 stepper_controller.wake_all()
 encoder_interface.set_time(time.time())
@@ -30,7 +31,7 @@ while True:
     encoder_interface.set_position(0)
     encoder_interface.start_sampling()
     stepper_controller.move_at_for(channel,velocity,duration,acceleration,deceleration)
-    time.sleep(10)
+    time.sleep((duration*1.1)/milliseconds_per_second)
     encoder_interface.stop_sampling()
     samples = encoder_interface.get_samples()
     samples = np.array(samples)
@@ -44,9 +45,11 @@ while True:
     plt.plot(t,v)
     plt.xlabel('time (ms)')
     plt.ylabel('velocity (degrees/s)')
+    # plt.ylabel('position (degrees)')
     plt.title('velocity={0}, duration={1}, acceleration={2}, deceleration={3}'.format(velocity,duration,acceleration,deceleration))
     plt.xlim(0,duration)
     plt.ylim(0,velocity_max)
+    # plt.ylim(0,360)
     plt.show()
 stepper_controller.stop_all()
 stepper_controller.sleep_all()
