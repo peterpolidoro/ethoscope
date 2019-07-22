@@ -5,6 +5,9 @@ from collections import deque
 from ethoscope.utils.description  import DescribedObject
 from ethoscope.core.variables import *
 
+# Debug
+import cv2
+
 
 class NoPositionError(Exception):
     """
@@ -57,7 +60,7 @@ class BaseTracker(DescribedObject):
             if not isinstance(points, list):
                 raise Exception("tracking algorithms are expected to return a LIST of DataPoints")
 
-            if len(points) ==0:
+            if len(points) == 0:
                 print('points is 0') # debug janelia
                 return []
 
@@ -75,8 +78,9 @@ class BaseTracker(DescribedObject):
 
                 points = self._infer_position(t)
 
-                if len(points) ==0:
+                if len(points) == 0:
                     print('no infer')
+                    cv2.imwrite('/tmp/sub_img' + str(t), sub_img)  # debug
                     return []
                 for p in points:
                     p.append(IsInferredVariable(True))
