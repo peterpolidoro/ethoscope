@@ -156,7 +156,7 @@ class BackgroundModel(object):
     """
     A class to model background. It uses a dynamic running average and support arbitrary and heterogeneous frame rates
     """
-    def __init__(self, max_half_life=100. * 1000, min_half_life=1.* 1000, increment = 1.2):
+    def __init__(self, max_half_life=100. * 1000, min_half_life=1.* 1000, increment = 1.6): # Janelia  changes incrememnt to 1.6 instead of 1.2
         # the maximal half life of a pixel from background, in seconds
         self._max_half_life = float(max_half_life)
         # the minimal one
@@ -380,7 +380,7 @@ class AdaptiveBGModel(BaseTracker):
         cv2.subtract(grey, bg, self._buff_fg)
 
         # originally threshold is 20
-        cv2.threshold(self._buff_fg,10,255,cv2.THRESH_TOZERO, dst=self._buff_fg)
+        cv2.threshold(self._buff_fg,20,255,cv2.THRESH_TOZERO, dst=self._buff_fg)
 
         # cv2.bitwise_and(self._buff_fg_backup,self._buff_fg,dst=self._buff_fg_diff)
         # sum_fg = cv2.countNonZero(self._buff_fg)
@@ -425,7 +425,7 @@ class AdaptiveBGModel(BaseTracker):
             hulls = [h for h in hulls if h.shape[0] >= 3]
 
             if len(hulls) < 1:
-                print('hulls<1')
+                #print('hulls<1')
                 raise NoPositionError
 
             elif len(hulls) > 1:
@@ -440,8 +440,8 @@ class AdaptiveBGModel(BaseTracker):
             hull = contours[0]
             if hull.shape[0] < 3:
                 self._bg_model.increase_learning_rate()
-                print('one hull.shape <3 %d' %(hull.shape[0]))
-                print(hull)
+                #print('one hull.shape <3 %d' %(hull.shape[0]))
+                #print(hull)
                 raise NoPositionError
 
             features = self.fg_model.compute_features(img, hull)
@@ -449,7 +449,7 @@ class AdaptiveBGModel(BaseTracker):
 
         if distance > self._max_m_log_lik:
             self._bg_model.increase_learning_rate()
-            print('distance > self._max_m_log_lik: '+str(distance))
+            #print('distance > self._max_m_log_lik: '+str(distance))
             raise NoPositionError
 
 
