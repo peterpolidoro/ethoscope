@@ -116,7 +116,7 @@ class Monitor(object):
                     #             socket_handler.close()
                     #         except socket.err, exc:
                     #             logging.info('closing socket was not successful %s: ' % exc)
-                    # break
+                    break
 
 
                 self._last_frame_idx = i
