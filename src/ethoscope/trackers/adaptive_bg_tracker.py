@@ -156,7 +156,7 @@ class BackgroundModel(object):
     """
     A class to model background. It uses a dynamic running average and support arbitrary and heterogeneous frame rates
     """
-    def __init__(self, max_half_life=100. * 1000, min_half_life=1.* 1000, increment = 1.6): # Janelia  changes incrememnt to 1.6 instead of 1.2
+    def __init__(self, max_half_life=100. * 1000, min_half_life=1.* 1000, increment = 1.2): # Janelia  changes incrememnt to 1.6 instead of 1.2
         # the maximal half life of a pixel from background, in seconds
         self._max_half_life = float(max_half_life)
         # the minimal one
