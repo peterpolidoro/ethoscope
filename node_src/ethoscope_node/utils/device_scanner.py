@@ -283,7 +283,6 @@ class Device(Thread):
             raise KeyError("Cannot find last image for device %s" % self._id)
 
         img_url = "http://%s:%i/%s/%s" % (self._ip, self._port, self._static_page, img_path)
-        print(img_url) #debug
         try:
             return urllib2.urlopen(img_url, timeout=5)
         except  urllib2.HTTPError as e: # Janelia captures the error
