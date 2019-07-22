@@ -98,8 +98,18 @@ class TrackingUnit(object):
         if len(result) > 0:
              print('before len data rows %s' %result)
 
-        if len(data_rows) == 0:
-            return []
+        #if len(data_rows) == 0:
+        #    return []
+
+        #  Janelia
+        num_trials = 0
+        while len(data_rows == 0):
+            data_rows = self._tracker.track(t, img)
+            num_trials += 1
+            if num_trials  > 3:
+                break
+        print('num_trials:'+str(num_trials))
+
 
         #debug
         if any(result):
