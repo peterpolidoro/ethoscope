@@ -380,7 +380,7 @@ class AdaptiveBGModel(BaseTracker):
         cv2.subtract(grey, bg, self._buff_fg)
 
         # change 20 to 100
-        cv2.threshold(self._buff_fg,100,255,cv2.THRESH_TOZERO, dst=self._buff_fg)
+        cv2.threshold(self._buff_fg,10,255,cv2.THRESH_TOZERO, dst=self._buff_fg)
 
         # cv2.bitwise_and(self._buff_fg_backup,self._buff_fg,dst=self._buff_fg_diff)
         # sum_fg = cv2.countNonZero(self._buff_fg)
