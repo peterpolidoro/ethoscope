@@ -256,7 +256,7 @@ class AdaptiveBGModel(BaseTracker):
 
 
         self._bg_model = BackgroundModel()
-        self._max_m_log_lik = 6.
+        self._max_m_log_lik = 8. # increase the max_m_log form 6 to 8
         self._buff_grey = None
         self._buff_object = None
         self._buff_object_old = None
@@ -379,7 +379,7 @@ class AdaptiveBGModel(BaseTracker):
         bg = self._bg_model.bg_img.astype(np.uint8)
         cv2.subtract(grey, bg, self._buff_fg)
 
-        # change 20 to 100
+        # originally threshold is 20
         cv2.threshold(self._buff_fg,10,255,cv2.THRESH_TOZERO, dst=self._buff_fg)
 
         # cv2.bitwise_and(self._buff_fg_backup,self._buff_fg,dst=self._buff_fg_diff)
