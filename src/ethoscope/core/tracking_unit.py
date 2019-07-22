@@ -106,9 +106,9 @@ class TrackingUnit(object):
         while len(data_rows) == 0:
             data_rows = self._tracker.track(t, img)
             num_trials += 1
-            if num_trials  > 3:
+            if num_trials > 3:
                 break
-        print('num_trials:'+str(num_trials))
+        #print('num_trials:'+str(num_trials))
 
 
         #debug
