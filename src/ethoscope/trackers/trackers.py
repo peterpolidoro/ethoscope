@@ -80,7 +80,8 @@ class BaseTracker(DescribedObject):
 
                 if len(points) == 0:
                     print('no infer')
-                    cv2.imwrite('/tmp/sub_img' + str(t), sub_img)  # debug
+                    out = '/tmp/sub_img' + str(t)
+                    cv2.imwrite(out, sub_img)  # debug
                     return []
                 for p in points:
                     p.append(IsInferredVariable(True))
