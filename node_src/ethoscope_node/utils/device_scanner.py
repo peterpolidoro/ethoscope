@@ -283,6 +283,7 @@ class Device(Thread):
             raise KeyError("Cannot find last image for device %s" % self._id)
 
         img_url = "http://%s:%i/%s/%s" % (self._ip, self._port, self._static_page, img_path)
+        print(img_url) #debug
         try:
             return urllib2.urlopen(img_url, timeout=5)
         except  urllib2.HTTPError as e: # Janelia captures the error
@@ -366,19 +367,19 @@ class Device(Thread):
 
     def _make_backup_path(self, timeout=30):
         try:
-            # import MySQLdb
+            import MySQLdb
             # Janelia
-            import mysql.connector
+            #import mysql.connector
             device_id = self._info["id"]
             device_name = self._info["name"]
             com = "SELECT value from METADATA WHERE field = 'date_time'"
 
-            # mysql_db = MySQLdb.connect(host=self._ip,
-            #                          connect_timeout=timeout,
-            #                          **self._ethoscope_db_credentials)
-            mysql_db = mysql.connector.connect(host=self._ip,
-                                               connect_timeout=timeout,
-                                               **self._ethoscope_db_credentials)
+            mysql_db = MySQLdb.connect(host=self._ip,
+                                      connect_timeout=timeout,
+                                      **self._ethoscope_db_credentials)
+            #mysql_db = mysql.connector.connect(host=self._ip,
+            #                                   connect_timeout=timeout,
+            #                                   **self._ethoscope_db_credentials)
             cur = mysql_db.cursor()  #Janelia:buffered=True
             cur.execute(com)
             query = [c for c in cur]
