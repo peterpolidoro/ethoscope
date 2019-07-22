@@ -90,7 +90,7 @@ class BaseTracker(DescribedObject):
             self._times.popleft()
         return points
 
-    def _infer_position(self, t, max_time=50 * 1000):  # Janelia: increase the max time due to the stimulus delay from 30 to 50
+    def _infer_position(self, t, max_time=80 * 1000):  # Janelia: increase the max time due to the stimulus delay from 30 to 80
         if len(self._times) == 0:
             print('infer: self._times =0')
             return []
