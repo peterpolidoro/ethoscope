@@ -80,7 +80,7 @@ class BaseTracker(DescribedObject):
 
                 if len(points) == 0:
                     print('no infer')
-                    out = '/tmp/sub_img' + str(t)
+                    out = '/tmp/sub_img' + str(t)+'.jpg'
                     cv2.imwrite(out, sub_img)  # debug
                     return []
                 for p in points:
