@@ -274,8 +274,6 @@ class ControlThread(Thread):
         else:
             f="NaN"
 
-
-
         if t is not None:# and p is not None:
             self._info["monitor_info"] = {
                             # "last_positions":pos,
