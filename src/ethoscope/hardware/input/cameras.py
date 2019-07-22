@@ -403,7 +403,7 @@ class OurPiCameraAsync(BaseCamera):
                                    
 
     _frame_grabber_class = PiFrameGrabber
-    def __init__(self, target_fps=20, target_resolution=(1280, 960), *args, **kwargs):
+    def __init__(self, target_fps=5, target_resolution=(1280, 960), *args, **kwargs):
         """
         Class to acquire frames from the raspberry pi camera asynchronously.
         At the moment, frames are only greyscale images.
