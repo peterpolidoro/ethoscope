@@ -463,7 +463,7 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
 
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed}#, 'a': acc}
-                #print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
+                print('%d, board%d, channel%d, velocity%f, speed%d' %(now, board, channel, current_velocity, speed))
                 #reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
                 #return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'velocity':reported_velocity, 'acc':acc, 'deceleration':self._motor_dec}
                 return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed}#, 'acc': acc} #, 'acceleration': acc, 'deceleration': self._motor_dec}
