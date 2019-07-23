@@ -107,15 +107,15 @@ class Monitor(object):
                     logging.info("Monitor object stopped from external request")
 
                     # send a stop signal to the light controller as well if present
-                    for track_u in self._unit_trackers:
-                        if track_u.stimulator.stimulator_type() == 'Double':
-                            logging.info('Closing the backlight controller as well')
-                            track_u.stimulator._communicate('Stop')
-                            socket_handler = track_u.stimulator.get_socket_handler()
-                            try:
-                                socket_handler.close()
-                            except socket.err, exc:
-                                logging.info('closing socket was not successful %s: ' % exc)
+                    # for track_u in self._unit_trackers:
+                    #     if track_u.stimulator.stimulator_type() == 'Double':
+                    #         logging.info('Closing the backlight controller as well')
+                    #         track_u.stimulator._communicate('Stop')
+                    #         socket_handler = track_u.stimulator.get_socket_handler()
+                    #         try:
+                    #             socket_handler.close()
+                    #         except socket.err, exc:
+                    #             logging.info('closing socket was not successful %s: ' % exc)
                     break
 
 
