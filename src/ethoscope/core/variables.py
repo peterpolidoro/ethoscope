@@ -56,12 +56,12 @@ class FlyVelocityVariable(BaseIntVariable):
 
 
 #Janelia: add acc as a label
-# class RotationAccelerationVariable(BaseIntVariable):
-#      """
-#      Type encoding the speed of a rotation of a tube
-#      """
-#      header_name = "acc"
-#      functional_type = "acceleration"
+class RotationAccelerationVariable(BaseIntVariable):
+     """
+     Type encoding the speed of a rotation of a tube
+     """
+     header_name = "acc"
+     functional_type = "acceleration"
 
 class PhiVariable(BaseIntVariable):
     """

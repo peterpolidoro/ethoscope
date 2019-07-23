@@ -1,5 +1,5 @@
 __author__ = 'quentin'
-from ethoscope.core.variables import BaseRelativeVariable, RotationSpeedVariable, FlyVelocityVariable#, RotationAccelerationVariable
+from ethoscope.core.variables import BaseRelativeVariable, RotationSpeedVariable, FlyVelocityVariable, RotationAccelerationVariable
 from ethoscope.core.data_point import DataPoint
 from ethoscope.stimulators.stimulators import DefaultStimulator
 
@@ -32,6 +32,7 @@ class TrackingUnit(object):
 
         self._stimulator.bind_tracker(self._tracker)
 
+        self.DEBUG=1
 
     @property
     def stimulator(self):
@@ -94,25 +95,17 @@ class TrackingUnit(object):
         data_rows = self._tracker.track(t,img)
 
         interact, result = self._stimulator.apply()
-        #debug
-        if len(result) > 0:
-             print('before len data rows %s' %result)
 
-        #  Janelia
-        # num_trials = 0
-        # while len(data_rows) == 0:
-        #     data_rows = self._tracker.track(t, img)
-        #     num_trials += 1
-        #     if num_trials > 3:
-        #         break
-        #print('num_trials:'+str(num_trials))
+        if self.DEBUG:
+            if len(result) > 0:
+                 print('before len data rows %s' %result)
 
-        if len(data_rows) == 0:
-           return []
+            if len(data_rows) == 0:
+               return []
 
-        #debug
-        if any(result):
-             print('after len data rows %s' % result)
+
+            if any(result):
+                 print('after len data rows %s' % result)
 
 
         # TODO data_row should have some result
@@ -120,9 +113,9 @@ class TrackingUnit(object):
             dr.append(interact)
             speed = RotationSpeedVariable(int(result.get('speed', 0.0)))
             #velocity = FlyVelocityVariable(int(result.get('velocity', 0.0)))
-            #acc = RotationAccelerationVariable(int(result.get('acc', 0.0)))
+            acc = RotationAccelerationVariable(int(result.get('acc', 0.0)))
             #print('dr: velocity%f, speed%d, acc%d' % (velocity, speed, acc))
             dr.append(speed)  # Janelia: add the speed of the rotation to the tracking info
             #dr.append(velocity) # Janelia: add the velocity of the fly to the tracking info
-            #dr.append(acc)
+            dr.append(acc)
         return data_rows

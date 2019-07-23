@@ -145,11 +145,9 @@ class Monitor(object):
                     drawer.draw(frame, self._last_positions, self._unit_trackers)
                 self._last_t = t
 
-
                 # Janelia measures performance
                 #end = time.clock()
                 #print t, i, end-start, end-initial_time
-                #print t, i
 
         except Exception as e:
             logging.error("Monitor closing with an exception: '%s'" % traceback.format_exc(e))

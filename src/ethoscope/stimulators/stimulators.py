@@ -9,7 +9,6 @@ import datetime
 import socket
 import sys
 
-
 #from ethoscope.web_utils.helpers import get_machine_info
 import logging
 
