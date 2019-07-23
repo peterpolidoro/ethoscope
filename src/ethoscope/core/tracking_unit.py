@@ -1,5 +1,5 @@
 __author__ = 'quentin'
-from ethoscope.core.variables import BaseRelativeVariable, RotationSpeedVariable, FlyVelocityVariable, RotationAccelerationVariable
+from ethoscope.core.variables import BaseRelativeVariable, RotationSpeedVariable, FlyVelocityVariable#, RotationAccelerationVariable
 from ethoscope.core.data_point import DataPoint
 from ethoscope.stimulators.stimulators import DefaultStimulator
 
