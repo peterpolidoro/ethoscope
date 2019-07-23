@@ -442,7 +442,7 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
                 self._t0 = None
                 speed = self._roi_stimulus_status[roi_id]['s']
-                acc = self._roi_stimulus_status[roi_id]['a']
+                #acc = self._roi_stimulus_status[roi_id]['a']
                 # Check the previous status of the stimulus if the fly was asleep in the previous recording
                 # Stay in the same motor speed unless the fly fell asleep again quickly
                 # The hysteresis loop for the stimulus staus
@@ -451,22 +451,22 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
                     if speed < self._max_motor_speed:
                         speed = min(speed + self._motor_speed_delta, self._max_motor_speed)
                      # increase the acc of the motor until max acc
-                    if acc < self._max_motor_acc:
-                        acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
+                    #if acc < self._max_motor_acc:
+                    #    acc = min(acc + self._motor_acc_delta, self._max_motor_acc)
                 elif float(now - self._roi_stimulus_status[roi_id]['t']) >= self._inactivity_time_threshold_ms + self._time_delta_max:
                     # reduce the speed of the motor until min rotation speed
                     if speed > self._min_motor_speed:
                         speed = max(speed - self._motor_speed_delta, self._min_motor_speed)
                     # reduce the acc of the motor until min acc
-                    if acc > self._min_motor_acc:
-                        acc = max(acc - self._motor_acc_delta, self._min_motor_acc)
+                    #if acc > self._min_motor_acc:
+                    #    acc = max(acc - self._motor_acc_delta, self._min_motor_acc)
 
                 # update the stimulus status of the roi
-                self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
+                self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed}#, 'a': acc}
                 #print('%d, board%d, channel%d, velocity%f, speed%d, acc%d' %(now, board, channel, current_velocity, speed, acc))
                 #reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
                 #return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'velocity':reported_velocity, 'acc':acc, 'deceleration':self._motor_dec}
-                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acc': acc} #, 'acceleration': acc, 'deceleration': self._motor_dec}
+                return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed}#, 'acc': acc} #, 'acceleration': acc, 'deceleration': self._motor_dec}
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
