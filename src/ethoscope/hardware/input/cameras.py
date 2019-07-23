@@ -366,8 +366,8 @@ class PiFrameGrabber(multiprocessing.Process):
                 # capture.rotation = 0
 
                 #janelia adds enumerate for performance measurements
-                #for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
-                for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
+                for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
+                #for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
                     if not self._stop_queue.empty():
                         logging.warning("The stop queue is not empty. Stop acquiring frames")
 
@@ -413,6 +413,7 @@ class OurPiCameraAsync(BaseCamera):
         :param kwargs: additional keyword arguments
         """
         logging.info("Initialising camera")
+        print("Initialising camera")
         self.canbepickled = True #cv2.videocapture object cannot be serialized, hence cannot be picked
         w,h = target_resolution
         if not isinstance(target_fps, int):
