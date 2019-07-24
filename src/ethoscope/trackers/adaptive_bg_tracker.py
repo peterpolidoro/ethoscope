@@ -454,6 +454,7 @@ class AdaptiveBGModel(BaseTracker):
             self._bg_model.increase_learning_rate()
             print('distance > self._max_m_log_lik: '+str(distance))
             cv2.imwrite('/tmp/distbuff_fg_' + str(t) + '.jpg', self._buff_fg)
+            cv2.imwrite('/tmp/distbuff_fg_' + str(t) + '.jpg', bg)
             cv2.imwrite('/tmp/distimg_' + str(t) + '.jpg', img)
             cv2.imwrite('/tmp/distgrey_' + str(t) + '.jpg', grey)
             raise NoPositionError
