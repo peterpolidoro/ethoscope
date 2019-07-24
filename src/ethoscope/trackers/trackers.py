@@ -61,7 +61,7 @@ class BaseTracker(DescribedObject):
                 raise Exception("tracking algorithms are expected to return a LIST of DataPoints")
 
             if len(points) == 0:
-                print('points is 0') # debug janelia
+                #print('points is 0') # debug janelia
                 return []
 
             # point = self.normalise_position(point)
@@ -79,7 +79,7 @@ class BaseTracker(DescribedObject):
                 points = self._infer_position(t)
 
                 if len(points) == 0:
-                    print('no infer')
+                    #print('no infer')
                     #out = '/tmp/sub_img' + str(t)+'.jpg'
                     #cv2.imwrite(out, sub_img)  # debug
                     return []
@@ -99,9 +99,10 @@ class BaseTracker(DescribedObject):
         if len(self._times) == 0:
            #print('infer: self._times =0')
             return []
+
         if t - self._last_non_inferred_time  > max_time:
-            #print('infer: pass the max time'+str(t - self._last_non_inferred_time))
-            return []
+            print('infer: pass the max time'+str(t - self._last_non_inferred_time))
+            #return []
 
         return self._positions[-1]
 

@@ -156,7 +156,7 @@ class BackgroundModel(object):
     """
     A class to model background. It uses a dynamic running average and support arbitrary and heterogeneous frame rates
     """
-    def __init__(self, max_half_life=100. * 1000, min_half_life=1.* 1000, increment = 1.2): # Janelia  changes incrememnt to 1.6 instead of 1.2
+    def __init__(self, max_half_life=100. * 1000, min_half_life=1.* 1000, increment = 1.2):
         # the maximal half life of a pixel from background, in seconds
         self._max_half_life = float(max_half_life)
         # the minimal one
@@ -453,11 +453,11 @@ class AdaptiveBGModel(BaseTracker):
 
         if distance > self._max_m_log_lik:
             self._bg_model.increase_learning_rate()
-            print('distance > self._max_m_log_lik: '+str(distance))
-            cv2.imwrite('/tmp/distbuff_fg_' + str(t) + '.jpg', self._buff_fg)
-            cv2.imwrite('/tmp/distbuff_bg_' + str(t) + '.jpg', bg)
-            cv2.imwrite('/tmp/distimg_' + str(t) + '.jpg', img)
-            cv2.imwrite('/tmp/distgrey_' + str(t) + '.jpg', grey)
+            # print('distance > self._max_m_log_lik: '+str(distance))
+            # cv2.imwrite('/tmp/distbuff_fg_' + str(t) + '.jpg', self._buff_fg)
+            # cv2.imwrite('/tmp/distbuff_bg_' + str(t) + '.jpg', bg)
+            # cv2.imwrite('/tmp/distimg_' + str(t) + '.jpg', img)
+            # cv2.imwrite('/tmp/distgrey_' + str(t) + '.jpg', grey)
             raise NoPositionError
 
 
