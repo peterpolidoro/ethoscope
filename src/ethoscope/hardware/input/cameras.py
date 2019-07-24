@@ -353,7 +353,7 @@ class PiFrameGrabber(multiprocessing.Process):
             with  PiCamera() as capture:
                 logging.warning(capture)
                 capture.resolution = self._target_resolution
-                #self._start_time = time.time()
+                self._start_time = time.time()
 
                 capture.framerate = self._target_fps
                 raw_capture = PiRGBArray(capture, size=self._target_resolution)
@@ -383,10 +383,10 @@ class PiFrameGrabber(multiprocessing.Process):
                     self._queue.put(out)
                     #janelia debugging
                     # Check the framerate every 5000 frames
-                    #if i % 100 == 0:
-                    #     now = time.time()
-                         #print i, i/(now - self._start_time)
-                    #     logging.info('%d, %d', i, i/(now - self._start_time) )
+                    if i % 100 == 0:
+                         now = time.time()
+                         print i, i/(now - self._start_time)
+                         #logging.info('%d, %d', i, i/(now - self._start_time) )
         finally:
             logging.warning("Closing frame grabber process")
             self._stop_queue.close()
