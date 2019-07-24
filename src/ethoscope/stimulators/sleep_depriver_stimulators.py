@@ -819,7 +819,7 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
                                     {"type": "date_range", "name": "date_range",
                                      "description": "A date and time range in which the device will perform (see http://tinyurl.com/jv7k826)",
                                      "default": ""},
-                                    {"type": "date_range", "name": "date_range2",
+                                    {"type": "datetime", "name": "date_range2",
                                      "description": "A date and time range in which the external backlight controller will operate",
                                      "default": ""},
                                    ]}
