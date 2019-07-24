@@ -188,14 +188,14 @@ class ModularClientInterface(BaseInterface):
         #    self.send(i)
 
         # Comment this for now
-        self._dev0.move_all_at(180)
-        self._dev1.move_all_at(180)
-        time.sleep(5)
-        self._dev0.stop_all()
-        self._dev1.stop_all()
-        self._dev0.zero_all()
-        self._dev1.zero_all()
-        return
+        # self._dev0.move_all_at(180)
+        # self._dev1.move_all_at(180)
+        # time.sleep(5)
+        # self._dev0.stop_all()
+        # self._dev1.stop_all()
+        # self._dev0.zero_all()
+        # self._dev1.zero_all()
+        pass
 
 
 
