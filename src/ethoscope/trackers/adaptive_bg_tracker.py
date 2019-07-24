@@ -425,7 +425,9 @@ class AdaptiveBGModel(BaseTracker):
             hulls = [h for h in hulls if h.shape[0] >= 3]
 
             if len(hulls) < 1:
-                #print('hulls<1')
+                print('hulls<1')
+                # debug:
+                cv2.imwrite('/tmp/hulls1buff_fg_' + str(t), self._buff_fg)
                 raise NoPositionError
 
             elif len(hulls) > 1:
@@ -440,7 +442,8 @@ class AdaptiveBGModel(BaseTracker):
             hull = contours[0]
             if hull.shape[0] < 3:
                 self._bg_model.increase_learning_rate()
-                #print('one hull.shape <3 %d' %(hull.shape[0]))
+                print('one hull.shape <3 %d' %(hull.shape[0]))
+                cv2.imwrite('/tmp/onehulls3buff_fg_' + str(t), self._buff_fg)
                 #print(hull)
                 raise NoPositionError
 
@@ -449,7 +452,8 @@ class AdaptiveBGModel(BaseTracker):
 
         if distance > self._max_m_log_lik:
             self._bg_model.increase_learning_rate()
-            #print('distance > self._max_m_log_lik: '+str(distance))
+            print('distance > self._max_m_log_lik: '+str(distance))
+            cv2.imwrite('/tmp/distbuff_fg_' + str(t), self._buff_fg)
             raise NoPositionError
 
 
