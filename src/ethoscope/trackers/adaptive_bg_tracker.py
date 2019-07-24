@@ -189,6 +189,7 @@ class BackgroundModel(object):
 
     def update(self, img_t, t, fg_mask=None):
         dt = float(t - self.last_t)
+
         if dt < 0:
             # raise EthoscopeException("Negative time interval between two consecutive frames")
             raise NoPositionError("Negative time interval between two consecutive frames")
