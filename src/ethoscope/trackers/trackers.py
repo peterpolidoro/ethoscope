@@ -7,7 +7,7 @@ from ethoscope.core.variables import *
 
 # Debug
 import cv2
-
+import logging
 
 class NoPositionError(Exception):
     """
@@ -101,8 +101,8 @@ class BaseTracker(DescribedObject):
             return []
 
         if t - self._last_non_inferred_time  > max_time:
-            print('infer: pass the max time'+str(t - self._last_non_inferred_time))
-            #return []
+            logging.info('infer: pass the max time'+str(t - self._last_non_inferred_time))
+            #return [] #Janelia commented out this
 
         return self._positions[-1]
 
