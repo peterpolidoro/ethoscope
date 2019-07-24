@@ -102,7 +102,7 @@ class BaseTracker(DescribedObject):
 
         if t - self._last_non_inferred_time  > max_time:
             logging.info('infer: pass the max time'+str(t - self._last_non_inferred_time))
-            #return [] #Janelia commented out this
+            return []
 
         return self._positions[-1]
 
