@@ -195,7 +195,7 @@ class DoubleBaseStimulator(DescribedObject):
             self._socket_handler.send(msg)
         except socket.error, exc:
             # print('not successful send:' + msg)
-            logging.info('Trigger backlight was not successful %s for msg %s: ' % (exc, msg))
+            logging.warning('Trigger backlight was not successful %s for msg %s: ' % (exc, msg))
 
         #raise NotImplementedError
 
