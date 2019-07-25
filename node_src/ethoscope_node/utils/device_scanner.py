@@ -284,7 +284,9 @@ class Device(Thread):
 
         img_url = "http://%s:%i/%s/%s" % (self._ip, self._port, self._static_page, img_path)
         try:
-            return urllib2.urlopen(img_url, timeout=5)
+            result_img = urllib2.urlopen(img_url, timeout=5)
+            print(result_img.headers['content-length']) #Janelia debug
+            return result_img
         except  urllib2.HTTPError as e: # Janelia captures the error
             # Debug
             error_message = e.read()
