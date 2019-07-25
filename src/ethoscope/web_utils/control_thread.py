@@ -182,7 +182,6 @@ class ControlThread(Thread):
         drawer_kwargs = self._option_dict["drawer"]["kwargs"]
         self._drawer = DrawerClass(**drawer_kwargs)
 
-
         super(ControlThread, self).__init__()
 
 
@@ -390,7 +389,7 @@ class ControlThread(Thread):
         # hardware_interface is a running thread
         rw = ResultWriter(self._db_credentials, rois, self._metadata, take_frame_shots=True)
 
-        return  (cam, rw, rois, TrackerClass, tracker_kwargs,
+        return (cam, rw, rois, TrackerClass, tracker_kwargs,
                         hardware_connection, StimulatorClass, stimulator_kwargs)
 
     def run(self):
