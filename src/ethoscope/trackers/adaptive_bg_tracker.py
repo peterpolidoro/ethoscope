@@ -291,7 +291,8 @@ class AdaptiveBGModel(BaseTracker):
         #
         mean = cv2.mean(self._buff_grey, mask)
 
-        scale = 128. / mean[0]
+        if mean[0] > 0:     #Janelia
+            scale = 128. / mean[0]
 
         cv2.multiply(self._buff_grey, scale, dst = self._buff_grey)
 
