@@ -29,7 +29,7 @@ class ModularClientInterface(BaseInterface):
             
         # wake up all motors        
         self._wake_all()
-        #self._warm_up()
+        self._warm_up()
         # reset the positions of the motors
         self._reset_all()
 
@@ -184,18 +184,15 @@ class ModularClientInterface(BaseInterface):
         This will move all motors.
         Useful for testing
         """
-        # for i in range(1, 1 + self._n_channels):
-        #    self.send(i)
-
         # Comment this for now
-        # self._dev0.move_all_at(180)
-        # self._dev1.move_all_at(180)
-        # time.sleep(5)
-        # self._dev0.stop_all()
-        # self._dev1.stop_all()
-        # self._dev0.zero_all()
-        # self._dev1.zero_all()
-        pass
+        self._dev0.move_all_at(180)
+        self._dev1.move_all_at(180)
+        time.sleep(2)
+        self._dev0.stop_all()
+        self._dev1.stop_all()
+        self._dev0.zero_all()
+        self._dev1.zero_all()
+
 
 
 
