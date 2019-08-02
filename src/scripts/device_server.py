@@ -12,6 +12,15 @@ import json
 import os
 import glob
 
+
+
+try:
+    from cheroot.wsgi import Server as WSGIServer
+except ImportError:
+    from cherrypy.wsgiserver import CherryPyWSGIServer as WSGIServer
+
+
+
 api = Bottle()
 
 tracking_json_data = {}
@@ -262,15 +271,15 @@ if __name__ == '__main__':
 
     try:
         #######TO be remove when bottle changes to version 0.13
-        server = "cherrypy"
-        try:
-            from cherrypy import wsgiserver
-        except:
-            #Trick bottle to think that cheroot is actulay cherrypy server adds the pacth to BOTTLE
-            server_names["cherrypy"]=CherootServer(host='0.0.0.0', port=port)
-            logging.warning("Cherrypy version is bigger than 9, we have to change to cheroot server")
-            pass
-        #########
+        # server = "cherrypy"
+        # try:
+        #     from cherrypy import wsgiserver
+        # except:
+        #     #Trick bottle to think that cheroot is actulay cherrypy server adds the pacth to BOTTLE
+        #     server_names["cherrypy"]=CherootServer(host='0.0.0.0', port=port)
+        #     logging.warning("Cherrypy version is bigger than 9, we have to change to cheroot server")
+        #     pass
+        # #########
         run(api, host='0.0.0.0', port=port, debug=option_dict["debug"], server='cherrypy')
 
     except Exception as e:
