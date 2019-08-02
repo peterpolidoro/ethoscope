@@ -360,7 +360,7 @@ class PiFrameGrabber(multiprocessing.Process):
 
                 # janelia:
                 # allow the camera to warm up and janelia configurations
-                #time.sleep(0.1)
+                time.sleep(0.1)
                 #capture.exposure_mode = 'off'
                 capture.shutter_speed = 5000
                 # capture.rotation = 0
