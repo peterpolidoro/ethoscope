@@ -287,11 +287,11 @@ class ControlThread(Thread):
             #small = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
             #cv2.imwrite(self._info["last_drawn_img"], small, [int(cv2.IMWRITE_JPEG_QUALITY), 30])
             # Check the contents of the frame
-            gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            nonzero = cv2.countNonZero(gray_image)
-            if nonzero == 0:
-                print "Image is black"
-                cv2.imwrite('/ethoscope_data/blackimg'+ str(frame_idx)+ '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # nonzero = cv2.countNonZero(gray_image)
+            # if nonzero == 0:
+            #    print "Image is black"
+            #    cv2.imwrite('/ethoscope_data/blackimg'+ str(frame_idx)+ '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
             # else:
             #     print "Colored image"
             #     cv2.imwrite('/ethoscope_data/colorimg' + str(frame_idx) + '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
