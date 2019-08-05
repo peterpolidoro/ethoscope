@@ -291,10 +291,10 @@ class ControlThread(Thread):
             nonzero = cv2.countNonZero(gray_image)
             if nonzero == 0:
                 print "Image is black"
-                cv2.imwrite('/ethoscope_data/blackimg'+ str(frame_idx), frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
-            else:
-                print "Colored image"
-                cv2.imwrite('/ethoscope_data/colorimg' + str(frame_idx), frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+                cv2.imwrite('/ethoscope_data/blackimg'+ str(frame_idx)+ '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # else:
+            #     print "Colored image"
+            #     cv2.imwrite('/ethoscope_data/colorimg' + str(frame_idx) + '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
 
         self._last_info_t_stamp = wall_time
         self._last_info_frame_idx = frame_idx
