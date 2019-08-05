@@ -86,7 +86,7 @@ class IsMovingStimulator(BaseStimulator):
 class IsMovingStimulatorDouble(DoubleBaseStimulator):
     _HardwareInterfaceClass = DefaultInterface
 
-    def __init__(self, hardware_connection=None, velocity_threshold=0.01, date_range = "", date_range2="", **kwargs):
+    def __init__(self, hardware_connection=None, velocity_threshold=0.009, date_range = "", date_range2="", **kwargs):
         """
         class implementing a stimulator that decides whether an animal has moved though does nothing accordingly an communicate an operating signal to a second stimulus
         :param hardware_connection: a default hardware interface object
@@ -261,8 +261,8 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
 
     _description = {"overview": "An adaptive stimulator to sleep deprive an animal using stepper motors.",
                     "arguments": [
-                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.01},
-                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)","default":60},
+                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.009},
+                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)","default":90},
                                     {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "min_motor_speed","description": "The motor speed (degree/s)", "default": 180},
                                     {"type": "number", "min": 10, "max": 720, "step": 1, "name": "delta_motor_speed", "description": "The increase/decrease in motor speed (degree/s)", "default": 90},
                                     {"type": "number", "min": 100, "max": 2000, "step": 1, "name": "min_motor_acceleration", "description": "The minimal motor acceleration (degree/s^2)", "default": 100},
@@ -343,8 +343,8 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
 
     def __init__(self,
                  hardware_connection,
-                 velocity_threshold= 0.010,
-                 min_inactive_time=60,
+                 velocity_threshold= 0.009,
+                 min_inactive_time=90,
                  min_motor_speed=180,
                  delta_motor_speed=90,
                  min_motor_acceleration=100,
@@ -474,8 +474,8 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
 class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
     _description = {"overview": "A shaker stimulator to sleep deprive an animal using stepper motors.",
                     "arguments": [
-                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.01},
-                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)","default":60},
+                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.009},
+                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)","default":90},
                                     {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "motor_speed","description": "The motor speed (degree/s)", "default": 180},
                                     {"type": "number",  "min": 1,  "max":10, "step":1,  "name": "ncycles", "description": "The number of oscillation", "default":4},
                                     {"type": "number", "min":250, "max":3000, "step":100, "name": "duration", "description": "Duration in each direction (ms)",  "default":500},
@@ -520,8 +520,8 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
 
     def __init__(self,
                  hardware_connection,
-                 velocity_threshold=0.010,
-                 min_inactive_time=60,
+                 velocity_threshold=0.009,
+                 min_inactive_time=90,
                  motor_speed=180,
                  ncycles=4,
                  duration=1000,
@@ -591,8 +591,8 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
 class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
     _description = {"overview": "An adaptive stimulator to sleep deprive an animal using stepper motors.",
                     "arguments": [
-                                    {"type": "number", "min": 0.0, "max": 1.0, "step": 0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement", "default": 0.010},
-                                    {"type": "number", "min": 1, "max": 3600 * 12, "step": 1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)", "default": 60},
+                                    {"type": "number", "min": 0.0, "max": 1.0, "step": 0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement", "default": 0.009},
+                                    {"type": "number", "min": 1, "max": 3600 * 12, "step": 1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)", "default": 90},
                                     {"type": "number", "min": 10, "max": 720, "step": 1, "name": "min_motor_speed", "description": "The motor speed in (degree/s)", "default": 180},
                                     {"type": "number", "min": 10, "max": 720, "step": 1, "name": "delta_motor_speed", "description": "The increase/decrease in motor speed (degree/s)", "default": 90},
                                     {"type": "number", "min": 100, "max": 2000, "step": 1, "name": "min_motor_acceleration", "description": "The minimal motor acceleration (degree/s^2)", "default": 100},
@@ -659,8 +659,8 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
 
     def __init__(self,
                  hardware_connection,
-                 velocity_threshold=0.0060,
-                 min_inactive_time=120,
+                 velocity_threshold=0.0090,
+                 min_inactive_time=90,
                  min_motor_speed=180,
                  delta_motor_speed=90,
                  min_motor_acceleration=100,
@@ -811,8 +811,8 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
 class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
     _description = {"overview": "A shaker stimulator to sleep deprive an animal using stepper motors with optostimuly.",
                     "arguments": [
-                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.010},
-                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)","default":60},
+                                    {"type": "number", "min": 0.0, "max": 1.0, "step":0.0001, "name": "velocity_threshold", "description": "The minimal velocity that counts as movement","default":0.009},
+                                    {"type": "number", "min": 1, "max": 3600*12, "step":1, "name": "min_inactive_time", "description": "The minimal time after which an inactive animal is awaken (s)","default":90},
                                     {"type": "number", "min": 10, "max": 720 , "step": 1, "name": "motor_speed","description": "The motor speed (degree/s)", "default": 180},
                                     {"type": "number", "min": 1, "max": 10, "step": 1, "name": "ncycles", "description": "The number of oscillation", "default": 4},
                                     {"type": "number", "min": 250, "max": 3000, "step": 100, "name": "duration","description": "Duration in each direction (ms)", "default": 500},
@@ -860,8 +860,8 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
 
     def __init__(self,
                  hardware_connection,
-                 velocity_threshold=0.0060,
-                 min_inactive_time=120,
+                 velocity_threshold=0.0090,
+                 min_inactive_time=90,
                  motor_speed=180,
                  duration=500,
                  ncycles=4,
