@@ -289,7 +289,7 @@ class ControlThread(Thread):
             # Check the contents of the frame
             gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             nonzero = cv2.countNonZero(gray_image)
-            if cv2.countNonZero(frame) == 0:
+            if nonzero == 0:
                 print "Image is black"
                 cv2.imwrite('/ethoscope_data/blackimg'+ str(frame_idx), frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
             else:
