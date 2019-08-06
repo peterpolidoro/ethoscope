@@ -168,3 +168,32 @@ sudo nano /etc/machine-id
 
 * Change the datetime on the pi to be UTC. run sudo raspi-config and With Localisation Options open you'll be able to choose Change Timezone and select your local timezone.
 
+Troubleshooting
+---------------
+* If the image seems to have the rotating lines of the IR backlight due to a change in the duty cycle, try changing the shutter speed of the camera in src/hardware/input/cameras.py
+
+* To restart the server: 
+On the terminal: 
+ * sudo systemctl restart ethoscope_node.service
+ * sudo systemctl restart ethoscope_update_node.service
+ * sudo systemctl restart ethoscope_backup.service
+
+
+* To restart any device:
+On the terminal:
+ssh pi@192.168.123.3  (or whatever ip of the device you want to restart)
+()Pass: e001@hhmi)
+
+* sudo systemctl restart ethoscope_device.service
+* sudo systemctl restart ethoscope_update.service
+
+* To view the service log messages, for example, “ethoscope_node.service” use
+sudo journalctl -u ethoscope_node.service -e   on the server machine
+
+* For local testing you can run src/LocalTrackingExample.py.  The output from this example is using SQLiteWrite. To make it compatible with Rethomics toolbox for analysis run the  following sql commands:
+- update ROI-1 set id=ROWID;
+- update ROI-2 set id=ROWID;
+.
+.
+.
+  
