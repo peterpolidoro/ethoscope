@@ -196,4 +196,7 @@ sudo journalctl -u ethoscope_node.service -e   on the server machine
 .
 .
 .
-  
+
+2019 hardware specs of RPI for Janelia
+--------------------------------------
+If the RPI is changed and has different chip, you may need to add the the hardware group number and revision number of the new pi under /src/ethoscope/web_utils/helpers.py
