@@ -170,7 +170,7 @@ sudo nano /etc/machine-id
 
 Troubleshooting
 ---------------
-* If the image seems to have the rotating lines of the IR backlight due to a change in the duty cycle, try changing the shutter speed of the camera in src/hardware/input/cameras.py
+* If the image seems to have the rotating lines of the IR backlight due to a change in the duty cycle, try changing the shutter speed of the camera in src/hardware/input/cameras.py or change the IR intensity from the sleepRig matlab application that controls the backlight
 
 * To restart the server: 
 On the terminal: 
