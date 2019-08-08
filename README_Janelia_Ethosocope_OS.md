@@ -157,8 +157,10 @@ Boot config file
 
 Make sure the camera is enabled: Go into the Raspberry Pi Configuration tool (sudo raspi-config), click Interfaces, and select Enabled beside the Camera option.
 
-Last touches
-------------- 
+Last touches cloning the available OS to a new SD-card
+------------------------------------------------------
+* A clone of the OS is available on /home/labadmin/Desktop/ethoscope_OS/ethoscope_pi_image.dmg
+ 
 * If you are cloning the OS to a new SD-card make sure that you change the machine-id to be unique
 sudo nano /etc/machine-id
 
@@ -167,6 +169,9 @@ sudo nano /etc/machine-id
 * Use the same hostname you chose to change the entry of 127.0.1.1 in /etc/hosts
 
 * Change the datetime on the pi to be UTC. run sudo raspi-config and With Localisation Options open you'll be able to choose Change Timezone and select your local timezone.
+
+* When the pi is ready and the node server can locate it, don't forget to update the pi with the newest version of the repo from the update page on the server node.
+
 
 Troubleshooting
 ---------------
