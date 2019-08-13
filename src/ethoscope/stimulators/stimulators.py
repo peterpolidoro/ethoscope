@@ -7,9 +7,6 @@ from ethoscope.utils.scheduler import Scheduler
 
 import datetime
 import socket
-import sys
-
-#from ethoscope.web_utils.helpers import get_machine_info
 import logging
 
 class HasInteractedVariable(BaseIntVariable):
@@ -85,7 +82,7 @@ class BaseStimulator(DescribedObject):
         return 'Base'
 
 
-class DoubleBaseStimulator(DescribedObject):
+class DoubleBaseStimulator(DescribedObject): #Janelia
     _tracker = None
     _HardwareInterfaceClass = None
     _socket_handler = None
@@ -138,17 +135,15 @@ class DoubleBaseStimulator(DescribedObject):
 
         # check the second time range for the second stimulus
         if self._scheduler2.check_time_range() is True and self._communicationflag is False:
-            #print('Scheduler 2 is ON now:'+datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
             self._communicate(True) # send an On Signal
             self._communicationflag = True
         elif self._scheduler2.check_time_range() is False and self._communicationflag is True:
-            #print('Scheduler 2 is OFF now:'+datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
             self._communicate(False)  # send an OFF Signal
             self._communicationflag = False
 
         if self._scheduler.check_time_range() is False:
             return HasInteractedVariable(False), {}
-        #print('Scheduler 1 is active now:'+datetime.datetime.now().strftime("%y%m%d_%H%M%S"))
+
         interact, result = self._decide()
         if interact > 0:
             self._deliver(**result)
@@ -181,23 +176,14 @@ class DoubleBaseStimulator(DescribedObject):
         :type communicate_signal: bool
         """
 
-        #if self.DEBUG:
-        #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
-
-        #server_ip = '192.168.123.2' # node ip
-        #tcp_port = 9998
         t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        #name = get_machine_info('/etc/machine-name')
-        # msg: timestamp + machine-name + signal(ON-OFF)
-        #msg = t + '_' + name + '_' + str(communicate_signal)
+
         msg = t + '_'+str(communicate_signal)
         try:
             self._socket_handler.send(msg)
         except socket.error, exc:
-            # print('not successful send:' + msg)
             logging.warning('Trigger backlight was not successful %s for msg %s: ' % (exc, msg))
 
-        #raise NotImplementedError
 
 
     def get_socket_handler(self):
