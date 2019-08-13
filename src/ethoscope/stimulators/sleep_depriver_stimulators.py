@@ -309,9 +309,6 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
         13: 1,
         14: 1
     }
-    
-    # Linearly space the motor speed from 0 to 360 into 10000 steps to match the fly velocity
-    #_motor_speed = [round(x) for x in np.linspace(0, 360, 10000+1)]
 
     # Create dictionary of current fly_velocity/motor_speed status for each roi
     _stimulus_info = {'t': 0, 'v': 0.006, 's': 90, 'a':100} # initialize the stimulus info for each roi
@@ -330,16 +327,6 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
                                  13: _stimulus_info,
                                  14: _stimulus_info
                                  }
-
-    # _time_delta_min = 1000 * 60 * 2       # 2 min for time delta (min time thresh in hysteresis)
-    # _time_delta_max = 1000 * 60 * 30      # 30 min for time delta (max time thresh in hysteresis)
-    #
-    # _motor_speed_delta = 90      # 360 degree step for each increase/decrease in velocity
-    # _min_motor_speed = 90
-    # _max_motor_speed = 720      # based on modular_client max motor speed
-    # _min_motor_acc = 100
-    # _max_motor_acc = 10000
-    #
 
     def __init__(self,
                  hardware_connection,
@@ -412,31 +399,13 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
 
         has_moved = self._has_moved()
         current_velocity = self._get_velocity()
-        # # fly velocity range: 0.0 ->  1.0 with 0.0001 step
-        # # rotation speed range: 0.0 -> 100 with 0.01 step
-        # # the lower the speed the more velocity
-        # speed = round(100.0-(current_velocity * 100.0))
 
-        # Use degree/s for speed instead of steps
-        # fly velocity range: 0.0 ->  1.0 with 0.0001 step
-        # rotation speed range: 0.0 -> 360 with 1 step
-        # the lower the speed the more velocity
-        #print(current_velocity)
         current_velocity = 1 if current_velocity > 1 else current_velocity
         current_velocity = 0 if current_velocity < 0 else current_velocity 
         
-        #speed = 360 - self._motor_speed[int(current_velocity * 10000)]
 
         if self._t0 is None:
             self._t0 = now
-
-        #debug
-        #if self.DEBUG:
-        #    has_moved = np.random.randint(2)
-            #print('has moved: '+str(has_moved))
-        #    if not has_moved:
-        #        return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180}
-        #    self._inactivity_time_threshold_ms = 5 * 1000
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -463,8 +432,8 @@ class JaneliaAdaptiveSleepDepStimultor(IsMovingStimulator):
 
                 # update the stimulus status of the roi
                 self._roi_stimulus_status[roi_id] = {'t': now, 'v': current_velocity, 's': speed, 'a': acc}
-                print('%d, board%d, channel%d, velocity%f, speed%d' %(now, board, channel, current_velocity, speed))
-                #reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
+                # print('%d, board%d, channel%d, velocity%f, speed%d' %(now, board, channel, current_velocity, speed))
+                # reported_velocity = round(log10(current_velocity)*1000) if current_velocity > 0 else 0
                 return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': speed, 'acc': acc}
         else:
             self._t0 = now
@@ -571,10 +540,6 @@ class JaneliaShakerSleepDepStimultor(IsMovingStimulator):
         if self._t0 is None:
             self._t0 = now
 
-        #if self.DEBUG:
-        #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
-        #                                          'acc': 2000, 'dec': 2000}
-        #    self._inactivity_time_threshold_ms = 5*1000
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -730,9 +695,6 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
 
         has_moved = self._has_moved()
         current_velocity = self._get_velocity()
-        # # fly velocity range: 0.0 ->  1.0 with 0.0001 step
-        # # rotation speed range: 0.0 -> 100 with 0.01 step
-        # # the lower the speed the more velocity
 
         current_velocity = 1 if current_velocity > 1 else current_velocity
         current_velocity = 0 if current_velocity < 0 else current_velocity
@@ -740,12 +702,6 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
         if self._t0 is None:
             self._t0 = now
 
-        #if self.DEBUG:
-        #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
-        #                                          'velocity': 0.005, 'acceleration': 2000,
-        #                                          'deceleration': self._motor_dec}
-        #
-        #    self._inactivity_time_threshold_ms = 5*1000
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -777,36 +733,7 @@ class JaneliaOptoMotorAdaptiveSleepDepStimulator(IsMovingStimulatorDouble):
             self._t0 = now
         return HasInteractedVariable(False), {}
 
-    # def _communicate(self, communicate_signal):
-    #     """
-    #     communicate an operating signal to an outside stimulator
-    #
-    #     :param communicate_signal: an ON and OFF signal to the external stimulator
-    #     :type communicate_signal: bool
-    #     """
-    #     #if self.DEBUG:
-    #     #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
-    #
-    #     #server_ip = '192.168.123.2' # node ip
-    #     #tcp_port = 9998
-    #     t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-    #     name = get_machine_info('/etc/machine-name')
-    #     # msg: timestamp + machine-name + signal(ON-OFF)
-    #     msg = t + '_' + name + '_' + str(communicate_signal)
-    #     #print('prepare msg: '+msg)
-    #     try:
-    #         #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #         #s.connect((server_ip, tcp_port))
-    #         #time.sleep(1)
-    #         socket_handler = self.get_socket_handler()
-    #         socket_handler.send(msg)
-    #         #print('send:'+msg)
-    #         logging.warning('Trigger success: ' + msg)
-    #         #s.close()
-    #     except socket.error, exc:
-    #         #print('not successful send:' + msg)
-    #         logging.warning('Trigger backlight was not successful %s: ' % exc)
-    #
+
 
 class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
     _description = {"overview": "A shaker stimulator to sleep deprive an animal using stepper motors with optostimuly.",
@@ -913,10 +840,6 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         if self._t0 is None:
             self._t0 = now
 
-        #if self.DEBUG:
-        #     return HasInteractedVariable(True), {'board': board, 'channel': channel, 'speed': 180,
-        #                                          'acc': 2000, 'dec': 2000}
-        #    self._inactivity_time_threshold_ms = 5*1000
 
         if not has_moved:
             if float(now - self._t0) > self._inactivity_time_threshold_ms:
@@ -926,35 +849,6 @@ class JaneliaOptoShakerSleepDepStimultor(IsMovingStimulatorDouble):
         else:
             self._t0 = now
         return HasInteractedVariable(False), {}
-
-
-    # def _communicate(self, communicate_signal):
-    #     """
-    #     communicate an operating signal to an outside stimulator
-    #
-    #     :param communicate_signal: an ON and OFF signal to the external stimulator
-    #     :type communicate_signal: bool
-    #     """
-    #     #if self.DEBUG:
-    #     #    logging.warning('Start to communicate with the backlight server with value '+str(communicate_signal))
-    #
-    #     #server_ip = '192.168.123.2' # node ip
-    #     #tcp_port = 9998
-    #     t = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-    #     name = get_machine_info('/etc/machine-name')
-    #     # msg: timestamp + machine-name + signal(ON-OFF)
-    #     msg = t + '_' + name + '_' + str(communicate_signal)
-    #
-    #     try:
-    #         #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #         #s.connect((server_ip, tcp_port))
-    #         #time.sleep(1)
-    #         socket_handler = self.get_socket_handler()
-    #         socket_handler.send(msg)
-    #         #s.close()
-    #     except socket.error, exc:
-    #         # print('not successful send:' + msg)
-    #         logging.warning('Trigger backlight was not successful %s: ' % exc)
 
 
 class OptomotorSleepDepriver(SleepDepStimulator):
