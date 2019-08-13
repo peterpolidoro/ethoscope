@@ -1,8 +1,3 @@
-# We import all the bricks from ethoscope package
-import sys
-import time
-import random
-#from picamera import PiCamera
 from ethoscope.core.monitor import Monitor
 from ethoscope.utils.io import SQLiteResultWriter
 from ethoscope.drawers.drawers import DefaultDrawer
@@ -11,19 +6,13 @@ from ethoscope.trackers.adaptive_bg_tracker import AdaptiveBGModel
 from ethoscope.hardware.input.cameras import OurPiCameraAsync
 #from ethoscope.hardware.input.cameras import MovieVirtualCamera
 
-from ethoscope.stimulators.sleep_depriver_stimulators import JaneliaSleepDepStimultor
-#from ethoscope.stimulators.sleep_depriver_stimulators import IsMovingStimulator
-
-# You can also load other types of ROI builder. This one is for 20 tubes (two columns of ten rows)
-#from ethoscope.roi_builders.target_roi_builder import SleepMonitorWithTargetROIBuilder
+from ethoscope.stimulators.sleep_depriver_stimulators import JaneliaAdaptiveSleepDepStimultor
 from ethoscope.roi_builders.target_roi_builder import SleepMonitorWithTargetROIBuilderJanelia
 
 from modular_client import ModularClients
 
-#from ethoscope.hardware.interfaces.interfaces import BaseInterface
-#from ethoscope.stimulators.stimulators import BaseStimulator, HasInteractedVariable
 from ethoscope.hardware.interfaces.interfaces import HardwareConnection
-from ethoscope.hardware.interfaces.janelia_sleep_depriver_interface import JaneliaSleepDepriverInterface
+from ethoscope.hardware.interfaces.janelia_sleep_depriver_interface import JaneliaAdaptiveSleepDepriverInterface
 
 
 #camera = PiCamera()
@@ -46,8 +35,8 @@ cam = OurPiCameraAsync()
 roi_builder = SleepMonitorWithTargetROIBuilderJanelia()
 rois = roi_builder.build(cam)
 # Build the stimulator
-hc = HardwareConnection(JaneliaSleepDepriverInterface)
-stimulators = [JaneliaSleepDepStimultor(hc) for _ in rois]
+hc = HardwareConnection(JaneliaAdaptiveSleepDepriverInterface)
+stimulators = [JaneliaAdaptiveSleepDepStimultor(hc) for _ in rois]
 
 # Then, we go back to the first frame of the video
 cam.restart()
