@@ -359,15 +359,13 @@ class PiFrameGrabber(multiprocessing.Process):
                 raw_capture = PiRGBArray(capture, size=self._target_resolution)
 
                 # janelia:
-                # allow the camera to warm up and janelia configurations
+                # allow the camera to warm up and add Janelia configurations
                 time.sleep(0.1)
                 #capture.exposure_mode = 'off'
                 capture.shutter_speed = 7000
-                # capture.rotation = 0
 
                 #janelia adds enumerate for performance measurements
                 for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
-                #for frame in capture.capture_continuous(raw_capture, format="bgr", use_video_port=True):
                     if not self._stop_queue.empty():
                         logging.warning("The stop queue is not empty. Stop acquiring frames")
 
