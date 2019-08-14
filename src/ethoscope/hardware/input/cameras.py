@@ -362,7 +362,7 @@ class PiFrameGrabber(multiprocessing.Process):
                 # allow the camera to warm up and add Janelia configurations
                 time.sleep(0.1)
                 #capture.exposure_mode = 'off'
-                capture.shutter_speed = 7000
+                capture.shutter_speed = 9000
 
                 #janelia adds enumerate for performance measurements
                 for i, frame in enumerate(capture.capture_continuous(raw_capture, format="bgr", use_video_port=True)):
