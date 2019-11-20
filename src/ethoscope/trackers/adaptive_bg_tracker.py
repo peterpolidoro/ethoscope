@@ -71,6 +71,7 @@ class ObjectModel(object):
     def distance(self, features,time):
         if time - self._last_updated_time > self._max_unupdated_duration:
             logging.warning("FG model not updated for too long. Resetting.")
+            print('FG model not updated for too long. Resetting')
             self.__init__(self._history_length)
             return 0
 
@@ -155,7 +156,8 @@ class BackgroundModel(object):
     """
     A class to model background. It uses a dynamic running average and support arbitrary and heterogeneous frame rates
     """
-    def __init__(self, max_half_life=100. * 1000, min_half_life=1.* 1000, increment = 1.2):
+
+    def __init__(self, max_half_life=500. * 1000, min_half_life=5.* 1000, increment = 1.2): #change the parameters from 100 to 500 and from 1 to 5
         # the maximal half life of a pixel from background, in seconds
         self._max_half_life = float(max_half_life)
         # the minimal one
@@ -188,6 +190,7 @@ class BackgroundModel(object):
 
     def update(self, img_t, t, fg_mask=None):
         dt = float(t - self.last_t)
+
         if dt < 0:
             # raise EthoscopeException("Negative time interval between two consecutive frames")
             raise NoPositionError("Negative time interval between two consecutive frames")
@@ -255,7 +258,7 @@ class AdaptiveBGModel(BaseTracker):
 
 
         self._bg_model = BackgroundModel()
-        self._max_m_log_lik = 6.
+        self._max_m_log_lik = 5.5 # decrease the max_m_log form 6 to 5.5
         self._buff_grey = None
         self._buff_object = None
         self._buff_object_old = None
@@ -288,7 +291,8 @@ class AdaptiveBGModel(BaseTracker):
         #
         mean = cv2.mean(self._buff_grey, mask)
 
-        scale = 128. / mean[0]
+        if mean[0] > 0:     #Janelia
+            scale = 128. / mean[0]
 
         cv2.multiply(self._buff_grey, scale, dst = self._buff_grey)
 
@@ -372,12 +376,13 @@ class AdaptiveBGModel(BaseTracker):
   #          self._buff_fg_diff = np.empty_like(grey)
             self._old_pos = 0.0 +0.0j
    #         self._old_sum_fg = 0
-            #print('bg_mode is None')
+            #print('bg_model is None')
             raise NoPositionError
 
         bg = self._bg_model.bg_img.astype(np.uint8)
         cv2.subtract(grey, bg, self._buff_fg)
 
+        # originally threshold is 20
         cv2.threshold(self._buff_fg,20,255,cv2.THRESH_TOZERO, dst=self._buff_fg)
 
         # cv2.bitwise_and(self._buff_fg_backup,self._buff_fg,dst=self._buff_fg_diff)
@@ -404,28 +409,28 @@ class AdaptiveBGModel(BaseTracker):
         else:
             contours,hierarchy = cv2.findContours(self._buff_fg, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-
-
-
         contours = [cv2.approxPolyDP(c,1.2,True) for c in contours]
 
         if len(contours) == 0:
             self._bg_model.increase_learning_rate()
-            #print('len(contours) == 0')
+            #print('len contours == 0')
             raise NoPositionError
 
         elif len(contours) > 1:
             if not self.fg_model.is_ready:
-                #print('not self.fg_model.is_ready')
+                #print('fg not ready')
                 raise NoPositionError
             # hulls = [cv2.convexHull( c) for c in contours]
             hulls = contours
             #hulls = merge_blobs(hulls)
-
+            #print('contour>1 hulls:')
+            #print(hulls)
             hulls = [h for h in hulls if h.shape[0] >= 3]
 
             if len(hulls) < 1:
-                #print('len(hulls) < 1')
+                #print('hulls<1')
+                # debug:
+                #cv2.imwrite('/tmp/hulls1buff_fg_' + str(t) + '.jpg', self._buff_fg)
                 raise NoPositionError
 
             elif len(hulls) > 1:
@@ -440,7 +445,9 @@ class AdaptiveBGModel(BaseTracker):
             hull = contours[0]
             if hull.shape[0] < 3:
                 self._bg_model.increase_learning_rate()
-                #print('hull.shape[0] < 3')
+                #print('one hull.shape <3 %d' %(hull.shape[0]))
+                #cv2.imwrite('/tmp/onehulls3buff_fg_' + str(t) + '.jpg', self._buff_fg)
+                #print(hull)
                 raise NoPositionError
 
             features = self.fg_model.compute_features(img, hull)
@@ -448,7 +455,11 @@ class AdaptiveBGModel(BaseTracker):
 
         if distance > self._max_m_log_lik:
             self._bg_model.increase_learning_rate()
-            #print('distance > self._max_m_log_lik')
+            # print('distance > self._max_m_log_lik: '+str(distance))
+            # cv2.imwrite('/tmp/distbuff_fg_' + str(t) + '.jpg', self._buff_fg)
+            # cv2.imwrite('/tmp/distbuff_bg_' + str(t) + '.jpg', bg)
+            # cv2.imwrite('/tmp/distimg_' + str(t) + '.jpg', img)
+            # cv2.imwrite('/tmp/distgrey_' + str(t) + '.jpg', grey)
             raise NoPositionError
 
 

@@ -136,10 +136,7 @@ class Monitor(object):
 
                     if result_writer is not None:
                         result_writer.write(t,track_u.roi, data_rows)
-                        
-#                    with open ('ethoscope.csv', 'a+') as fd:
-#                         writer = csv.writer(fd)
-#                         writer.writerow([t,track_u.roi, data_rows])
+
 
                 if not result_writer is None:
                     result_writer.flush(t, frame)
@@ -148,11 +145,9 @@ class Monitor(object):
                     drawer.draw(frame, self._last_positions, self._unit_trackers)
                 self._last_t = t
 
-
                 # Janelia measures performance
                 #end = time.clock()
                 #print t, i, end-start, end-initial_time
-                #print t, i
 
         except Exception as e:
             logging.error("Monitor closing with an exception: '%s'" % traceback.format_exc(e))

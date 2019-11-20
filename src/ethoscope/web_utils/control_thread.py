@@ -94,7 +94,7 @@ class ControlThread(Thread):
                         "possible_classes":[DefaultDrawer, NullDrawer],
                     },
         "camera":{
-                        "possible_classes":[OurPiCameraAsync, MovieVirtualCamera, DummyPiCameraAsync, V4L2Camera],
+                        "possible_classes":[OurPiCameraAsync, MovieVirtualCamera, DummyPiCameraAsync], #, V4L2Camera],
                     },
         "result_writer":{
                         "possible_classes":[ResultWriter, SQLiteResultWriter],
@@ -181,7 +181,6 @@ class ControlThread(Thread):
         DrawerClass = self._option_dict["drawer"]["class"]
         drawer_kwargs = self._option_dict["drawer"]["kwargs"]
         self._drawer = DrawerClass(**drawer_kwargs)
-
 
         super(ControlThread, self).__init__()
 
@@ -274,8 +273,6 @@ class ControlThread(Thread):
         else:
             f="NaN"
 
-
-
         if t is not None:# and p is not None:
             self._info["monitor_info"] = {
                             # "last_positions":pos,
@@ -285,8 +282,19 @@ class ControlThread(Thread):
 
         frame = self._drawer.last_drawn_frame
         if frame is not None:
-            #cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
-            cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 30]) # Janelia reduces the quality
+            cv2.imwrite(self._info["last_drawn_img"], frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # Janelia: resize the image into half and reduce the quality
+            #small = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+            #cv2.imwrite(self._info["last_drawn_img"], small, [int(cv2.IMWRITE_JPEG_QUALITY), 30])
+            # Check the contents of the frame
+            # gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # nonzero = cv2.countNonZero(gray_image)
+            # if nonzero == 0:
+            #    print "Image is black"
+            #    cv2.imwrite('/ethoscope_data/blackimg'+ str(frame_idx)+ '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # else:
+            #     print "Colored image"
+            #     cv2.imwrite('/ethoscope_data/colorimg' + str(frame_idx) + '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
 
         self._last_info_t_stamp = wall_time
         self._last_info_frame_idx = frame_idx
@@ -390,7 +398,7 @@ class ControlThread(Thread):
         # hardware_interface is a running thread
         rw = ResultWriter(self._db_credentials, rois, self._metadata, take_frame_shots=True)
 
-        return  (cam, rw, rois, TrackerClass, tracker_kwargs,
+        return (cam, rw, rois, TrackerClass, tracker_kwargs,
                         hardware_connection, StimulatorClass, stimulator_kwargs)
 
     def run(self):

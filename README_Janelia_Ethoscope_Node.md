@@ -46,7 +46,12 @@ Network
 -------
 On the router table make sure that you reserve the address 192.168.123.2 for the server node. 
 Reboot the router to detect the new MAC address  
-You can get the MAC address of the server node using ifconfig 
+* You can get the MAC address of the server node using ifconfig 
+* You can access the network configuration from: http://www.routerlogin.com/
+* You will need to reset the credentials to change the configurations of the LAN 
+* On the router page you go to Basic--Attached Devices, then you will see all the IPs assigned from this router to the different RPis
+* On the router page you go to Advanced--Setup--LAN Setup, then you will see the static IPs 
+
 
 DNS
 ----
@@ -79,10 +84,10 @@ Our own daemons
 
 * sudo systemctl daemon-reload
 
-* systemctl enable ethoscope_node.service
-* systemctl enable ethoscope_backup.service
-* systemctl enable ethoscope_video_backup.service
-* systemctl enable ethoscope_git_daemon.service
+* sudo systemctl enable ethoscope_node.service
+* sudo systemctl enable ethoscope_backup.service
+* sudo systemctl enable ethoscope_video_backup.service
+* sudo systemctl enable ethoscope_git_daemon.service
 
 * cd $TARGET_UPDATER_DIR
 * sudo cp ethoscope_update_node.service /etc/systemd/system/ethoscope_update_node.service

@@ -87,8 +87,6 @@ if __name__ == '__main__':
                           help="Where temporary result files are stored")
         parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="192.168.123.254",
                           help="the ip of the router in your setup")
-        #parser.add_option("-r", "--subnet-ip", dest="subnet_ip", default="10.150.0.1",
-        #                  help="the ip of the router in your setup")
         parser.add_option("-s", "--safe", dest="safe", default=False,help="Set Safe mode ON", action="store_true")
         parser.add_option("-l", "--local", dest="local", default=False,
                           help="Run on localhost (run a node and device on the same machine, for development)",

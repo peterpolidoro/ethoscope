@@ -29,7 +29,7 @@ class ModularClientInterface(BaseInterface):
             
         # wake up all motors        
         self._wake_all()
-        #self._warm_up()
+        self._warm_up()
         # reset the positions of the motors
         self._reset_all()
 
@@ -111,7 +111,7 @@ class ModularClientInterface(BaseInterface):
         return
     
 
-    def shake_with_speed(self, board, channel, speed=180, acceleration=2000, deceleration=2000, duration=5000):
+    def shake_with_speed(self, board, channel, speed=180, acceleration=10000, deceleration=10000, duration=1000, ncycles=4):
         """
         Move a specified rotation to a speed for a certain time.
 
@@ -127,6 +127,8 @@ class ModularClientInterface(BaseInterface):
         :type deceleration: int
         :param duration: the time (ms) the stimulus should last
         :type duration: int
+        :param ncycles: the number of oscillation
+        :type ncycles: int
         :return:
         """
 
@@ -145,13 +147,14 @@ class ModularClientInterface(BaseInterface):
             motor = self._dev1
 
         if motor is not None:
-            for i in range(5):
-                # Change the rotation direction every iteration
-                if i%2 == 0: direction_speed = speed
-                else: direction_speed = -1 * speed
-
-                motor.move_at_for(channel, direction_speed, duration/5, acceleration, deceleration)
-                time.sleep(2)
+            # for i in range(5):
+            #     # Change the rotation direction every iteration
+            #     if i%2 == 0: direction_speed = speed
+            #     else: direction_speed = -1 * speed
+            #
+            #     motor.move_at_for(channel, direction_speed, duration/5, acceleration, deceleration)
+            #     time.sleep(2)
+            motor.oscillate(channel, speed, duration, acceleration, deceleration, ncycles)
 
         else:
             raise Exception("Motors are not configured to apply stimulus")
@@ -181,18 +184,16 @@ class ModularClientInterface(BaseInterface):
         This will move all motors.
         Useful for testing
         """
-        # for i in range(1, 1 + self._n_channels):
-        #    self.send(i)
-
         # Comment this for now
-        # self._dev0.move_all_at(180)
-        # self._dev1.move_all_at(180)
-        # time.sleep(10)
-        # self._dev0.stop_all()
-        # self._dev1.stop_all()
-        # self._dev0.zero_all()
-        # self._dev1.zero_all()
+        #self._dev0.move_all_at(180)
+        #self._dev1.move_all_at(180)
+        #time.sleep(2)
+        #self._dev0.stop_all()
+        #self._dev1.stop_all()
+        #self._dev0.zero_all()
+        #self._dev1.zero_all()
         return
+
 
 
 

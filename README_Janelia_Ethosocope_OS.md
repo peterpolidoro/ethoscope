@@ -123,6 +123,7 @@ innodb_log_buffer_size = 50M
 innodb_flush_log_at_trx_commit = 1
 innodb_lock_wait_timeout = 50
 innodb_file_per_table=1
+innodb_file_format=Barracuda
 
 In file /etc/mysql/mariadb.conf.d/50-server.conf comment the line "bind-address  127.0.0.1" and uncomment the line "log_bin = /var/log/mysql/mysql-bin.log"
 
@@ -156,8 +157,10 @@ Boot config file
 
 Make sure the camera is enabled: Go into the Raspberry Pi Configuration tool (sudo raspi-config), click Interfaces, and select Enabled beside the Camera option.
 
-Last touches
-------------- 
+Last touches cloning the available OS to a new SD-card
+------------------------------------------------------
+* A clone of the OS is available on /home/labadmin/Desktop/ethoscope_OS/ethoscope_pi_image.dmg
+ 
 * If you are cloning the OS to a new SD-card make sure that you change the machine-id to be unique
 sudo nano /etc/machine-id
 
@@ -167,3 +170,38 @@ sudo nano /etc/machine-id
 
 * Change the datetime on the pi to be UTC. run sudo raspi-config and With Localisation Options open you'll be able to choose Change Timezone and select your local timezone.
 
+* When the pi is ready and the node server can locate it, don't forget to update the pi with the newest version of the repo from the update page on the server node.
+
+
+Troubleshooting
+---------------
+* If the image seems to have the rotating lines of the IR backlight due to a change in the duty cycle, try changing the shutter speed of the camera in src/hardware/input/cameras.py or change the IR intensity from the sleepRig matlab application that controls the backlight
+
+* To restart the server: 
+On the terminal: 
+ * sudo systemctl restart ethoscope_node.service
+ * sudo systemctl restart ethoscope_update_node.service
+ * sudo systemctl restart ethoscope_backup.service
+
+
+* To restart any device:
+On the terminal:
+ssh pi@192.168.123.3  (or whatever ip of the device you want to restart)
+()Pass: e001@hhmi)
+
+* sudo systemctl restart ethoscope_device.service
+* sudo systemctl restart ethoscope_update.service
+
+* To view the service log messages, for example, “ethoscope_node.service” use
+sudo journalctl -u ethoscope_node.service -e   on the server machine
+
+* For local testing you can run src/LocalTrackingExample.py.  The output from this example is using SQLiteWrite. To make it compatible with Rethomics toolbox for analysis run the  following sql commands:
+- update ROI-1 set id=ROWID;
+- update ROI-2 set id=ROWID;
+.
+.
+.
+
+2019 hardware specs of RPI for Janelia
+--------------------------------------
+If the RPI is changed and has different chip, you may need to add the the hardware group number and revision number of the new pi under /src/ethoscope/web_utils/helpers.py

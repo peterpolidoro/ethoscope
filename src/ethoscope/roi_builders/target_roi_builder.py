@@ -279,7 +279,6 @@ class SleepMonitorWithTargetROIBuilderJanelia(TargetGridROIBuilder):
 
         """
 
-
         super(SleepMonitorWithTargetROIBuilderJanelia, self).__init__(n_rows=7,
                                                                n_cols=2,
                                                                top_margin= 2.99 / 135.00,
